@@ -44,11 +44,11 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/#features"
-                  onClick={(e) => handleScroll(e, "/#features")}
+                  href="/#about"
+                  onClick={(e) => handleScroll(e, "/#about")}
                   className="text-neutral-400 hover:text-white transition font-normal"
                 >
-                  <span>{t.footer.links.work}</span>
+                  <span>{t.footer.links.about}</span>
                 </Link>
               </li>
               <li>
@@ -78,6 +78,14 @@ export default function Footer() {
                   <span>{t.footer.links.pricing}</span>
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-neutral-400 hover:text-white transition font-normal"
+                >
+                  <span>{t.footer.links.contact}</span>
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -89,11 +97,11 @@ export default function Footer() {
             <ul className="space-y-3 text-sm p-0 list-none">
               <li>
                 <Link
-                  href="/#features"
-                  onClick={(e) => handleScroll(e, "/#features")}
+                  href="/#about"
+                  onClick={(e) => handleScroll(e, "/#about")}
                   className="text-neutral-400 hover:text-white transition font-normal"
                 >
-                  <span>{t.footer.links.work}</span>
+                  <span>{t.footer.links.about}</span>
                 </Link>
               </li>
               <li>

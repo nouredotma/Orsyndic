@@ -2,10 +2,10 @@
 
 import Header from "@/components/homepage/header"
 import Footer from "@/components/homepage/footer"
-import QuoteForm from "@/components/get-a-quote/quote-form"
+import ContactForm from "@/components/contact/contact-form"
 import { useLanguage } from "@/lib/language-context"
 
-export default function GetAQuotePage() {
+export default function ContactPage() {
   const { t } = useLanguage()
 
   return (
@@ -22,20 +22,20 @@ export default function GetAQuotePage() {
             {/* Left side: Information / Copy */}
             <div className="flex flex-col justify-start max-w-xl lg:sticky lg:top-40">
               <div className="inline-flex mb-4 px-3 py-1.5 rounded-sm bg-primary/5 border border-primary w-fit">
-                <span className="text-xs md:text-sm font-semibold text-primary">{t.getQuote.badge}</span>
+                <span className="text-xs md:text-sm font-semibold text-primary">{t.contactPage.badge}</span>
               </div>
               
               <h1 className="text-xl md:text-5xl font-medium mb-6 text-black tracking-tight">
-                {t.getQuote.heading}
+                {t.contactPage.heading}
               </h1>
               
               <p className="text-xs md:text-base font-medium text-neutral-400 mb-8">
-                {t.getQuote.subheading}
+                {t.contactPage.subheading}
               </p>
 
               <div className="flex items-center gap-6 mt-4">
                 <div className="flex flex-col">
-                  <span className="text-xs md:text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-1">{t.getQuote.emailUs}</span>
+                  <span className="text-xs md:text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-1">{t.contactPage.emailUs}</span>
                   <a href="mailto:contact@orsyndic.com" className="text-base md:text-lg font-medium text-black hover:underline decoration-2 underline-offset-4">
                     contact@orsyndic.com
                   </a>
@@ -44,7 +44,7 @@ export default function GetAQuotePage() {
             </div>
 
             {/* Right side: Form Component */}
-            <QuoteForm />
+            <ContactForm />
 
           </div>
         </div>

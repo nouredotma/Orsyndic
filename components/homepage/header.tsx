@@ -102,11 +102,12 @@ export default function Header() {
   }
 
   const navItems = [
-    { name: t.nav.work, href: "/#features" },
+    { name: t.nav.about, href: "/#about" },
     { name: t.nav.functionalities, href: "/#functionalities" },
     { name: t.nav.pricing, href: "/#pricing" },
     { name: t.nav.testimonials, href: "/#testimonials" },
     { name: t.nav.faq, href: "/#faq" },
+    { name: t.nav.contact, href: "/contact" },
   ]
 
   return (
@@ -164,7 +165,7 @@ export default function Header() {
         </div>
 
         <div className="hidden md:flex items-center justify-end relative z-30 gap-2">
-          <Link href="/get-a-quote" className="relative z-30">
+          <Link href="/access" className="relative z-30">
             <Button
               className={`group transition-all duration-300 rounded-sm h-13 pl-4 pr-2 py-2 font-medium tracking-tight text-sm cursor-pointer flex items-center gap-2 ${
                 visible
@@ -172,7 +173,7 @@ export default function Header() {
                   : "bg-black text-white hover:bg-black/90 border border-black hover:border-black"
               }`}
             >
-              {t.nav.getQuote}
+              {t.nav.access}
               <AnimatedArrow 
                 wrapperClassName={visible ? "bg-black" : "bg-white"} 
                 arrowClassName={visible ? "text-white" : "text-black"} 
@@ -254,9 +255,9 @@ export default function Header() {
               </div>
 
               <div className="w-full pt-6 border-t border-gray-100 flex items-center justify-between gap-3 px-2">
-                <Link href="/get-a-quote" className="flex-1 w-full" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="/access" className="flex-1 w-full" onClick={() => setMobileMenuOpen(false)}>
                   <Button className="group h-12 py-2 w-full bg-primary hover:bg-primary/90 text-white cursor-pointer rounded-sm font-semibold text-sm shadow-sm flex items-center justify-between gap-2 transition-all duration-300">
-                    {t.nav.getQuote}
+                    {t.nav.access}
                     <AnimatedArrow wrapperClassName="bg-black shrink-0" arrowClassName="text-white" />
                   </Button>
                 </Link>

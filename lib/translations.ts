@@ -2,12 +2,13 @@ export type Language = "en" | "fr" | "es";
 
 export interface Translations {
   nav: {
-    work: string;
+    about: string;
     functionalities: string;
     pricing: string;
     testimonials: string;
     faq: string;
-    getQuote: string;
+    contact: string;
+    access: string;
   };
   hero: {
     badge: string;
@@ -175,11 +176,12 @@ export interface Translations {
     };
     links: {
       home: string;
-      work: string;
+      about: string;
       functionalities: string;
       testimonials: string;
       pricing: string;
       faq: string;
+      contact: string;
       blog: string;
       help: string;
       privacy: string;
@@ -190,7 +192,7 @@ export interface Translations {
     rights: string;
     status: string;
   };
-  getQuote: {
+  contactPage: {
     metadata: {
       title: string;
       description: string;
@@ -206,7 +208,7 @@ export interface Translations {
         email: string;
         phone: string;
         company: string;
-        service: string;
+        subject: string;
         message: string;
       };
       placeholders: {
@@ -215,17 +217,14 @@ export interface Translations {
         email: string;
         phone: string;
         company: string;
-        service: string;
+        subject: string;
         message: string;
       };
-      services: {
-        webDev: string;
-        uiux: string;
-        aiSolutions: string;
-        transformation: string;
-        marketing: string;
-        ecommerce: string;
-        branding: string;
+      subjects: {
+        demo: string;
+        sales: string;
+        support: string;
+        partnership: string;
         other: string;
       };
       submit: string;
@@ -259,12 +258,13 @@ export interface Translations {
 export const translations: Record<Language, Translations> = {
   en: {
     nav: {
-      work: "Our Work",
+      about: "About",
       functionalities: "Functionalities",
       pricing: "Pricing",
       testimonials: "Testimonials",
       faq: "FAQ",
-      getQuote: "Get a Quote",
+      contact: "Contact",
+      access: "Access Syndic",
     },
     hero: {
       badge: "Simplified Syndic Management",
@@ -273,7 +273,7 @@ export const translations: Record<Language, Translations> = {
         part2: "with transparency",
       },
       description: "Orsyndic centralizes your finances, automates your charges, and streamlines communication between managers, owners, and residents.",
-      startProject: "Discover Orsyndic",
+      startProject: "Login",
       viewServices: "Features",
       askAi: "Ask Orsyndic AI",
       chatWhatsApp: "WhatsApp Support",
@@ -524,11 +524,12 @@ export const translations: Record<Language, Translations> = {
       },
       links: {
         home: "Home",
-        work: "Our Work",
+        about: "About",
         functionalities: "Functionalities",
         testimonials: "Testimonials",
         pricing: "Pricing",
         faq: "FAQ",
+        contact: "Contact",
         blog: "Blog",
         help: "Help Center",
         privacy: "Privacy Policy",
@@ -539,24 +540,24 @@ export const translations: Record<Language, Translations> = {
       rights: "All rights reserved.",
       status: "All Systems Operational",
     },
-    getQuote: {
+    contactPage: {
       metadata: {
-        title: "Get a Quote | Ors",
-        description: "Contact us to start your project. We'd love to hear from you.",
+        title: "Contact Us | Orsyndic",
+        description: "Get in touch with the Orsyndic team to start simplifying your property management.",
       },
       badge: "Let's Talk",
-      heading: "Ready to transform your digital presence?",
-      subheading: "Fill out the form and our team will get back to you within 24 hours to discuss your project and how we can help.",
+      heading: "Ready to simplify your property management?",
+      subheading: "Fill out the form and our team will get back to you within 24 hours to schedule a demo and discuss your needs.",
       emailUs: "Email us",
       form: {
         labels: {
           firstName: "First Name",
           lastName: "Last Name",
           email: "Email Address",
-          phone: "Phone Number (WhatsApp available)",
+          phone: "Phone Number",
           company: "Company Name",
-          service: "Service you are interested in",
-          message: "Project Details",
+          subject: "Subject",
+          message: "Message",
         },
         placeholders: {
           firstName: "John",
@@ -564,17 +565,14 @@ export const translations: Record<Language, Translations> = {
           email: "john@example.com",
           phone: "+1 234 567 890",
           company: "Acme Corp",
-          service: "Select a service",
-          message: "Tell us about your goals, timeline, and budget...",
+          subject: "Select a subject",
+          message: "Tell us how we can help you...",
         },
-        services: {
-          webDev: "Web Development",
-          uiux: "UI/UX Design",
-          aiSolutions: "AI Solutions & Automation",
-          transformation: "Digital Transformation",
-          marketing: "Digital Marketing",
-          ecommerce: "E-commerce Solutions",
-          branding: "Branding & Identity",
+        subjects: {
+          demo: "Schedule a Demo",
+          sales: "Sales Inquiry",
+          support: "Technical Support",
+          partnership: "Partnership",
           other: "Other",
         },
         submit: "Send Message",
@@ -610,12 +608,13 @@ export const translations: Record<Language, Translations> = {
   },
   fr: {
     nav: {
-      work: "Nos Réalisations",
+      about: "À propos",
       functionalities: "Fonctionnalités",
       pricing: "Tarifs",
       testimonials: "Témoignages",
       faq: "FAQ",
-      getQuote: "Obtenir un devis",
+      contact: "Contact",
+      access: "Accès Syndic",
     },
     hero: {
       badge: "Gestion de Syndic Simplifiée",
@@ -623,8 +622,8 @@ export const translations: Record<Language, Translations> = {
         part1: "Gérez vos copropriétés",
         part2: "avec transparence",
       },
-      description: "Orsyndic centralise vos finances, automatise vos charges et fluidifie la communication entre syndics, copropriétaires et résidents.",
-      startProject: "Découvrir Orsyndic",
+      description: "Orsyndic centralizes vos finances, automatise vos charges et fluidifie la communication entre syndics, copropriétaires et résidents.",
+      startProject: "Se connecter",
       viewServices: "Fonctionnalités",
       askAi: "Demander à l'IA Orsyndic",
       chatWhatsApp: "Support WhatsApp",
@@ -875,11 +874,12 @@ export const translations: Record<Language, Translations> = {
       },
       links: {
         home: "Accueil",
-        work: "Nos Travaux",
+        about: "À propos",
         functionalities: "Fonctionnalités",
         testimonials: "Témoignages",
         pricing: "Tarification",
         faq: "FAQ",
+        contact: "Contact",
         blog: "Blog",
         help: "Centre d'Aide",
         privacy: "Politique de Confidentialité",
@@ -890,24 +890,24 @@ export const translations: Record<Language, Translations> = {
       rights: "Tous droits réservés.",
       status: "Tous les systèmes sont opérationnels",
     },
-    getQuote: {
+    contactPage: {
       metadata: {
-        title: "Obtenir un Devis | Ors",
-        description: "Contactez-nous pour démarrer votre projet. Nous aimerions avoir de vos nouvelles.",
+        title: "Contactez-nous | Orsyndic",
+        description: "Contactez l'équipe Orsyndic pour simplifier la gestion de votre copropriété.",
       },
       badge: "Parlons de votre Projet",
-      heading: "Prêt à transformer votre présence numérique ?",
-      subheading: "Remplissez le formulaire et notre équipe vous recontactera sous 24 heures pour discuter de votre projet et de la manière dont nous pouvons vous aider.",
+      heading: "Prêt à simplifier la gestion de votre copropriété ?",
+      subheading: "Remplissez le formulaire et notre équipe vous recontactera sous 24 heures pour planifier une démo et discuter de vos besoins.",
       emailUs: "Écrivez-nous",
       form: {
         labels: {
           firstName: "Prénom",
           lastName: "Nom",
           email: "Adresse E-mail",
-          phone: "Numéro de Téléphone (WhatsApp disponible)",
+          phone: "Numéro de Téléphone",
           company: "Nom de l'Entreprise",
-          service: "Service qui vous intéresse",
-          message: "Détails du Projet",
+          subject: "Sujet de votre demande",
+          message: "Message",
         },
         placeholders: {
           firstName: "Jean",
@@ -915,17 +915,14 @@ export const translations: Record<Language, Translations> = {
           email: "jean@exemple.com",
           phone: "+33 1 23 45 67 89",
           company: "Acme Corp",
-          service: "Sélectionnez un service",
-          message: "Parlez-nous de vos objectifs, de votre calendrier et de votre budget...",
+          subject: "Sélectionnez un sujet",
+          message: "Dites-nous comment nous pouvons vous aider...",
         },
-        services: {
-          webDev: "Développement Web",
-          uiux: "Design UI/UX",
-          aiSolutions: "Solutions IA & Automatisations",
-          transformation: "Transformation Numérique",
-          marketing: "Marketing Numérique",
-          ecommerce: "Solutions E-commerce",
-          branding: "Image de Marque & Identité",
+        subjects: {
+          demo: "Demander une démo",
+          sales: "Question commerciale",
+          support: "Support technique",
+          partnership: "Partenariat",
           other: "Autre",
         },
         submit: "Envoyer le Message",
@@ -961,12 +958,13 @@ export const translations: Record<Language, Translations> = {
   },
   es: {
     nav: {
-      work: "Proyectos",
+      about: "Nosotros",
       functionalities: "Funcionalidades",
       pricing: "Precios",
       testimonials: "Testimonios",
       faq: "FAQ",
-      getQuote: "Presupuesto",
+      contact: "Contacto",
+      access: "Acceso Síndico",
     },
     hero: {
       badge: "Experiencia Digital Re-imaginada",
@@ -975,7 +973,7 @@ export const translations: Record<Language, Translations> = {
         part2: "su presencia digital",
       },
       description: "Nos asociamos con personas y equipos ambiciosos para crear sitios web impresionantes, plataformas potentes y estrategias de crecimiento inteligentes.",
-      startProject: "Inicia tu Proyecto",
+      startProject: "Iniciar sesión",
       viewServices: "Ver Servicios",
       askAi: "Preguntar a Orsyndic AI",
       chatWhatsApp: "Chat por WhatsApp",
@@ -1226,11 +1224,12 @@ export const translations: Record<Language, Translations> = {
       },
       links: {
         home: "Inicio",
-        work: "Nuestro Trabajo",
+        about: "Nosotros",
         functionalities: "Funcionalidades",
         testimonials: "Testimonios",
         pricing: "Precios",
         faq: "FAQ",
+        contact: "Contacto",
         blog: "Blog",
         help: "Centro de Ayuda",
         privacy: "Política de Privacidad",
@@ -1241,24 +1240,24 @@ export const translations: Record<Language, Translations> = {
       rights: "Todos los derechos reservados.",
       status: "Todos los sistemas operativos",
     },
-    getQuote: {
+    contactPage: {
       metadata: {
-        title: "Obtén un Presupuesto | Ors",
-        description: "Contáctanos para iniciar tu proyecto. Nos encantaría saber de ti.",
+        title: "Contáctanos | Orsyndic",
+        description: "Ponte en contacto con el equipo de Orsyndic para simplificar la gestión de tu copropiedad.",
       },
       badge: "Hablemos de tu Proyecto",
-      heading: "¿Listo para transformar tu presencia digital?",
-      subheading: "Completa el formulario y nuestro equipo se pondrá en contacto contigo en un plazo de 24 horas para discutir tu proyecto y cómo podemos ayudarte.",
+      heading: "¿Listo para simplificar la gestión de tu copropiedad?",
+      subheading: "Completa el formulario y nuestro equipo se pondrá en contacto contigo en un plazo de 24 horas para programar una demostración y discutir tus necesidades.",
       emailUs: "Envíanos un correo",
       form: {
         labels: {
           firstName: "Nombre",
           lastName: "Apellido",
           email: "Correo Electrónico",
-          phone: "Número de Teléfono (WhatsApp disponible)",
+          phone: "Número de Teléfono",
           company: "Nombre de la Empresa",
-          service: "Servicio que te interesa",
-          message: "Detalles del Proyecto",
+          subject: "Asunto de contacto",
+          message: "Mensaje",
         },
         placeholders: {
           firstName: "Juan",
@@ -1266,17 +1265,14 @@ export const translations: Record<Language, Translations> = {
           email: "juan@ejemplo.com",
           phone: "+34 912 34 56 78",
           company: "Acme Corp",
-          service: "Selecciona un servicio",
-          message: "Cuéntanos sobre tus objetivos, plazos y presupuesto...",
+          subject: "Selecciona un asunto",
+          message: "Cuéntanos cómo podemos ayudarte...",
         },
-        services: {
-          webDev: "Desarrollo Web",
-          uiux: "Diseño UI/UX",
-          aiSolutions: "Soluciones de IA y Automatización",
-          transformation: "Transformación Digital",
-          marketing: "Marketing Digital",
-          ecommerce: "Soluciones de Comercio Electrónico",
-          branding: "Imagen de Marca e Identidad",
+        subjects: {
+          demo: "Programar una Demo",
+          sales: "Consulta Comercial",
+          support: "Soporte Técnico",
+          partnership: "Asociación",
           other: "Otro",
         },
         submit: "Enviar Mensaje",
