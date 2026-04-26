@@ -34,7 +34,7 @@ export default function AboutSection() {
             {/* Main image */}
             <div className="w-full h-full rounded-sm overflow-hidden relative">
               <Image
-                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80"
+                src="/about.png"
                 alt="Modern building management"
                 fill
                 className="object-cover"
