@@ -53,7 +53,7 @@ export default function PriceSection() {
               <h1 className="text-xl font-medium tracking-tight md:text-4xl text-balance">
                 {t.pricing.title} {t.pricing.pricing}
               </h1>
-              <p className="text-neutral-500 tracking-tight text-sm md:text-base">{t.pricing.subtitle}</p>
+              <p className="text-neutral-500 font-normal text-sm md:text-base">{t.pricing.subtitle}</p>
             </div>
           </div>
 

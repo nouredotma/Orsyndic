@@ -1,48 +1,78 @@
-# Orsyndic | Application Web de Gestion de Syndic
+# SyndiCare — Modern Property Management System (Syndic)
 
-![Orsyndic Banner](public/og-image.png)
+![SyndiCare Banner](public/og-image.png)
 
-**Orsyndic** est une plateforme web de type SaaS dédiée à la gestion simplifiée des copropriétés. Elle fait office de pont numérique entre le syndic (gestionnaire) et les usagers (copropriétaires et résidents).
+**SyndiCare** is a SaaS-based web application designed to simplify property co-ownership management ("Syndic"). It serves as a digital bridge between property managers (Syndic) and users (co-owners and residents), bringing transparency and efficiency to the real estate sector (PropTech).
 
-## 🚀 Overview
+## 🚀 Project Overview
 
-Le secteur de l'immobilier connaît une transformation numérique sans précédent (PropTech). Orsyndic répond aux défis de la gestion de syndic traditionnelle en offrant transparence, automatisation et communication fluide.
+The real estate sector is undergoing a massive digital transformation. SyndiCare addresses the traditional challenges of property management — such as financial opacity, administrative burden, and communication gaps — by offering a centralized, automated, and user-friendly platform.
 
-- **🛠 Tech Stack:** Next.js, React, Tailwind CSS, MySQL, Laravel (Backend conceptuel).
-- **🎯 Mission:** Centralisation, Transparence, et Automatisation des processus métiers.
+### 🎯 Mission
+- **Centralization:** A single access point for all property-related data.
+- **Transparency:** Real-time visibility into finances and maintenance history.
+- **Automation:** Streamlining repetitive tasks like charge calculations and document generation.
 
 ## ✨ Key Features
 
-### A. Centralisation et Transparence
-- **Espace Client unique** pour chaque copropriétaire.
-- Consultation du **solde personnel** et historique des charges.
-- Accès à l'**historique des documents** (PV d'AG, règlements).
+### 🏢 Property & Asset Management
+- **Hierarchical Structure:** Manage multiple buildings, floors, and apartments.
+- **Owner Mapping:** Link units to their respective co-owners.
+- **Multi-Building Support:** Admins can manage several properties from a single dashboard.
 
-### B. Automatisation des Processus Métiers
-- **Calcul automatique des charges** selon les tantièmes.
-- Génération de **quittances et appels de fonds** (PDF).
-- Tableau de bord de **suivi des paiements** et impayés.
+### 💰 Financial Module
+- **Charge Calculation:** Automated distribution of charges based on "tantièmes" (square meters/shares).
+- **Payment Tracking:** Dashboard for tracking payments and identifying arrears.
+- **Document Generation:** Automatic generation of receipts (quittances) and calls for funds in PDF format.
 
-### C. Optimisation de la Maintenance et Communication
-- **Helpdesk (Tickets):** Signalement d'incidents avec photo et suivi d'état.
-- **Mur d'actualités:** Diffusion d'annonces urgentes.
-- **Espace Documentaire:** Bibliothèque de fichiers partagés.
+### 🎫 Helpdesk & Maintenance (Tickets)
+- **Incident Reporting:** Residents can report technical issues (leaks, elevator failures) with photo uploads.
+- **Workflow Tracking:** Real-time status updates (Open → In Progress → Resolved).
+- **History:** Keep a record of all interventions and maintenance costs.
 
-## 👥 Profils Utilisateurs
+### 📢 Communication & Documents
+- **News Wall:** Centralized feed for urgent announcements (e.g., water cuts, meetings).
+- **Document Library:** Secure storage for meeting minutes (PV), building regulations, and insurance files.
 
-1. **Administrateur (Syndic):** Gestionnaire principal (Lots, charges, paiements, documents, tickets).
-2. **Copropriétaire:** Détenteur de lots (Solde, appels de fonds, documents, incidents).
-3. **Résident (Locataire):** Occupant (Mur d'annonces, réclamations techniques).
+## 👥 User Roles
 
-## 🛠 Tech Stack
+| Role | Description | Key Capabilities |
+| :--- | :--- | :--- |
+| **Administrator (Syndic)** | The main property manager. | Configure lots, generate charges, validate payments, manage documents, and close tickets. |
+| **Co-owner** | Owns one or more lots in the building. | View personal balance, access fund calls, download documents, and report incidents. |
+| **Resident (Tenant)** | The physical occupant of the unit. | Restricted access: view announcements and submit technical complaints only. |
 
-- **Framework:** [Next.js](https://nextjs.org/) (App Router)
-- **Library:** [React](https://react.dev/)
+## 🛠 Technology Stack
+
+### Frontend
+- **Framework:** [Next.js](https://nextjs.org/) (React)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Components:** [Radix UI](https://www.radix-ui.com/)
+- **Components:** [Radix UI](https://www.radix-ui.com/) / [Shadcn UI](https://ui.shadcn.com/)
 - **Animations:** [Framer Motion](https://www.framer.com/motion/)
-- **Typography:** Inter (via Google Fonts)
 - **Icons:** [Lucide React](https://lucide.dev/)
+
+### Backend & Database
+- **Core:** [Laravel](https://laravel.com/) (PHP)
+- **Database:** MySQL (Relational)
+- **Authentication:** Secure role-based access control (BCrypt hashing, SQL/XSS protection).
+
+## 📊 Scope & Prioritization (MoSCoW)
+
+### ✅ In-Scope
+- Multi-building management.
+- Charge calculation engine.
+- Ticket workflow system.
+- PDF Exporting.
+
+### ❌ Out-of-Scope
+- Double-entry professional accounting.
+- Real-time online payment integration.
+- Electronic voting for general meetings.
+
+### 📌 MoSCoW
+- **Must Have:** Auth, role management, property CRUD, charge generation.
+- **Should Have:** Helpdesk, PDF exports, document library.
+- **Could Have:** Statistics dashboard, email notifications.
 
 ## 🏁 Getting Started
 
@@ -69,23 +99,24 @@ Le secteur de l'immobilier connaît une transformation numérique sans précéde
 
 ## 📁 Project Structure
 
-```
+```text
 .
-├── app/                # Next.js App Router (Pages, Layouts, Metadata)
-├── components/         # UI Components (Dashboard, Helpdesk, Finance)
+├── app/                # Next.js App Router (Pages, Layouts, API Routes)
+├── components/         # Reusable UI components
 ├── hooks/              # Custom React hooks
-├── lib/                # Shared utilities and context
-├── public/             # Static assets
-├── styles/             # Global CSS
+├── lib/                # Utility functions and shared logic
+├── public/             # Static assets (images, icons)
+├── styles/             # Global CSS and themes
 ```
 
-## 📜 Planning Prévisionnel (4 Semaines)
+## 📅 Roadmap (4-Week PFE Plan)
 
-- **Semaine 1:** Analyse, Conception et Infrastructure (Auth, Rôles).
-- **Semaine 2:** Patrimoine & Finances (CRUD Immeubles, Moteur de calcul).
-- **Semaine 3:** Interactivité & Incidents (Helpdesk, Espace Documentaire).
-- **Semaine 4:** Finalisation, Qualité et Livraison.
+- **Week 1:** Analysis & Infrastructure (Technical modeling, UI Mockups, Auth/Roles).
+- **Week 2:** Core Business Logic (Property CRUD, Charge Calculation Engine).
+- **Week 3:** Interactivity & Incidents (Helpdesk, Document Center, News Wall).
+- **Week 4:** Quality & Delivery (Testing, Responsive Optimization, Deployment).
 
 ---
 
-*Orsyndic — Cahier des Charges PFE | v1.0 — 2025/2026*
+*SyndiCare — Cahier des Charges PFE | v1.0 — 2025/2026*
+*Institut Supérieur de Génie Informatique (ISGI)*

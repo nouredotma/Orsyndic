@@ -56,7 +56,7 @@ export default function UseCasesSection() {
           <h2 className="text-xl font-medium md:text-4xl text-balance tracking-tighter">
             {t.useCases.title.part1} {t.useCases.title.part2}
           </h2>
-          <p className="text-neutral-500 max-w-xl mx-auto text-sm md:text-base tracking-tight font-normal">
+          <p className="text-neutral-500 max-w-xl mx-auto text-sm md:text-base font-normal">
             {t.useCases.subtitle}
           </p>
         </div>

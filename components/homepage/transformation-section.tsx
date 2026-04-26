@@ -161,7 +161,7 @@ export default function TransformationSection() {
             <h2 className="text-xl font-medium md:text-4xl text-balance tracking-tighter">
               {t.transformation.title}
             </h2>
-            <p className="text-neutral-500 max-w-xl mx-auto text-sm md:text-base font-normal tracking-tight">
+            <p className="text-neutral-500 max-w-xl mx-auto text-sm md:text-base font-normal">
               {t.transformation.subtitle}
             </p>
           </div>

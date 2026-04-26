@@ -52,7 +52,7 @@ export default function FAQSection() {
             <h2 className="text-xl font-medium tracking-tight md:text-4xl text-balance text-black">
               {t.faq.title1} {t.faq.title2}
             </h2>
-            <p className="text-neutral-500 tracking-tight text-sm md:text-base">
+            <p className="text-neutral-500 font-normal text-sm md:text-base">
               {t.faq.subtitle}
             </p>
           </div>
@@ -71,11 +71,11 @@ export default function FAQSection() {
                   className="w-full text-left px-3 py-3 sm:px-5 sm:py-5 flex items-center justify-between gap-4 cursor-pointer"
                 >
                   <span className={`font-normal text-sm md:text-base transition-colors duration-200 leading-tight ${
-                    openIndex === index ? "text-primary" : "text-foreground group-hover:text-primary"
+                    openIndex === index ? "text-primary" : "text-black group-hover:text-primary"
                   }`}>{faq.question}</span>
                   <Plus
                     className={`w-4 h-4 transition-all duration-200 shrink-0 ${
-                      openIndex === index ? "rotate-180 text-primary" : "text-muted-foreground group-hover:text-primary"
+                      openIndex === index ? "rotate-180 text-primary" : "text-neutral-500 group-hover:text-primary"
                     }`}
                   />
                 </button>
