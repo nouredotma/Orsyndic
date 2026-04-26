@@ -515,31 +515,31 @@ export const translations: Record<Language, Translations> = {
     faq: {
       title1: "Frequently",
       title2: "asked questions",
-      subtitle: "Everything you need to know about our web development process and services.",
+      subtitle: "Everything you need to know about Orsyndic and how it simplifies your building management.",
       questions: {
         q1: {
-          q: "What services does Orsyndic offer?",
-          a: "We specialize in custom web design, robust web development, UI/UX design, mobile app development, eCommerce solutions, and comprehensive SEO optimization to help your business grow online.",
+          q: "What is Orsyndic?",
+          a: "Orsyndic is a comprehensive digital platform designed to simplify property and co-ownership (syndic) management through automation and transparency.",
         },
         q2: {
-          q: "How long does it take to design and develop a custom website?",
-          a: "The timeline varies depending on the project's complexity. A standard web design project typically takes 4-8 weeks, while custom web applications or eCommerce solutions may take longer. We'll provide a detailed timeline during our initial consultation.",
+          q: "Who can use the platform?",
+          a: "Orsyndic offers tailored interfaces for three main roles: Syndics (managers), Co-owners, and Residents, ensuring everyone has the tools they need.",
         },
         q3: {
-          q: "Do you provide ongoing support after the website goes live?",
-          a: "Yes, absolutely. We offer ongoing maintenance and support packages to ensure your digital platform remains secure, up-to-date, and performs optimally long after the initial launch.",
+          q: "Is my financial data secure?",
+          a: "Yes, absolutely. We use industry-standard encryption and robust security protocols to ensure that all financial tracking and transactions are fully protected.",
         },
         q4: {
-          q: "Will my website be mobile-friendly and optimized for search engines?",
-          a: "Definitely. All of our websites are built with a mobile-first approach, ensuring full responsiveness across devices. We also implement best-practice SEO structures off the bat, so your site is ready to rank well on Google.",
+          q: "Can I report and track building incidents?",
+          a: "Definitely. Our incident reporting module allows residents to report technical issues, while managers can track resolution progress in real-time.",
         },
         q5: {
-          q: "Can you help redesign or improve an existing website?",
-          a: "Yes, we frequently revamp existing websites. Whether you need a fresh UI/UX overhaul, performance optimization, or new features integrated into your current platform, our team can help elevate your brand identity.",
+          q: "How does automated charge generation work?",
+          a: "The system automatically calculates building charges based on pre-defined shares and configurations, generating invoices and tracking payments without manual effort.",
         },
         q6: {
-          q: "Which platforms and technologies do you use for web development?",
-          a: "We utilize modern, high-performance tech stacks tailored to your project. This includes Next.js, React, Tailwind CSS, and robust backend solutions. For eCommerce, we work with custom architectures to ensure scalable growth.",
+          q: "Is Orsyndic available on mobile devices?",
+          a: "Yes, Orsyndic is built with a mobile-first approach. It is fully responsive and optimized for use on smartphones, tablets, and desktops.",
         },
       },
     },
@@ -895,31 +895,31 @@ export const translations: Record<Language, Translations> = {
     faq: {
       title1: "Questions",
       title2: "fréquemment posées",
-      subtitle: "Tout ce que vous devez savoir sur notre processus de développement web et nos services.",
+      subtitle: "Tout ce que vous devez savoir sur Orsyndic et comment il simplifie la gestion de votre immeuble.",
       questions: {
         q1: {
-          q: "Quels services propose Orsdweb ?",
-          a: "Nous sommes spécialisés dans la conception web personnalisée, le développement web robuste, le design UI/UX, le développement d'applications mobiles, les solutions e-commerce et l'optimisation SEO complète pour aider votre entreprise à se développer en ligne.",
+          q: "Qu'est-ce qu'Orsyndic ?",
+          a: "Orsyndic est une plateforme numérique complète conçue pour simplifier la gestion de copropriété (syndic) grâce à l'automatisation et à la transparence.",
         },
         q2: {
-          q: "Combien de temps faut-il pour concevoir et développer un site web sur mesure ?",
-          a: "Le délai varie en fonction de la complexité du projet. Un projet de conception web standard prend généralement 4 à 8 semaines, tandis que les applications web personnalisées ou les solutions e-commerce peuvent prendre plus de temps. Nous fournissons un calendrier détaillé lors de notre consultation initiale.",
+          q: "Qui peut utiliser la plateforme ?",
+          a: "Orsyndic propose des interfaces adaptées pour trois rôles clés : Syndics (gestionnaires), Copropriétaires et Résidents, garantissant à chacun les outils nécessaires.",
         },
         q3: {
-          q: "Fournissez-vous un support continu après la mise en ligne du site ?",
-          a: "Oui, absolument. Nous proposons des forfaits de maintenance et de support continus pour garantir que votre plateforme numérique reste sécurisée, à jour et performante de manière optimale longtemps après le lancement initial.",
+          q: "Mes données financières sont-elles sécurisées ?",
+          a: "Oui, absolument. Nous utilisons des protocoles de cryptage standards et une sécurité robuste pour garantir la protection totale de vos suivis financiers.",
         },
         q4: {
-          q: "Mon site web sera-t-il adapté aux mobiles et optimisé pour les moteurs de recherche ?",
-          a: "Certainement. Tous nos sites web sont construits avec une approche mobile-first, garantissant une réactivité totale sur tous les appareils. Nous mettons également en œuvre les meilleures pratiques structurelles SEO dès le départ, afin que votre site soit prêt à bien se classer sur Google.",
+          q: "Puis-je signaler et suivre les incidents de l'immeuble ?",
+          a: "Certainement. Notre module de signalement permet aux résidents de déclarer des problèmes techniques, tandis que les syndics suivent la résolution en temps réel.",
         },
         q5: {
-          q: "Pouvez-vous aider à refondre ou à améliorer un site web existant ?",
-          a: "Oui, nous modernisons fréquemment des sites web existants. Que vous ayez besoin d'une refonte complète de l'UI/UX, d'une optimisation des performances ou de l'intégration de nouvelles fonctionnalités dans votre plateforme actuelle, notre équipe peut vous aider à élever l'identité de votre marque.",
+          q: "Comment fonctionne la génération automatique des charges ?",
+          a: "Le système calcule automatiquement les charges selon les tantièmes définis, génère les avis d'échéance et suit les paiements sans intervention manuelle.",
         },
         q6: {
-          q: "Quelles plateformes et technologies utilisez-vous pour le développement web ?",
-          a: "Nous utilisons des piles technologiques modernes et performantes adaptées à votre projet. Cela inclut Next.js, React, Tailwind CSS et des solutions backend robustes. Pour l'e-commerce, nous travaillons avec des architectures personnalisées pour garantir une croissance évolutive.",
+          q: "Orsyndic est-il disponible sur appareils mobiles ?",
+          a: "Oui, Orsyndic est conçu avec une approche mobile-first. Il est entièrement responsive et optimisé pour smartphones, tablettes et ordinateurs.",
         },
       },
     },
@@ -1275,31 +1275,31 @@ export const translations: Record<Language, Translations> = {
     faq: {
       title1: "Preguntas",
       title2: "frecuentes",
-      subtitle: "Todo lo que necesitas saber sobre nuestro proceso de desarrollo web y servicios.",
+      subtitle: "Todo lo que necesitas saber sobre Orsyndic y cómo simplifica la gestión de tu edificio.",
       questions: {
         q1: {
-          q: "¿Qué servicios ofrece Orsdweb ?",
-          a: "Nos especializamos en diseño web personalizado, desarrollo web robusto, diseño UI/UX, desarrollo de aplicaciones móviles, soluciones de comercio electrónico y optimización SEO integral para ayudar a que su negocio crezca en línea.",
+          q: "¿Qué es Orsyndic?",
+          a: "Orsyndic es una plataforma digital integral diseñada para simplificar la gestión de copropiedades (síndicos) mediante la automatización y la transparencia.",
         },
         q2: {
-          q: "¿Cuánto tiempo se tarda en diseñar y desarrollar un sitio web a medida ?",
-          a: "El tiempo varía según la complejidad del proyecto. Un proyecto de diseño web estándar suele tardar de 4 a 8 semanas, mientras que las aplicaciones web personalizadas o las soluciones de comercio electrónico pueden tardar más. Proporcionaremos un cronograma detallado durante nuestra consulta inicial.",
+          q: "¿Quién puede utilizar la plataforma?",
+          a: "Orsyndic ofrece interfaces personalizadas para tres roles principales: Síndicos (gestores), Copropietarios y Residentes, asegurando herramientas específicas para cada uno.",
         },
         q3: {
-          q: "¿Ofrecen soporte continuo después de que el sitio web esté activo ?",
-          a: "Sí, absolutamente. Ofrecemos paquetes de mantenimiento y soporte continuos para garantizar que su plataforma digital se mantenga segura, actualizada y funcione de manera óptima mucho después del lanzamiento inicial.",
+          q: "¿Son seguros mis datos financieros?",
+          a: "Sí, por supuesto. Utilizamos cifrado estándar de la industria y protocolos de seguridad robustos para garantizar que todos tus datos financieros estén protegidos.",
         },
         q4: {
-          q: "¿Mi sitio web será compatible con dispositivos móviles y estará optimizado para motores de búsqueda ?",
-          a: "Definitivamente. Todos nuestros sitios web se construyen con un enfoque móvil primero, lo que garantiza una capacidad de respuesta total en todos los dispositivos. También implementamos estructuras SEO de mejores prácticas desde el principio, para que su sitio esté listo para posicionarse bien en Google.",
+          q: "¿Puedo informar y rastrear incidentes en el edificio?",
+          a: "Sin duda. Nuestro módulo de incidentes permite a los residentes reportar fallos técnicos, mientras que los gestores rastrean la resolución en tiempo real.",
         },
         q5: {
-          q: "¿Pueden ayudar a rediseñar o mejorar un sitio web existente ?",
-          a: "Sí, renovamos con frecuencia sitios web existentes. Ya sea que necesite una revisión completa de UI/UX, optimización del rendimiento o nuevas características integradas en su plataforma actual, nuestro equipo puede ayudarlo a elevar la identidad de su marca.",
+          q: "¿Cómo funciona la generación automática de cargos?",
+          a: "El sistema calcula automáticamente los cargos del edificio según las cuotas definidas, generando facturas y rastreando pagos sin esfuerzo manual.",
         },
         q6: {
-          q: "¿Qué plataformas y tecnologías utilizan para el desarrollo web ?",
-          a: "Utilizamos pilas tecnológicas modernas y de alto rendimiento adaptadas a su proyecto. Esto incluye Next.js, React, Tailwind CSS y soluciones backend robustas. Para el comercio electrónico, trabajamos con arquitecturas personalizadas para asegurar un crecimiento escalable.",
+          q: "¿Está Orsyndic disponible en dispositivos móviles?",
+          a: "Sí, Orsyndic está desarrollado con un enfoque móvil primero. Es totalmente responsivo y está optimizado para smartphones, tablets y ordenadores.",
         },
       },
     },

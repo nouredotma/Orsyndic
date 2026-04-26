@@ -38,7 +38,7 @@ function StepCard({
         className="relative w-full max-w-full"
       >
         <div
-          className="rounded-sm md:rounded-xl overflow-hidden bg-black"
+          className="rounded-sm overflow-hidden bg-black"
         >
           <div className="flex flex-col md:flex-row items-stretch">
             {/* Left: Number (Desktop) */}

@@ -33,7 +33,7 @@ export function PricingCard({ tier }: PricingCardProps) {
   return (
     <div
       className={cn(
-        "relative flex flex-col h-full w-full rounded-sm md:rounded-xl border-2 p-1 transition-all duration-300",
+        "relative flex flex-col h-full w-full rounded-sm border-2 p-1 transition-all duration-300",
         isDark 
           ? "bg-foreground text-background border-white/10" 
           : "bg-white text-foreground border-border",
@@ -46,7 +46,7 @@ export function PricingCard({ tier }: PricingCardProps) {
           <motion.div
             initial={{ y: 8, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="flex items-center gap-1.5 bg-linear-to-r from-primary to-primary/80 px-4 py-1.5 rounded-full shadow-lg shadow-primary/20 border border-white/20"
+            className="flex items-center gap-1.5 bg-linear-to-r from-primary to-primary/80 px-4 py-1.5 rounded-sm shadow-lg shadow-primary/20 border border-white/20"
           >
             <Star className="w-3 h-3 text-primary-foreground fill-primary-foreground" />
             <span className="text-[10px] font-semibold uppercase tracking-widest text-primary-foreground">
@@ -57,7 +57,7 @@ export function PricingCard({ tier }: PricingCardProps) {
       )}
       {/* Top Section / Header */}
       <div className={cn(
-        "relative mb-4 rounded-sm md:rounded-lg border-2 px-4 py-3 overflow-hidden",
+        "relative mb-4 rounded-sm border-2 px-4 py-3 overflow-hidden",
         isDark ? "bg-white/10 border-white/20" : "bg-zinc-200/50 border-zinc-200"
       )}>
         {/* Glass effect gradient for dark cards */}
@@ -101,7 +101,7 @@ export function PricingCard({ tier }: PricingCardProps) {
           <Link
             href={tier.link || "#"}
             className={cn(
-              "group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md font-semibold transition-all duration-200 w-full",
+              "group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm font-semibold transition-all duration-200 w-full",
               isDark
                 ? "bg-background text-foreground hover:bg-background/90"
                 : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
@@ -151,7 +151,7 @@ export function PricingCard({ tier }: PricingCardProps) {
 
       {/* Decorative background element for popular cards */}
       {tier.popular && (
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),transparent)] pointer-events-none rounded-2xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),transparent)] pointer-events-none rounded-sm" />
       )}
     </div>
   )

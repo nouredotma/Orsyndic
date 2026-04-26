@@ -104,7 +104,7 @@ export default function QuoteForm() {
   }
 
   return (
-    <div className="bg-white border-2 border-neutral-200 rounded-sm md:rounded-xl px-2 py-4 md:py-6 md:px-8">
+    <div className="bg-white border-2 border-neutral-200 rounded-sm px-2 py-4 md:py-6 md:px-8">
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <div className="flex flex-col gap-2">
@@ -114,7 +114,7 @@ export default function QuoteForm() {
               placeholder={t.getQuote.form.placeholders.firstName} 
               value={formData.firstName}
               onChange={handleChange}
-              className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-full focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
+              className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-sm focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -124,7 +124,7 @@ export default function QuoteForm() {
               placeholder={t.getQuote.form.placeholders.lastName} 
               value={formData.lastName}
               onChange={handleChange}
-              className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-full focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
+              className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-sm focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
             />
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function QuoteForm() {
             placeholder={t.getQuote.form.placeholders.email} 
             value={formData.email}
             onChange={handleChange}
-            className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-full focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
+            className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-sm focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
           />
         </div>
 
@@ -149,7 +149,7 @@ export default function QuoteForm() {
             placeholder={t.getQuote.form.placeholders.phone} 
             value={formData.phone}
             onChange={handleChange}
-            className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-full focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
+            className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-sm focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
           />
         </div>
 
@@ -160,14 +160,14 @@ export default function QuoteForm() {
             placeholder={t.getQuote.form.placeholders.company} 
             value={formData.company}
             onChange={handleChange}
-            className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-full focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
+            className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-sm focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm"
           />
         </div>
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="service" className="font-semibold px-2 text-xs md:text-sm">{t.getQuote.form.labels.service}</Label>
           <Select onValueChange={handleServiceChange}>
-            <SelectTrigger className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-full cursor-pointer focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm w-full text-left transition-all duration-300">
+            <SelectTrigger className="bg-neutral-50 border-neutral-200 h-11 md:h-12 rounded-sm cursor-pointer focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 text-sm w-full text-left transition-all duration-300">
               <SelectValue placeholder={t.getQuote.form.placeholders.service} />
             </SelectTrigger>
             <SelectContent className="rounded-lg border-neutral-200 shadow-xl bg-white">
@@ -190,7 +190,7 @@ export default function QuoteForm() {
             placeholder={t.getQuote.form.placeholders.message} 
             value={formData.message}
             onChange={handleChange}
-            className="bg-neutral-50 border-neutral-200 min-h-[140px] rounded-[24px] resize-none focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 py-5 text-sm"
+            className="bg-neutral-50 border-neutral-200 min-h-[140px] rounded-sm resize-none focus-visible:ring-primary/20 focus-visible:ring-4 focus-visible:border-primary px-6 py-5 text-sm"
           />
         </div>
 
@@ -199,7 +199,7 @@ export default function QuoteForm() {
             type="submit" 
             size="lg" 
             disabled={isSubmitting}
-            className="flex-7 bg-black hover:bg-black/90 text-white font-bold rounded-full h-12 md:h-14 px-3 md:px-4 text-[11px] md:text-base flex items-center justify-between transition-all duration-300 group whitespace-nowrap cursor-pointer text-left disabled:opacity-70 disabled:cursor-not-allowed"
+            className="flex-7 bg-black hover:bg-black/90 text-white font-bold rounded-sm h-12 md:h-14 px-3 md:px-4 text-[11px] md:text-base flex items-center justify-between transition-all duration-300 group whitespace-nowrap cursor-pointer text-left disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isSubmitting ? "Sending..." : t.getQuote.form.submit}
             {!isSubmitting && <AnimatedArrow wrapperClassName="bg-white shrink-0 ml-1 md:ml-2" arrowClassName="text-black" />}
@@ -208,7 +208,7 @@ export default function QuoteForm() {
           <button 
             type="button"
             onClick={handleWhatsAppClick}
-            className="flex-3 min-w-fit flex items-center justify-between h-12 md:h-14 px-3 md:px-4 rounded-full border-2 border-neutral-200 hover:border-[#25D366] bg-white text-black hover:text-[#25D366] font-bold transition-all duration-300 whitespace-nowrap cursor-pointer text-left"
+            className="flex-3 min-w-fit flex items-center justify-between h-12 md:h-14 px-3 md:px-4 rounded-sm border-2 border-neutral-200 hover:border-[#25D366] bg-white text-black hover:text-[#25D366] font-bold transition-all duration-300 whitespace-nowrap cursor-pointer text-left"
           >
             <div className="flex items-center gap-1.5 md:gap-3">
               <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 md:w-6 md:h-6 fill-[#25D366] shrink-0">

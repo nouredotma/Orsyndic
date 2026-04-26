@@ -13,7 +13,7 @@ export default function CTASection() {
     <section className="w-full py-10 px-3 md:px-16 bg-background">
       <div className="max-w-full mx-auto">
         {/* Black background container */}
-        <div className="bg-black rounded-lg md:rounded-xl px-5 py-10 md:px-20 md:py-12 ">
+        <div className="bg-black rounded-sm px-5 py-10 md:px-20 md:py-12 ">
           {/* Centered content */}
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-xl md:text-4xl font-semibold tracking-tight text-white mb-2">
@@ -27,7 +27,7 @@ export default function CTASection() {
             <div className="flex flex-row gap-2 md:gap-4 justify-center">
               <Link href="/get-a-quote">
                 <Button
-                  className="group bg-white hover:bg-white/90 text-black rounded-full pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer w-full font-medium tracking-tight text-xs md:text-base h-auto border border-white flex items-center justify-center gap-2 transition-all duration-300"
+                  className="group bg-white hover:bg-white/90 text-black rounded-sm pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer w-full font-medium tracking-tight text-xs md:text-base h-auto border border-white flex items-center justify-center gap-2 transition-all duration-300"
                 >
                   {t.cta.primaryBtn}
                   <AnimatedArrow wrapperClassName="bg-black shrink-0" arrowClassName="text-white" />
@@ -35,7 +35,7 @@ export default function CTASection() {
               </Link>
               <Link href="https://wa.me/212660715095" target="_blank">
                 <Button
-                  className="group bg-transparent hover:bg-white/10 border border-white text-white rounded-full pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer w-full font-medium tracking-tight text-xs md:text-base h-auto flex items-center justify-center gap-2 transition-all duration-300"
+                  className="group bg-transparent hover:bg-white/10 border border-white text-white rounded-sm pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer w-full font-medium tracking-tight text-xs md:text-base h-auto flex items-center justify-center gap-2 transition-all duration-300"
                 >
                   {t.cta.secondaryBtn}
                   <AnimatedArrow wrapperClassName="bg-white shrink-0" arrowClassName="text-black" />

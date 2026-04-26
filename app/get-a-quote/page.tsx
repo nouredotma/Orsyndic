@@ -21,7 +21,7 @@ export default function GetAQuotePage() {
             
             {/* Left side: Information / Copy */}
             <div className="flex flex-col justify-start max-w-xl lg:sticky lg:top-40">
-              <div className="inline-flex mb-4 px-3 py-1.5 rounded-full bg-primary/5 border border-primary w-fit">
+              <div className="inline-flex mb-4 px-3 py-1.5 rounded-sm bg-primary/5 border border-primary w-fit">
                 <span className="text-xs md:text-sm font-semibold text-primary">{t.getQuote.badge}</span>
               </div>
               

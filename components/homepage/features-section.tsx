@@ -80,7 +80,7 @@ export default function FeaturesSection() {
                 activeFeature === feature.id ? "text-black opacity-100" : "text-black opacity-30 hover:opacity-50"
               }`}
             >
-              <span className={`flex items-center justify-center w-6 h-6 rounded-full border-2 transition-all ${
+              <span className={`flex items-center justify-center w-6 h-6 rounded-sm border-2 transition-all ${
                 activeFeature === feature.id ? "border-black" : "border-black/30"
               }`}>
                 {feature.id}
@@ -93,14 +93,14 @@ export default function FeaturesSection() {
 
         {/* Feature Content */}
         <div
-          className={`${currentFeature.bgColor} ${currentFeature.textColor} border-2 ${currentFeature.borderColor} max-w-full mx-auto rounded-sm md:rounded-xl overflow-hidden transition-all duration-500`}
+          className={`${currentFeature.bgColor} ${currentFeature.textColor} border-2 ${currentFeature.borderColor} max-w-full mx-auto rounded-sm overflow-hidden transition-all duration-500`}
         >
           <div className="grid md:grid-cols-2 gap-6 py-4 px-4 md:p-8 min-h-0 md:min-h-[600px]">
             {/* Left Content */}
             <div className="flex flex-col justify-start md:justify-between">
               {/* Category and Title Group */}
               <div className="space-y-6">
-                <span className="inline-block px-3 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider bg-black/10">
+                <span className="inline-block px-3 py-2 rounded-sm text-[10px] font-medium uppercase tracking-wider bg-black/10">
                   {currentFeature.category}
                 </span>
                 <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-black max-w-sm">
@@ -118,7 +118,7 @@ export default function FeaturesSection() {
 
             {/* Right Content - Image */}
             <div className="flex items-center justify-center md:justify-end relative">
-              <div className="w-full max-w-2xl bg-white rounded-sm md:rounded-xl border-2 md:border-4 border-black overflow-hidden transform md:translate-x-10 lg:translate-x-16 scale-100 md:scale-110 lg:scale-125 transition-all duration-500">
+              <div className="w-full max-w-2xl bg-white rounded-sm border-2 md:border-4 border-black overflow-hidden transform md:translate-x-10 lg:translate-x-16 scale-100 md:scale-110 lg:scale-125 transition-all duration-500">
                 <img 
                   src={currentFeature.image} 
                   alt={currentFeature.category}

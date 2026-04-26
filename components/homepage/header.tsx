@@ -140,7 +140,7 @@ export default function Header() {
               }}
             >
               <Link
-                className={`relative px-4 py-2 rounded-full transition-colors duration-150 cursor-pointer text-sm font-medium flex items-center ${
+                className={`relative px-4 py-2 rounded-sm transition-colors duration-150 cursor-pointer text-sm font-medium flex items-center ${
                   hovered === idx ? "text-white" : visible ? "text-black" : "text-black"
                 } ${pathname && pathname === item.href ? "text-primary" : ""}`}
                 href={item.href}
@@ -149,7 +149,7 @@ export default function Header() {
                 {hovered === idx && (
                   <motion.div
                     layoutId="nav-hover-pill"
-                    className="absolute inset-0 h-full w-full rounded-full bg-primary"
+                    className="absolute inset-0 h-full w-full rounded-sm bg-primary"
                     transition={{
                       type: "spring",
                       stiffness: 400,
@@ -166,7 +166,7 @@ export default function Header() {
         <div className="hidden md:flex items-center justify-end relative z-30 gap-2">
           <Link href="/get-a-quote" className="relative z-30">
             <Button
-              className={`group transition-all duration-300 rounded-full h-13 pl-4 pr-2 py-2 font-medium tracking-tight text-sm cursor-pointer flex items-center gap-2 ${
+              className={`group transition-all duration-300 rounded-sm h-13 pl-4 pr-2 py-2 font-medium tracking-tight text-sm cursor-pointer flex items-center gap-2 ${
                 visible
                   ? "bg-primary text-white hover:bg-primary/90 border border-primary hover:border-primary"
                   : "bg-black text-white hover:bg-black/90 border border-black hover:border-black"
@@ -186,7 +186,7 @@ export default function Header() {
       <motion.div
         animate={mobileAnimate}
         transition={HEADER_TRANSITION}
-        className={`relative z-50 mx-auto flex w-full flex-col items-center justify-between rounded-xs px-0 py-2 lg:hidden`}
+        className={`relative z-50 mx-auto flex w-full flex-col items-center justify-between rounded-sm px-0 py-2 lg:hidden`}
       >
         <div className="flex w-full flex-row items-center justify-between">
           <Link href="/" className={`flex items-center relative transition-all duration-300 ${mobileMenuOpen ? "z-70" : "z-20"}`}>
@@ -199,7 +199,7 @@ export default function Header() {
 
 
             <button
-              className={`p-2 rounded-full cursor-pointer transition-all duration-300 relative ${mobileMenuOpen ? "text-white z-70" : "text-black z-20"}`}
+              className={`p-2 rounded-sm cursor-pointer transition-all duration-300 relative ${mobileMenuOpen ? "text-white z-70" : "text-black z-20"}`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -223,7 +223,7 @@ export default function Header() {
             <motion.div
               key="mobile-menu-content"
               ref={menuRef}
-              className="absolute inset-x-0 top-16 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-xs bg-white px-2 py-8 shadow-2xl"
+              className="absolute inset-x-0 top-16 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-sm bg-white px-2 py-8 shadow-2xl"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -255,7 +255,7 @@ export default function Header() {
 
               <div className="w-full pt-6 border-t border-gray-100 flex items-center justify-between gap-3 px-2">
                 <Link href="/get-a-quote" className="flex-1 w-full" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="group h-12 py-2 w-full bg-primary hover:bg-primary/90 text-white cursor-pointer rounded-full font-semibold text-sm shadow-sm flex items-center justify-between gap-2 transition-all duration-300">
+                  <Button className="group h-12 py-2 w-full bg-primary hover:bg-primary/90 text-white cursor-pointer rounded-sm font-semibold text-sm shadow-sm flex items-center justify-between gap-2 transition-all duration-300">
                     {t.nav.getQuote}
                     <AnimatedArrow wrapperClassName="bg-black shrink-0" arrowClassName="text-white" />
                   </Button>

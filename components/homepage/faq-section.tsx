@@ -46,7 +46,7 @@ export default function FAQSection() {
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           {/* Left Column: Title & Subtitle */}
           <div className="text-center lg:text-left space-y-3">
-            <div className="inline-flex items-center mb-4 px-3 py-1 rounded-full text-primary text-xs md:text-sm bg-primary/5 border border-primary">
+            <div className="inline-flex items-center mb-4 px-3 py-1 rounded-sm text-primary text-xs md:text-sm bg-primary/5 border border-primary">
               FAQ
             </div>
             <h2 className="text-xl font-medium tracking-tight md:text-4xl text-balance text-black">
