@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { MeshGradient } from "@paper-design/shaders-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -23,8 +22,7 @@ export default function HeroSection() {
   const { t } = useLanguage()
   const [aiModalOpen, setAiModalOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 })
-  const [mounted, setMounted] = useState(false)
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,37 +32,19 @@ export default function HeroSection() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  useEffect(() => {
-    setMounted(true)
-    const update = () =>
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    update()
-    window.addEventListener("resize", update)
-    return () => window.removeEventListener("resize", update)
-  }, [])
+
 
   return (
     <TooltipProvider delayDuration={0}>
       <section className="relative w-full h-svh flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 w-full h-full">
-          {mounted && (
-            <>
-              <MeshGradient
-                width={dimensions.width}
-                height={dimensions.height}
-                colors={["#ffffff", "#ffffff", "#ffe0e0", "#FF4D4D", "#fff0f0", "#ffffff"]}
-                distortion={1.2}
-                swirl={0.6}
-                grainMixer={0}
-                grainOverlay={0}
-                speed={0.8}
-                offsetX={0.08}
-              />
-            </>
-          )}
+          {/* Static gradient background */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "radial-gradient(ellipse at 60% 50%, #ffe0e0 0%, #fff0f0 40%, #ffffff 80%)",
+            }}
+          />
           {/* Bottom Fade Gradient */}
           <div className="absolute bottom-0 left-0 right-0 h-20 md:h-40 bg-gradient-to-t from-background to-transparent pointer-events-none" />
         </div>

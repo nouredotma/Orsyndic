@@ -36,16 +36,7 @@ export default function FAQSection() {
     },
   ]
 
-  const handleInteraction = (index: number | null, isHover: boolean) => {
-    // Only handle hover on desktop (min-width: 768px as a rule of thumb)
-    if (typeof window !== "undefined" && window.innerWidth >= 768) {
-      if (isHover) setOpenIndex(index)
-      else setOpenIndex(null)
-    }
-  }
-
   const handleClick = (index: number) => {
-    // Handle click for mobile and as a fallback
     setOpenIndex(openIndex === index ? null : index)
   }
 
@@ -86,8 +77,6 @@ export default function FAQSection() {
           {FAQs.map((faq, index) => (
             <div
               key={index}
-              onMouseEnter={() => handleInteraction(index, true)}
-              onMouseLeave={() => handleInteraction(null, false)}
               onClick={() => handleClick(index)}
               className={`group border-2 transition-colors duration-200 rounded-sm md:rounded-xl bg-neutral-50 border-neutral-200 overflow-hidden cursor-pointer h-full ${
                 openIndex === index ? "border-primary" : "border-neutral-200 hover:border-primary"
