@@ -2,7 +2,7 @@
 
 ![SyndiCare Banner](public/og-image.png)
 
-**SyndiCare** is a SaaS-based web application designed to simplify property co-ownership management ("Syndic"). It serves as a digital bridge between property managers (Syndic) and users (co-owners and residents), bringing transparency and efficiency to the real estate sector (PropTech).
+**SyndiCare** is a SaaS-based web application designed to simplify property co-ownership management ("Syndic"). It serves as a digital bridge between property managers (Syndic) and users (co-owners and residents), bringing transparency and efficiency to the real estate sector.
 
 ## 🚀 Project Overview
 
@@ -56,24 +56,6 @@ The real estate sector is undergoing a massive digital transformation. SyndiCare
 - **Database:** MySQL (Relational)
 - **Authentication:** Secure role-based access control (BCrypt hashing, SQL/XSS protection).
 
-## 📊 Scope & Prioritization (MoSCoW)
-
-### ✅ In-Scope
-- Multi-building management.
-- Charge calculation engine.
-- Ticket workflow system.
-- PDF Exporting.
-
-### ❌ Out-of-Scope
-- Double-entry professional accounting.
-- Real-time online payment integration.
-- Electronic voting for general meetings.
-
-### 📌 MoSCoW
-- **Must Have:** Auth, role management, property CRUD, charge generation.
-- **Should Have:** Helpdesk, PDF exports, document library.
-- **Could Have:** Statistics dashboard, email notifications.
-
 ## 🏁 Getting Started
 
 ### Installation
@@ -109,14 +91,6 @@ The real estate sector is undergoing a massive digital transformation. SyndiCare
 ├── styles/             # Global CSS and themes
 ```
 
-## 📅 Roadmap (4-Week PFE Plan)
-
-- **Week 1:** Analysis & Infrastructure (Technical modeling, UI Mockups, Auth/Roles).
-- **Week 2:** Core Business Logic (Property CRUD, Charge Calculation Engine).
-- **Week 3:** Interactivity & Incidents (Helpdesk, Document Center, News Wall).
-- **Week 4:** Quality & Delivery (Testing, Responsive Optimization, Deployment).
-
 ---
 
-*SyndiCare — Cahier des Charges PFE | v1.0 — 2025/2026*
-*Institut Supérieur de Génie Informatique (ISGI)*
+*SyndiCare — Modern Property Management Solution*
