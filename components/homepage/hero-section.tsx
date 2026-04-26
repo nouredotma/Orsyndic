@@ -99,7 +99,7 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-row gap-2 md:gap-4 justify-center">
-            <Link href="/access">
+            <Link href="/contact">
               <Button
                 size="lg"
                 className="group bg-white hover:bg-white/90 border-2 border-neutral-200 text-black font-medium rounded-sm pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer text-xs md:text-sm h-auto flex items-center gap-2 transition-all duration-300"
