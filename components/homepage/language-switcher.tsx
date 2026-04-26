@@ -31,9 +31,10 @@ const languages: Language[] = [
 
 interface LanguageSwitcherProps {
   align?: "left" | "center" | "right"
+  variant?: "circle" | "square"
 }
 
-export function LanguageSwitcher({ align = "center" }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ align = "center", variant = "circle" }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { language: currentLangCode, setLanguage } = useLanguage()
   const currentLang = languages.find((lang) => lang.code === currentLangCode) || languages[0]
@@ -55,16 +56,20 @@ export function LanguageSwitcher({ align = "center" }: LanguageSwitcherProps) {
     }
   }, [isOpen])
 
+  const isSquare = variant === "square"
+
   return (
     <div ref={containerRef} className="relative flex flex-col items-center">
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, y: isSquare ? 10 : -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            exit={{ opacity: 0, y: isSquare ? 10 : -10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`absolute top-full mt-3 flex flex-col gap-1.5 p-1.5 md:p-2 bg-white/90 backdrop-blur-md border-2 border-neutral-200 rounded-2xl md:rounded-full z-10001 min-w-[120px] md:min-w-0 ${
+            className={`absolute flex flex-col gap-1.5 p-1.5 md:p-2 bg-white/90 backdrop-blur-md border-2 border-neutral-200 z-10001 min-w-[120px] md:min-w-0 rounded-full ${
+              isSquare ? "bottom-full mb-3" : "top-full mt-3"
+            } ${
               align === "center" ? "left-1/2 -translate-x-1/2" : align === "right" ? "right-0" : "left-0"
             }`}
           >
@@ -78,13 +83,13 @@ export function LanguageSwitcher({ align = "center" }: LanguageSwitcherProps) {
                     setLanguage(lang.code)
                     setIsOpen(false)
                   }}
-                  className="w-full md:w-12 h-10 md:h-12 flex items-center gap-3 px-3 md:px-0 rounded-full overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 bg-white/50 md:bg-white p-0 cursor-pointer group"
+                  className="w-full md:w-12 h-10 md:h-12 flex items-center gap-3 px-3 md:px-0 overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 bg-white/50 md:bg-white p-0 cursor-pointer group rounded-full"
                   title={lang.name}
                 >
                   <img
                     src={lang.flag}
                     alt={lang.name}
-                    className="w-8 h-8 md:w-full md:h-full object-cover rounded-full shrink-0"
+                    className="w-8 h-8 md:w-full md:h-full object-cover shrink-0 rounded-full"
                   />
                   <span className="text-sm font-medium text-black md:hidden">
                     {lang.name}
@@ -98,20 +103,15 @@ export function LanguageSwitcher({ align = "center" }: LanguageSwitcherProps) {
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.95 }}
-        className="group relative flex items-center justify-center w-12 h-12 md:w-13 md:h-13 bg-white rounded-full border-2 border-primary transition-all duration-300 cursor-pointer overflow-hidden"
+        whileHover={{ scale: 1.05 }}
+        className={`group relative flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden bg-white ${
+          isSquare 
+            ? "w-12 h-12 md:w-14 md:h-14 rounded-full border border-neutral-100 shadow-sm" 
+            : "w-12 h-12 md:w-13 md:h-13 rounded-full border-2 border-primary"
+        }`}
         aria-label="Select Language"
       >
-        <div className="absolute inset-0 p-0 overflow-hidden rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div 
-            className="absolute -inset-full animate-[spin_4s_linear_infinite]"
-            style={{
-              background: "linear-gradient(to right, #4285F4, #EA4335, #FBBC05, #34A853, #4285F4)"
-            }}
-          />
-          <div className="absolute inset-0 bg-white rounded-full z-0" />
-        </div>
-
-        <div className="relative z-10 w-full h-full p-0">
+        <div className="relative z-10 w-full h-full">
           <img
             src={currentLang.flag}
             alt={currentLang.name}

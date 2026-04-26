@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 import { AnimatedArrow } from "@/components/ui/animated-arrow"
 import { OrsRobotIcon } from "@/components/ui/ors-robot-icon"
 import { AiAssistantModal } from "@/components/homepage/ai-assistant-modal"
-import { HeroStats } from "@/components/homepage/hero-stats"
+import { LanguageSwitcher } from "@/components/homepage/language-switcher"
 
 import {
   Tooltip,
@@ -125,18 +125,17 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Hero Stats — Bottom Left */}
-        <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 z-10">
-          <HeroStats stats={t.hero.stats} />
-        </div>
 
-        {/* Ors AI Assistant Button — Bottom Left (Fixed) */}
-        <div className="fixed bottom-3 left-3 md:bottom-6 md:left-6 z-50 flex flex-col items-center">
+
+        {/* Fixed Bottom Left Controls — AI Assistant & Language */}
+        <div className="fixed bottom-3 left-3 md:bottom-6 md:left-6 z-50 flex flex-col items-center gap-1 md:gap-1.5">
+          <LanguageSwitcher variant="square" />
+          
           <Tooltip>
             <TooltipTrigger asChild>
               <motion.button
                 onClick={() => setAiModalOpen(true)}
-                className="group relative flex items-center justify-center w-12 h-12 md:w-18 md:h-18 bg-white rounded-sm md:rounded-lg transition-all duration-300 cursor-pointer overflow-hidden border border-neutral-100"
+                className="group relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white rounded-sm md:rounded-lg transition-all duration-300 cursor-pointer overflow-hidden border border-neutral-100 shadow-sm"
                 whileTap={{ scale: 0.95 }}
                 whileHover={{ scale: 1.05 }}
                 aria-label={t.hero.askAi}

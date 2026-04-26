@@ -8,7 +8,6 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AnimatedArrow } from "@/components/ui/animated-arrow"
-import { LanguageSwitcher } from "@/components/homepage/language-switcher"
 import { useLanguage } from "@/lib/language-context"
 
 interface NavItem {
@@ -180,7 +179,7 @@ export default function Header() {
               />
             </Button>
           </Link>
-          <LanguageSwitcher />
+
         </div>
       </motion.div>
 
@@ -261,7 +260,6 @@ export default function Header() {
                     <AnimatedArrow wrapperClassName="bg-black shrink-0" arrowClassName="text-white" />
                   </Button>
                 </Link>
-                <LanguageSwitcher align="right" />
               </div>
             </motion.div>
           )}
