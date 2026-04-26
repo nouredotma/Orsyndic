@@ -57,7 +57,7 @@ export function PricingCard({ tier }: PricingCardProps) {
       )}
       {/* Top Section / Header */}
       <div className={cn(
-        "relative mb-4 rounded-sm border-2 px-4 py-3 overflow-hidden",
+        "relative mb-4 rounded-xs border-2 px-4 py-3 overflow-hidden",
         isDark ? "bg-white/10 border-white/20" : "bg-zinc-200/50 border-zinc-200"
       )}>
         {/* Glass effect gradient for dark cards */}
@@ -101,10 +101,10 @@ export function PricingCard({ tier }: PricingCardProps) {
           <Link
             href={tier.link || "#"}
             className={cn(
-              "group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm font-semibold transition-all duration-200 w-full",
+              "group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm font-medium transition-all duration-200 w-full",
               isDark
                 ? "bg-background text-foreground hover:bg-background/90"
-                : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
             )}
           >
             {tier.cta}

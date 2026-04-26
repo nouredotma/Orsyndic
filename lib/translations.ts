@@ -34,13 +34,14 @@ export interface Translations {
       part4: string;
     };
   };
-  features: {
-    projects: {
-      saas: { category: string; mobileCategory: string; description: string };
-      corporate: { category: string; mobileCategory: string; description: string };
-      ecommerce: { category: string; mobileCategory: string; description: string };
-      association: { category: string; mobileCategory: string; description: string };
-      travel: { category: string; mobileCategory: string; description: string };
+  about: {
+    title: string;
+    subtitle: string;
+    description: string;
+    stats: {
+      buildings: { value: string; label: string };
+      hoursSaved: { value: string; label: string };
+      coOwners: { value: string; label: string };
     };
   };
   functionalities: {
@@ -88,14 +89,13 @@ export interface Translations {
       };
     };
   };
-  transformation: {
+  howItWorks: {
     title: string;
     subtitle: string;
     steps: {
       step1: { title: string; description: string };
       step2: { title: string; description: string };
       step3: { title: string; description: string };
-      step4: { title: string; description: string };
     };
   };
   cta: {
@@ -291,33 +291,14 @@ export const translations: Record<Language, Translations> = {
         part4: " to build robust and scalable digital experiences.",
       },
     },
-    features: {
-      projects: {
-        saas: {
-          category: "SaaS Dashboard",
-          mobileCategory: "SaaS",
-          description: "A comprehensive analytics and management solution built for modern SaaS platforms. Featuring real-time data visualization, user behavioral tracking, and a seamless administrative interface to drive business growth.",
-        },
-        corporate: {
-          category: "Corporate Business",
-          mobileCategory: "Corporate",
-          description: "A high-performance corporate website designed to establish authority and trust. We focused on optimized conversion funnels, professional identity branding, and a sleek, fast-loading interface for global business.",
-        },
-        ecommerce: {
-          category: "E-commerce Store",
-          mobileCategory: "E-comm",
-          description: "An end-to-end e-commerce experience with a focus on user journey and sales conversion. Featuring lightning-fast checkout, mobile-first product exploration, and a premium aesthetic that elevates the shopping experience.",
-        },
-        association: {
-          category: "Moroccan Association",
-          mobileCategory: "Non-Profit",
-          description: "Empowering local Moroccan associations with a digital platform to coordinate volunteer work and manage community impact. The design blends modern web standards with subtle cultural aesthetics.",
-        },
-        travel: {
-          category: "Traveling Service",
-          mobileCategory: "Travel",
-          description: "A vibrant and intuitive booking platform that simplifies trip planning for explorers. We integrated immersive high-quality imagery and a modern brand identity to inspire global travelers and adventurers.",
-        },
+    about: {
+      title: "Built for modern syndic management.",
+      subtitle: "About Orsyndic",
+      description: "Managing a co-ownership shouldn't mean drowning in spreadsheets and endless phone calls. Orsyndic replaces the chaos with a single, intuitive platform where syndics generate charges automatically, co-owners track every payment in real-time, and residents report incidents that get resolved — not forgotten. Built for the way modern buildings actually operate.",
+      stats: {
+        buildings: { value: "120+", label: "Buildings Managed" },
+        hoursSaved: { value: "5,000+", label: "Hours Saved Monthly" },
+        coOwners: { value: "3,200+", label: "Co-owners Onboarded" },
       },
     },
     functionalities: {
@@ -470,25 +451,21 @@ export const translations: Record<Language, Translations> = {
         },
       },
     },
-    transformation: {
-      title: "How we bring your vision to life.",
-      subtitle: "From first idea to final launch — four clear steps to transform your concept into a polished, high-performing digital product.",
+    howItWorks: {
+      title: "How Orsyndic works.",
+      subtitle: "Three simple steps to take full control of your co-ownership management — from setup to daily operations.",
       steps: {
         step1: {
-          title: "Discovery & Brief",
-          description: "We start by understanding your vision, goals, and audience. Through in-depth research and strategic planning, we define the project scope.",
+          title: "Set up your building",
+          description: "Define your building structure — floors, apartments, and co-owners. Orsyndic organizes everything in a clear hierarchy so you can manage with confidence.",
         },
         step2: {
-          title: "UI/UX Design",
-          description: "Our designers craft pixel-perfect mockups and interactive prototypes that bring your brand to life, focusing on intuitive experiences.",
+          title: "Generate & track charges",
+          description: "Automatically generate monthly charges based on shares, track payment statuses in real-time, and identify overdue accounts instantly.",
         },
         step3: {
-          title: "Development",
-          description: "We build your project using cutting-edge technologies and clean, scalable code, optimized for performance and security.",
-        },
-        step4: {
-          title: "Launch & Go Live",
-          description: "After rigorous testing, we deploy your project. We handle hosting, domain configuration, and post-launch support.",
+          title: "Stay in the loop",
+          description: "Monitor building activity at a glance — from financial summaries to incident tickets. Send notifications and resolve issues without missing a beat.",
         },
       },
     },
@@ -671,33 +648,14 @@ export const translations: Record<Language, Translations> = {
         part4: " pour créer des expériences numériques robustes et évolutives.",
       },
     },
-    features: {
-      projects: {
-        saas: {
-          category: "Tableau de Bord SaaS",
-          mobileCategory: "SaaS",
-          description: "Une solution complète de gestion et d'analyse pour les plateformes SaaS modernes. Visualisation de données en temps réel et interface fluide pour stimuler la croissance.",
-        },
-        corporate: {
-          category: "Entreprise",
-          mobileCategory: "Entreprise",
-          description: "Un site institutionnel haute performance conçu pour instaurer autorité et confiance. Focus sur les tunnels de conversion et une identité professionnelle forte.",
-        },
-        ecommerce: {
-          category: "Boutique E-commerce",
-          mobileCategory: "E-comm",
-          description: "Une expérience e-commerce de bout en bout axée sur le parcours utilisateur. Paiement ultra-rapide et esthétique premium pour sublimer l'achat.",
-        },
-        association: {
-          category: "Association Marocaine",
-          mobileCategory: "ONG",
-          description: "Digitalisation des associations locales marocaines pour coordonner le bénévolat. Un design alliant standards modernes et touches culturelles subtiles.",
-        },
-        travel: {
-          category: "Service de Voyage",
-          mobileCategory: "Voyage",
-          description: "Une plateforme de réservation intuitive pour les explorateurs. Intégration d'imagerie immersive pour inspirer les voyageurs du monde entier.",
-        },
+    about: {
+      title: "Conçu pour la gestion moderne de syndic.",
+      subtitle: "À propos d'Orsyndic",
+      description: "Gérer une copropriété ne devrait pas signifier crouler sous les tableurs et les appels sans fin. Orsyndic remplace le désordre par une plateforme unique et intuitive où les syndics génèrent les charges automatiquement, les copropriétaires suivent chaque paiement en temps réel, et les résidents signalent des incidents qui sont résolus — pas oubliés. Conçu pour la façon dont les immeubles modernes fonctionnent réellement.",
+      stats: {
+        buildings: { value: "120+", label: "Immeubles Gérés" },
+        hoursSaved: { value: "5 000+", label: "Heures Économisées / Mois" },
+        coOwners: { value: "3 200+", label: "Copropriétaires Intégrés" },
       },
     },
     functionalities: {
@@ -850,25 +808,21 @@ export const translations: Record<Language, Translations> = {
         },
       },
     },
-    transformation: {
-      title: "Comment nous donnons vie à votre vision.",
-      subtitle: "De la première idée au lancement final — quatre étapes claires pour transformer votre concept en un produit numérique performant.",
+    howItWorks: {
+      title: "Comment fonctionne Orsyndic.",
+      subtitle: "Trois étapes simples pour prendre le contrôle total de votre gestion de copropriété — de la configuration aux opérations quotidiennes.",
       steps: {
         step1: {
-          title: "Découverte & Brief",
-          description: "Nous commençons par comprendre votre vision et vos objectifs. Par une recherche approfondie, nous définissons la portée du projet.",
+          title: "Configurez votre immeuble",
+          description: "Définissez la structure de votre immeuble — étages, appartements et copropriétaires. Orsyndic organise tout dans une hiérarchie claire.",
         },
         step2: {
-          title: "Design UI/UX",
-          description: "Nos designers créent des maquettes et prototypes interactifs, en se concentrant sur une expérience utilisateur intuitive.",
+          title: "Générez & suivez les charges",
+          description: "Générez automatiquement les charges mensuelles selon les tantièmes, suivez les statuts de paiement en temps réel et identifiez les impayés.",
         },
         step3: {
-          title: "Développement",
-          description: "Nous construisons votre projet avec des technologies de pointe et un code propre, optimisé pour la performance.",
-        },
-        step4: {
-          title: "Lancement",
-          description: "Après des tests rigoureux, nous déployons votre projet et assurons la configuration du domaine et le support post-lancement.",
+          title: "Restez informé",
+          description: "Surveillez l'activité de l'immeuble en un coup d'œil — des résumés financiers aux tickets d'incidents. Envoyez des notifications et résolvez les problèmes.",
         },
       },
     },
@@ -1051,33 +1005,14 @@ export const translations: Record<Language, Translations> = {
         part4: " para crear experiencias digitales robustas y escalables.",
       },
     },
-    features: {
-      projects: {
-        saas: {
-          category: "Panel de SaaS",
-          mobileCategory: "SaaS",
-          description: "Solución analítica integral para plataformas SaaS modernas. Visualización de datos en tiempo real e interfaz fluida para el crecimiento empresarial.",
-        },
-        corporate: {
-          category: "Empresa Corporativa",
-          mobileCategory: "Corporativo",
-          description: "Sitio web corporativo de alto rendimiento para establecer autoridad y confianza. Optimizado para la conversión y una identidad profesional.",
-        },
-        ecommerce: {
-          category: "Tienda E-commerce",
-          mobileCategory: "E-comm",
-          description: "Experiencia de comercio electrónico completa centrada en el usuario. Pago ultra rápido y estética premium para elevar la experiencia de compra.",
-        },
-        association: {
-          category: "Asociación Marroquí",
-          mobileCategory: "ONG",
-          description: "Plataforma digital para asociaciones marroquíes locales para coordinar el voluntariado. Diseño moderno con sutiles toques culturales.",
-        },
-        travel: {
-          category: "Servicio de Viajes",
-          mobileCategory: "Viajes",
-          description: "Plataforma de reservas intuitiva para exploradores. Imágenes inmersivas de alta calidad para inspirar a viajeros de todo el mundo.",
-        },
+    about: {
+      title: "Diseñado para la gestión moderna de síndicos.",
+      subtitle: "Acerca de Orsyndic",
+      description: "Gestionar una copropiedad no debería significar ahogarse en hojas de cálculo y llamadas interminables. Orsyndic reemplaza el caos con una plataforma única e intuitiva donde los síndicos generan cargos automáticamente, los copropietarios rastrean cada pago en tiempo real y los residentes reportan incidentes que se resuelven — no se olvidan. Diseñado para la forma en que los edificios modernos realmente operan.",
+      stats: {
+        buildings: { value: "120+", label: "Edificios Gestionados" },
+        hoursSaved: { value: "5.000+", label: "Horas Ahorradas / Mes" },
+        coOwners: { value: "3.200+", label: "Copropietarios Integrados" },
       },
     },
     functionalities: {
@@ -1230,25 +1165,21 @@ export const translations: Record<Language, Translations> = {
         },
       },
     },
-    transformation: {
-      title: "Cómo hacemos realidad su visión.",
-      subtitle: "Desde la idea inicial hasta el lanzamiento final: cuatro pasos claros para transformar su concepto en un producto digital de alto rendimiento.",
+    howItWorks: {
+      title: "Cómo funciona Orsyndic.",
+      subtitle: "Tres pasos simples para tomar el control total de la gestión de su copropiedad — desde la configuración hasta las operaciones diarias.",
       steps: {
         step1: {
-          title: "Descubrimiento & Brief",
-          description: "Comenzamos entendiendo su visión y metas. A través de una investigación profunda, definimos el alcance del proyecto.",
+          title: "Configure su edificio",
+          description: "Defina la estructura de su edificio — pisos, apartamentos y copropietarios. Orsyndic organiza todo en una jerarquía clara.",
         },
         step2: {
-          title: "Diseño UI/UX",
-          description: "Nuestros diseñadores crean prototipos interactivos, centrándose en experiencias de usuario intuitivas y estética moderna.",
+          title: "Genere y rastree cargos",
+          description: "Genere automáticamente cargos mensuales según cuotas, rastree estados de pago en tiempo real e identifique cuentas vencidas.",
         },
         step3: {
-          title: "Desarrollo",
-          description: "Construimos su proyecto utilizando tecnologías de vanguardia y código escalable, optimizado para el rendimiento.",
-        },
-        step4: {
-          title: "Lanzamiento",
-          description: "Tras pruebas exhaustivas, desplegamos su proyecto. Gestionamos el hosting, dominio y soporte post-lanzamiento.",
+          title: "Manténgase informado",
+          description: "Supervise la actividad del edificio de un vistazo — desde resúmenes financieros hasta tickets de incidentes. Envíe notificaciones y resuelva problemas.",
         },
       },
     },
