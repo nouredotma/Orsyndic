@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { AnimatedArrow } from "@/components/ui/animated-arrow"
 import { OrsRobotIcon } from "@/components/ui/ors-robot-icon"
 import { AiAssistantModal } from "@/components/homepage/ai-assistant-modal"
@@ -23,7 +23,62 @@ export default function HeroSection() {
   const { t } = useLanguage()
   const [aiModalOpen, setAiModalOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [stickyOffset, setStickyOffset] = useState(0)
 
+  const heroRef = useRef<HTMLElement>(null)
+  const animationStartRef = useRef(0)
+
+  const { scrollY } = useScroll()
+
+  // Animation only starts after the user has scrolled past the hero content.
+  // On viewports where hero fits in one screen, animationStart = 0 (starts immediately).
+  // On smaller viewports, animationStart = heroHeight - viewportHeight (waits for full content visibility).
+  const opacity = useTransform(scrollY, (latest) => {
+    const start = animationStartRef.current
+    if (latest <= start) return 1
+    const progress = Math.min((latest - start) / 500, 1)
+    return 1 - progress * 0.6
+  })
+
+  const scale = useTransform(scrollY, (latest) => {
+    const start = animationStartRef.current
+    if (latest <= start) return 1
+    const progress = Math.min((latest - start) / 500, 1)
+    return 1 - progress * 0.05
+  })
+
+  const y = useTransform(scrollY, (latest) => {
+    const start = animationStartRef.current
+    if (latest <= start) return 0
+    const progress = Math.min((latest - start) / 500, 1)
+    return -50 * progress
+  })
+
+
+  // Calculate animation start point based on hero section height vs viewport
+  useEffect(() => {
+    const hero = heroRef.current
+    if (!hero) return
+
+    const updateAnimationStart = () => {
+      const heroHeight = hero.offsetHeight
+      const windowHeight = window.innerHeight
+      const start = Math.max(0, heroHeight - windowHeight)
+      animationStartRef.current = start
+      setStickyOffset(-start)
+    }
+
+    updateAnimationStart()
+
+    const resizeObserver = new ResizeObserver(updateAnimationStart)
+    resizeObserver.observe(hero)
+    window.addEventListener('resize', updateAnimationStart)
+
+    return () => {
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', updateAnimationStart)
+    }
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,11 +92,18 @@ export default function HeroSection() {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <section className="relative w-full flex flex-col items-center justify-center overflow-hidden pt-32 md:pt-40 pb-10 md:pb-16 px-3 sm:px-6 lg:px-8">
+      <section 
+        ref={heroRef} 
+        className="sticky z-0 w-full flex flex-col items-center justify-center overflow-hidden pt-32 md:pt-40 pb-10 md:pb-16 px-3 sm:px-6 lg:px-8 min-h-screen"
+        style={{ top: stickyOffset }}
+      >
         <div className="absolute inset-0 w-full h-full bg-background" />
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto text-center">
+        <motion.div 
+          className="relative z-10 max-w-5xl mx-auto text-center"
+          style={{ opacity, scale, y }}
+        >
           <div className="inline-flex mb-2 px-3 py-1.5 rounded-full bg-black">
             <span className="text-[10px] md:text-sm font-medium shiny-sweep">{t.hero.badge}</span>
           </div>
@@ -87,12 +149,27 @@ export default function HeroSection() {
 
           {/* Hero Project Image */}
           <motion.div
-            className="mt-8 w-full max-w-7xl mx-auto"
+            className="mt-8 w-full max-w-7xl mx-auto relative"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
           >
-            <div className="relative w-full rounded-lg overflow-hidden border border-neutral-200/60">
+            {/* Hero 1 — bottom-left decorative shape, BEHIND main image, full screen width */}
+            <div
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0"
+              style={{ width: "100vw" }}
+            >
+              <Image
+                src="/hero1.webp"
+                alt=""
+                width={1920}
+                height={1080}
+                className="w-full h-auto object-contain filter-[drop-shadow(0_0_10px_rgba(0,0,0,0.20))]"
+              />
+            </div>
+
+            {/* Main Project Image */}
+            <div className="relative w-full rounded-lg overflow-hidden border border-neutral-200/60 z-10">
               <Image
                 src="/projects/p1.png"
                 alt="Project showcase"
@@ -102,10 +179,22 @@ export default function HeroSection() {
                 priority
               />
             </div>
+
+            {/* Hero 2 — bottom-right decorative shape, ABOVE main image, full screen width */}
+            <div
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-20"
+              style={{ width: "100vw" }}
+            >
+              <Image
+                src="/hero2.webp"
+                alt=""
+                width={1920}
+                height={1080}
+                className="w-full h-auto object-contain filter-[drop-shadow(0_0_10px_rgba(0,0,0,0.20))]"
+              />
+            </div>
           </motion.div>
-        </div>
-
-
+        </motion.div>
 
         {/* Fixed Bottom Left Controls — AI Assistant & Language */}
         <div className="fixed bottom-3 left-3 md:bottom-6 md:left-6 z-50 flex flex-col items-center gap-1 md:gap-1.5">

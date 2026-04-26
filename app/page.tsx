@@ -15,15 +15,17 @@ export default function Home() {
     <main className="w-full">
       <Header />
       <HeroSection />
-      <TrustedSection />
-      <FeaturesSection />
-      <TransformationSection />
-      <UseCasesSection />
-      <PriceSection />
-      <TestimonialsSection />
-      <CTASection />
-      <FAQSection />
-      <Footer />
+      <div className="relative z-10 bg-background">
+        <TrustedSection />
+        <FeaturesSection />
+        <TransformationSection />
+        <UseCasesSection />
+        <PriceSection />
+        <TestimonialsSection />
+        <CTASection />
+        <FAQSection />
+        <Footer />
+      </div>
     </main>
   )
 }

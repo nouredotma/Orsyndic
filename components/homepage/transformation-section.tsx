@@ -159,29 +159,9 @@ export default function TransformationSection() {
         <div className="sticky top-[12svh] h-[86svh] z-0 pointer-events-none">
           <div className="max-w-7xl mx-auto text-center space-y-1 py-5 px-3 md:px-6 lg:px-8 pointer-events-auto">
             <h2 className="text-xl font-medium md:text-4xl text-balance tracking-tighter">
-              <span className="relative inline-block">
-                <span className="relative z-10">{t.transformation.title}</span>
-                <svg
-                  className="absolute bottom-0 left-0 w-full h-[6px] md:h-[10px] text-primary select-none pointer-events-none"
-                  viewBox="0 0 200 40"
-                  preserveAspectRatio="none"
-                >
-                  <motion.path
-                    d="M5 20c40-5 90-5 130 2c35 5 55 5 65-2"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="28"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    whileInView={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                    viewport={{ once: true }}
-                  />
-                </svg>
-              </span>
+              {t.transformation.title}
             </h2>
-            <p className="text-neutral-400 max-w-xl mx-auto text-sm md:text-base font-normal tracking-tight">
+            <p className="text-neutral-500 max-w-xl mx-auto text-sm md:text-base font-normal tracking-tight">
               {t.transformation.subtitle}
             </p>
           </div>

@@ -110,7 +110,7 @@ export default function FeaturesSection() {
               
               {/* Description */}
               <div className="mt-4 md:mt-12">
-                <p className="text-base md:text-lg opacity-80 max-w-md text-neutral-400 font-normal tracking-tight">
+                <p className="text-base md:text-lg opacity-80 max-w-md text-neutral-500 font-normal tracking-tight">
                   {currentFeature.description}
                 </p>
               </div>

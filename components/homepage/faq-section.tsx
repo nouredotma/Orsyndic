@@ -41,75 +41,61 @@ export default function FAQSection() {
   }
 
   return (
-    <section id="faq" className="w-full py-10 px-3 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8 space-y-1">
-          <h2 className="text-xl font-semibold tracking-tight md:text-4xl text-balance text-black">
-            <span className="relative inline-block">
-              <span className="relative z-10">{t.faq.title1}</span>
-              <svg
-                className="absolute bottom-0 left-0 w-full h-[6px] md:h-[10px] text-primary select-none pointer-events-none"
-                viewBox="0 0 200 40"
-                preserveAspectRatio="none"
-              >
-                <motion.path
-                  d="M5 20c40-5 90-5 130 2c35 5 55 5 65-2"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="28"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                  viewport={{ once: true }}
-                />
-              </svg>
-            </span>{" "}
-            {t.faq.title2}
-          </h2>
-          <p className="text-neutral-400 tracking-tight text-sm md:text-base">
-            {t.faq.subtitle}
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-3 max-w-7xl mx-auto items-stretch">
-          {FAQs.map((faq, index) => (
-            <div
-              key={index}
-              onClick={() => handleClick(index)}
-              className={`group border-2 transition-colors duration-200 rounded-sm md:rounded-xl bg-neutral-50 border-neutral-200 overflow-hidden cursor-pointer h-full ${
-                openIndex === index ? "border-primary" : "border-neutral-200 hover:border-primary"
-              }`}
-            >
-              <button
-                className="w-full text-left px-3 py-3 sm:px-5 sm:py-5 flex items-center justify-between gap-4 cursor-pointer"
-              >
-                <span className={`font-medium text-sm md:text-base transition-colors duration-200 leading-tight ${
-                  openIndex === index ? "text-primary" : "text-foreground group-hover:text-primary"
-                }`}>{faq.question}</span>
-                <Plus
-                  className={`w-4 h-4 transition-all duration-200 shrink-0 ${
-                    openIndex === index ? "rotate-180 text-primary" : "text-muted-foreground group-hover:text-primary"
-                  }`}
-                />
-              </button>
-              <AnimatePresence>
-                {openIndex === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="px-3 pb-3 sm:px-5 sm:pb-5 text-xs md:text-sm text-muted-foreground">
-                      {faq.answer}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+    <section id="faq" className="w-full py-10 px-3 md:px-16 bg-background">
+      <div className="max-w-full mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 items-start">
+          {/* Left Column: Title & Subtitle */}
+          <div className="text-center lg:text-left space-y-3">
+            <div className="inline-flex items-center mb-4 px-3 py-1 rounded-full text-primary text-xs md:text-sm bg-primary/5 border border-primary">
+              FAQ
             </div>
-          ))}
+            <h2 className="text-xl font-medium tracking-tight md:text-4xl text-balance text-black">
+              {t.faq.title1} {t.faq.title2}
+            </h2>
+            <p className="text-neutral-500 tracking-tight text-sm md:text-base">
+              {t.faq.subtitle}
+            </p>
+          </div>
+
+          {/* Right Column: FAQ Accordion */}
+          <div className="flex flex-col gap-3">
+            {FAQs.map((faq, index) => (
+              <div
+                key={index}
+                onClick={() => handleClick(index)}
+                className={`group border-2 transition-colors duration-200 rounded-sm bg-neutral-50 border-neutral-200 overflow-hidden cursor-pointer ${
+                  openIndex === index ? "border-primary" : "border-neutral-200 hover:border-primary"
+                }`}
+              >
+                <button
+                  className="w-full text-left px-3 py-3 sm:px-5 sm:py-5 flex items-center justify-between gap-4 cursor-pointer"
+                >
+                  <span className={`font-normal text-sm md:text-base transition-colors duration-200 leading-tight ${
+                    openIndex === index ? "text-primary" : "text-foreground group-hover:text-primary"
+                  }`}>{faq.question}</span>
+                  <Plus
+                    className={`w-4 h-4 transition-all duration-200 shrink-0 ${
+                      openIndex === index ? "rotate-180 text-primary" : "text-muted-foreground group-hover:text-primary"
+                    }`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {openIndex === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="px-3 pb-3 sm:px-5 sm:pb-5 text-xs md:text-sm font-normal text-neutral-500">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

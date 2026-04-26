@@ -49,35 +49,14 @@ export default function UseCasesSection() {
   ]
 
   return (
-    <section id="use-cases" className="w-full py-10 px-3 sm:px-6 lg:px-8 bg-background scroll-mt-20">
-      <div className="max-w-7xl mx-auto">
+    <section id="use-cases" className="w-full py-10 px-3 md:px-16 bg-background scroll-mt-20">
+      <div className="max-w-full mx-auto">
         {/* Header */}
         <div className="text-center space-y-2 mb-6">
           <h2 className="text-xl font-medium md:text-4xl text-balance tracking-tighter">
-            <span className="relative inline-block">
-              <span className="relative z-10">{t.useCases.title.part1}</span>
-              <svg
-                className="absolute -inset-x-2.5 -inset-y-2.5 w-[calc(100%+20px)] h-[calc(100%+20px)] text-primary select-none pointer-events-none -rotate-12"
-                viewBox="0 0 160 60"
-                preserveAspectRatio="none"
-                fill="none"
-              >
-                <motion.path
-                  d="M 10,30 C 10,10 50,5 90,8 C 130,11 150,15 150,30 C 150,45 120,55 80,52 C 40,49 10,45 10,30"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                  viewport={{ once: true }}
-                />
-              </svg>
-            </span>{" "}
-            {t.useCases.title.part2}
+            {t.useCases.title.part1} {t.useCases.title.part2}
           </h2>
-          <p className="text-neutral-400 max-w-xl mx-auto text-sm md:text-base tracking-tight font-normal">
+          <p className="text-neutral-500 max-w-xl mx-auto text-sm md:text-base tracking-tight font-normal">
             {t.useCases.subtitle}
           </p>
         </div>

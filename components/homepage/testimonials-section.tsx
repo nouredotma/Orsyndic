@@ -77,10 +77,10 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
               </div>
             </div>
             <div>
-              <h4 className="text-sm sm:text-[15px] font-semibold text-gray-900 leading-tight">
+              <h4 className="text-sm sm:text-[15px] font-medium text-gray-900 leading-tight">
                 {review.name}
               </h4>
-              <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+              <p className="text-[11px] sm:text-xs text-neutral-500 mt-0.5">
                 {review.role}
               </p>
             </div>
@@ -91,18 +91,18 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
         {/* Rating + Time */}
         <div className="flex items-center gap-2 mb-3">
           <StarRating rating={review.rating} />
-          <span className="text-[11px] sm:text-xs text-gray-400">{review.timeAgo}</span>
+          <span className="text-[11px] sm:text-xs text-neutral-400">{review.timeAgo}</span>
         </div>
 
         {/* Review text */}
-        <p className="text-[13px] sm:text-sm text-gray-700 leading-relaxed line-clamp-4">
+        <p className="text-[13px] sm:text-sm text-neutral-500 leading-relaxed line-clamp-4">
           {review.review}
         </p>
 
         {/* Google attribution */}
         <div className="flex items-center gap-1.5 mt-auto pt-10 border-t border-gray-50">
           <GoogleLogo className="w-3.5 h-3.5" />
-          <span className="text-[10px] sm:text-[11px] text-gray-400 font-medium">
+          <span className="text-[10px] sm:text-[11px] text-neutral-400 font-medium">
             {t.testimonials.postedOnGoogle}
           </span>
         </div>
@@ -192,7 +192,7 @@ export default function TestimonialsSection() {
   return (
     <section id="testimonials" className="w-full py-10 bg-background overflow-hidden scroll-mt-20">
       <div className="w-full">
-        <h2 className="text-xl font-semibold tracking-tight md:text-3xl lg:text-4xl text-center mb-4 sm:mb-6 text-balance flex items-center justify-center">
+        <h2 className="text-xl font-medium tracking-tight md:text-3xl lg:text-4xl text-center mb-4 sm:mb-6 text-balance flex items-center justify-center">
           {t.testimonials.title}
           <span className="relative inline-flex items-center">
             <svg
