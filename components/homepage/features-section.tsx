@@ -69,7 +69,7 @@ export default function FeaturesSection() {
 
   return (
     <section id="features" className="w-full py-10 scroll-mt-20">
-      <div className="container mx-auto px-3">
+      <div className="max-w-full mx-auto px-3 md:px-16">
         {/* Tab Navigation */}
         <div className="flex flex-wrap items-center justify-center gap-0 md:gap-1 mb-3">
           {features.map((feature) => (
@@ -93,7 +93,7 @@ export default function FeaturesSection() {
 
         {/* Feature Content */}
         <div
-          className={`${currentFeature.bgColor} ${currentFeature.textColor} border-2 ${currentFeature.borderColor} max-w-7xl mx-auto rounded-sm md:rounded-xl overflow-hidden transition-all duration-500`}
+          className={`${currentFeature.bgColor} ${currentFeature.textColor} border-2 ${currentFeature.borderColor} max-w-full mx-auto rounded-sm md:rounded-xl overflow-hidden transition-all duration-500`}
         >
           <div className="grid md:grid-cols-2 gap-6 py-4 px-4 md:p-8 min-h-0 md:min-h-[600px]">
             {/* Left Content */}

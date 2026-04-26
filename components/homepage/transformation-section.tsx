@@ -30,12 +30,12 @@ function StepCard({
   return (
     <div
       ref={cardRef}
-      className="h-[80svh] w-full flex items-center justify-center sticky top-[18svh] px-2 md:px-6 lg:px-8"
+      className="h-[80svh] w-full flex items-center justify-center sticky top-[18svh] px-2 md:px-16"
       style={{ zIndex: index + 1 }}
     >
       <motion.div
         style={{ scale }}
-        className="relative w-full max-w-7xl"
+        className="relative w-full max-w-full"
       >
         <div
           className="rounded-sm md:rounded-xl overflow-hidden bg-black"
@@ -117,36 +117,36 @@ export default function TransformationSection() {
       number: "01",
       title: t.transformation.steps.step1.title,
       description: t.transformation.steps.step1.description,
-      color: "#dce8f8",
-      textColor: "#1d407e",
-      lightBg: "#e8f1fc",
+      color: "#ffeaea",
+      textColor: "#991b1b",
+      lightBg: "#fff1f1",
       video: "/steps/1.mp4",
     },
     {
       number: "02",
       title: t.transformation.steps.step2.title,
       description: t.transformation.steps.step2.description,
-      color: "#9abfef",
-      textColor: "#1d407e",
-      lightBg: "#f0f6fe",
+      color: "#ffc1c1",
+      textColor: "#991b1b",
+      lightBg: "#fff5f5",
       video: "/steps/2.mp4",
     },
     {
       number: "03",
       title: t.transformation.steps.step3.title,
       description: t.transformation.steps.step3.description,
-      color: "#5995e6",
+      color: "#ff5a5a",
       textColor: "#ffffff",
-      lightBg: "#e8f1fc",
+      lightBg: "#fff1f1",
       video: "/steps/3.mp4",
     },
     {
       number: "04",
       title: t.transformation.steps.step4.title,
       description: t.transformation.steps.step4.description,
-      color: "#226fd3",
+      color: "#FF0000",
       textColor: "#ffffff",
-      lightBg: "#f0f6fe",
+      lightBg: "#fff5f5",
       video: "/steps/4.mp4",
     },
   ]
@@ -157,7 +157,7 @@ export default function TransformationSection() {
       <div ref={containerRef} className="relative pb-4">
         {/* Header — sticky behind cards, scrolls away with the container */}
         <div className="sticky top-[12svh] h-[86svh] z-0 pointer-events-none">
-          <div className="max-w-7xl mx-auto text-center space-y-1 py-5 px-3 md:px-6 lg:px-8 pointer-events-auto">
+          <div className="max-w-full mx-auto text-center space-y-1 py-5 px-3 md:px-16 pointer-events-auto">
             <h2 className="text-xl font-medium md:text-4xl text-balance tracking-tighter">
               {t.transformation.title}
             </h2>

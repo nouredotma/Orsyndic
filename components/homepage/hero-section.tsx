@@ -101,7 +101,7 @@ export default function HeroSection() {
 
         {/* Content */}
         <motion.div 
-          className="relative z-10 max-w-5xl mx-auto text-center"
+          className="relative z-10 max-w-7xl mx-auto text-center"
           style={{ opacity, scale, y }}
         >
           <div className="inline-flex mb-2 px-3 py-1.5 rounded-full bg-black">
@@ -149,7 +149,7 @@ export default function HeroSection() {
 
           {/* Hero Project Image */}
           <motion.div
-            className="mt-8 w-full max-w-7xl mx-auto relative"
+            className="mt-8 w-full max-w-5xl mx-auto relative"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
@@ -270,4 +270,3 @@ export default function HeroSection() {
     </TooltipProvider>
   )
 }
-
