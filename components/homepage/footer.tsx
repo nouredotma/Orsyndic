@@ -53,11 +53,11 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/#use-cases"
-                  onClick={(e) => handleScroll(e, "/#use-cases")}
+                  href="/#functionalities"
+                  onClick={(e) => handleScroll(e, "/#functionalities")}
                   className="text-neutral-400 hover:text-white transition font-normal"
                 >
-                  <span>{t.footer.links.services}</span>
+                  <span>{t.footer.links.functionalities}</span>
                 </Link>
               </li>
               <li>

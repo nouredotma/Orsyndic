@@ -58,7 +58,7 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
     <div
       className={`
         w-full max-w-[550px] lg:max-w-none rounded-sm md:rounded-xl overflow-hidden
-        bg-neutral-50 border-2 border-neutral-200
+        bg-neutral-100
         transition-all duration-500 h-full flex flex-col
       `}
     >

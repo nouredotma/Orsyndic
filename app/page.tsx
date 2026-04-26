@@ -8,7 +8,7 @@ import PriceSection from "@/components/homepage/price-section"
 import FAQSection from "@/components/homepage/faq-section"
 import Footer from "@/components/homepage/footer"
 import TransformationSection from "@/components/homepage/transformation-section"
-import UseCasesSection from "@/components/homepage/use-cases-section"
+import FunctionalitiesSection from "@/components/homepage/functionalities-section"
 
 export default function Home() {
   return (
@@ -19,7 +19,7 @@ export default function Home() {
         <TrustedSection />
         <FeaturesSection />
         <TransformationSection />
-        <UseCasesSection />
+        <FunctionalitiesSection />
         <PriceSection />
         <TestimonialsSection />
         <CTASection />

@@ -103,7 +103,7 @@ export default function Header() {
 
   const navItems = [
     { name: t.nav.work, href: "/#features" },
-    { name: t.nav.services, href: "/#use-cases" },
+    { name: t.nav.functionalities, href: "/#functionalities" },
     { name: t.nav.pricing, href: "/#pricing" },
     { name: t.nav.testimonials, href: "/#testimonials" },
     { name: t.nav.faq, href: "/#faq" },

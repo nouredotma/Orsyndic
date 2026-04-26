@@ -3,7 +3,7 @@ export type Language = "en" | "fr" | "es";
 export interface Translations {
   nav: {
     work: string;
-    services: string;
+    functionalities: string;
     pricing: string;
     testimonials: string;
     faq: string;
@@ -43,18 +43,50 @@ export interface Translations {
       travel: { category: string; mobileCategory: string; description: string };
     };
   };
-  useCases: {
+  functionalities: {
     title: { part1: string; part2: string };
     subtitle: string;
-    services: {
-      seo: { role: string; description: string; details: string };
-      mobile: { role: string; description: string; details: string };
-      performance: { role: string; description: string; details: string };
-      web: { role: string; description: string; details: string };
-      uiux: { role: string; description: string; details: string };
-      ecommerce: { role: string; description: string; details: string };
+    cards: {
+      payments: {
+        title: string;
+        description: string;
+        table: {
+          apt: string;
+          owner: string;
+          amount: string;
+          status: { paid: string; overdue: string };
+        };
+      };
+      access: {
+        title: string;
+        description: string;
+        roles: {
+          syndic: string;
+          owner: string;
+          resident: string;
+        };
+      };
+      incidents: {
+        title: string;
+        description: string;
+        status: string;
+        ticket: string;
+      };
+      documents: {
+        title: string;
+        description: string;
+        files: {
+          minutes: string;
+          regulations: string;
+          insurance: string;
+        };
+      };
+      automation: {
+        title: string;
+        stats: string;
+        progress: string;
+      };
     };
-    close: string;
   };
   transformation: {
     title: string;
@@ -144,7 +176,7 @@ export interface Translations {
     links: {
       home: string;
       work: string;
-      services: string;
+      functionalities: string;
       testimonials: string;
       pricing: string;
       faq: string;
@@ -228,7 +260,7 @@ export const translations: Record<Language, Translations> = {
   en: {
     nav: {
       work: "Our Work",
-      services: "Services",
+      functionalities: "Functionalities",
       pricing: "Pricing",
       testimonials: "Testimonials",
       faq: "FAQ",
@@ -288,45 +320,53 @@ export const translations: Record<Language, Translations> = {
         },
       },
     },
-    useCases: {
+    functionalities: {
       title: {
-        part1: "Premium",
-        part2: "services we offer",
+        part1: "Core",
+        part2: "Functionalities",
       },
-      subtitle: "Orsyndic brings innovative design to interfaces, robust engineering to web platforms, and growth strategies to your business.",
-      services: {
-        seo: {
-          role: "Financial Management",
-          description: "Total transparency on your building's finances.",
-          details: "Track budgets, real-time financial states, and expense history for healthy and transparent management.",
+      subtitle: "Orsyndic centralizes everything you need to manage your co-ownership efficiently and transparently.",
+      cards: {
+        payments: {
+          title: "Payment Tracking",
+          description: "Real-time monitoring of all building contributions.",
+          table: {
+            apt: "Apt",
+            owner: "Owner",
+            amount: "Amount",
+            status: { paid: "Paid", overdue: "Overdue" },
+          },
         },
-        mobile: {
-          role: "Helpdesk & Tickets",
-          description: "Report and track technical incidents in one click.",
-          details: "Residents report issues (elevator, leaks) with photos, and follow resolution progress in real-time.",
+        access: {
+          title: "3-Role Access Control",
+          description: "Tailored interfaces for every user type.",
+          roles: {
+            syndic: "Syndic",
+            owner: "Co-owner",
+            resident: "Resident",
+          },
         },
-        performance: {
-          role: "Automation",
-          description: "Automatic generation of fund calls and receipts.",
-          details: "Charge calculation according to quotas and PDF document generation in one click to save time.",
+        incidents: {
+          title: "Incident Reporting",
+          description: "Technical issues resolution tracking.",
+          status: "In Progress",
+          ticket: "Elevator maintenance required - Floor 4",
         },
-        web: {
-          role: "Document Space",
-          description: "Central library for all your official documents.",
-          details: "Permanent access to AG minutes, building regulations, and insurance contracts.",
+        documents: {
+          title: "Document Library",
+          description: "Secure access to building documents.",
+          files: {
+            minutes: "AG_Minutes_2024.pdf",
+            regulations: "Building_Rules.pdf",
+            insurance: "Insurance_Policy.pdf",
+          },
         },
-        uiux: {
-          role: "Communication",
-          description: "News wall and urgent announcements for the building.",
-          details: "Broadcast important information (water shut-offs, works) instantly to all residents via the dashboard.",
-        },
-        ecommerce: {
-          role: "Patrimony Management",
-          description: "Structure your property: Buildings, Floors, Apartments.",
-          details: "Complete repository linked to owners and tenants for a clear view of your real estate assets.",
+        automation: {
+          title: "Auto Charge Generation",
+          stats: "Building A — 12 apartments",
+          progress: "24,000 MAD generated this month",
         },
       },
-      close: "Close",
     },
     pricing: {
       title: "Simple, Transparent ",
@@ -514,7 +554,7 @@ export const translations: Record<Language, Translations> = {
       links: {
         home: "Home",
         work: "Our Work",
-        services: "Services",
+        functionalities: "Functionalities",
         testimonials: "Testimonials",
         pricing: "Pricing",
         faq: "FAQ",
@@ -600,7 +640,7 @@ export const translations: Record<Language, Translations> = {
   fr: {
     nav: {
       work: "Nos Réalisations",
-      services: "Services",
+      functionalities: "Fonctionnalités",
       pricing: "Tarifs",
       testimonials: "Témoignages",
       faq: "FAQ",
@@ -660,45 +700,53 @@ export const translations: Record<Language, Translations> = {
         },
       },
     },
-    useCases: {
+    functionalities: {
       title: {
-        part1: "Premium",
-        part2: "services que nous offrons",
+        part1: "Fonctionnalités",
+        part2: "Clés",
       },
-      subtitle: "Orsyndic apporte un design innovant aux interfaces, une ingénierie robuste aux plateformes et des stratégies de croissance à votre entreprise.",
-      services: {
-        seo: {
-          role: "Gestion Financière",
-          description: "Transparence totale sur les finances de votre copropriété.",
-          details: "Suivi des budgets, états financiers en temps réel et historique des dépenses pour une gestion saine et transparente.",
+      subtitle: "Orsyndic centralise tout ce dont vous avez besoin pour gérer votre copropriété de manière efficace et transparente.",
+      cards: {
+        payments: {
+          title: "Suivi des Paiements",
+          description: "Surveillance en temps réel de toutes les contributions de l'immeuble.",
+          table: {
+            apt: "Appt",
+            owner: "Propriétaire",
+            amount: "Montant",
+            status: { paid: "Payé", overdue: "Impayé" },
+          },
         },
-        mobile: {
-          role: "Helpdesk & Tickets",
-          description: "Signalement et suivi des incidents techniques en un clic.",
-          details: "Les résidents signalent les pannes (ascenseur, fuite) avec photo, et suivent l'avancement de la résolution en temps réel.",
+        access: {
+          title: "Contrôle d'Accès 3 Rôles",
+          description: "Interfaces adaptées pour chaque utilisateur.",
+          roles: {
+            syndic: "Syndic",
+            owner: "Copropriétaire",
+            resident: "Résident",
+          },
         },
-        performance: {
-          role: "Automatisation",
-          description: "Génération automatique des appels de fonds et quittances.",
-          details: "Calcul des charges selon les tantièmes et génération de documents PDF en un clic pour gagner du temps.",
+        incidents: {
+          title: "Signalement d'Incidents",
+          description: "Suivi de résolution des problèmes techniques.",
+          status: "En cours",
+          ticket: "Maintenance ascenseur requise - Étage 4",
         },
-        web: {
-          role: "Espace Documentaire",
-          description: "Bibliothèque centrale pour tous vos documents officiels.",
-          details: "Accès permanent aux PV d'Assemblées Générales, règlements de copropriété et contrats d'assurance.",
+        documents: {
+          title: "Bibliothèque Documentaire",
+          description: "Accès sécurisé aux documents de l'immeuble.",
+          files: {
+            minutes: "PV_AG_2024.pdf",
+            regulations: "Reglement_Co-pro.pdf",
+            insurance: "Contrat_Assurance.pdf",
+          },
         },
-        uiux: {
-          role: "Communication",
-          description: "Mur d'actualités et annonces urgentes pour l'immeuble.",
-          details: "Diffusez des informations importantes (coupure d'eau, travaux) instantanément à tous les résidents via le tableau de bord.",
-        },
-        ecommerce: {
-          role: "Gestion Patrimoine",
-          description: "Structurez votre copropriété : Immeubles, Étages, Appartements.",
-          details: "Référentiel complet lié aux propriétaires et locataires pour une vision claire de votre parc immobilier.",
+        automation: {
+          title: "Génération Auto des Charges",
+          stats: "Bâtiment A — 12 appartements",
+          progress: "24 000 MAD générés ce mois",
         },
       },
-      close: "Fermer",
     },
     pricing: {
       title: "Des Tarifs Simples et ",
@@ -886,7 +934,7 @@ export const translations: Record<Language, Translations> = {
       links: {
         home: "Accueil",
         work: "Nos Travaux",
-        services: "Services",
+        functionalities: "Fonctionnalités",
         testimonials: "Témoignages",
         pricing: "Tarification",
         faq: "FAQ",
@@ -972,7 +1020,7 @@ export const translations: Record<Language, Translations> = {
   es: {
     nav: {
       work: "Proyectos",
-      services: "Servicios",
+      functionalities: "Funcionalidades",
       pricing: "Precios",
       testimonials: "Testimonios",
       faq: "FAQ",
@@ -1032,45 +1080,53 @@ export const translations: Record<Language, Translations> = {
         },
       },
     },
-    useCases: {
+    functionalities: {
       title: {
-        part1: "Servicios",
-        part2: "Premium que ofrecemos",
+        part1: "Funcionalidades",
+        part2: "Principales",
       },
-      subtitle: "Orsyndic aporta diseño innovador a las interfaces, ingeniería robusta a las plataformas y estrategias de crecimiento a su negocio.",
-      services: {
-        seo: {
-          role: "Optimización SEO",
-          description: "Impulse su posición en buscadores y atraiga tráfico orgánico a su marca.",
-          details: "Nuestras estrategias SEO se basan en datos. Proporcionamos optimización on-page y construcción de enlaces para que su web destaque.",
+      subtitle: "Orsyndic centraliza todo lo que necesitas para gestionar tu copropiedad de forma eficiente y transparente.",
+      cards: {
+        payments: {
+          title: "Seguimiento de Pagos",
+          description: "Monitoreo en tiempo real de todas las contribuciones del edificio.",
+          table: {
+            apt: "Apto",
+            owner: "Propietario",
+            amount: "Monto",
+            status: { paid: "Pagado", overdue: "Vencido" },
+          },
         },
-        mobile: {
-          role: "Desarrollo Móvil",
-          description: "Atraiga a sus usuarios con aplicaciones móviles receptivas y de alto rendimiento.",
-          details: "Creamos aplicaciones nativas y multiplataforma adaptadas a sus necesidades, garantizando una experiencia de usuario perfecta.",
+        access: {
+          title: "Control de Acceso de 3 Roles",
+          description: "Interfaces personalizadas por tipo de usuario.",
+          roles: {
+            syndic: "Síndico",
+            owner: "Copropietario",
+            resident: "Residente",
+          },
         },
-        performance: {
-          role: "Rendimiento",
-          description: "Optimice los tiempos de carga para una velocidad ultrarrápida.",
-          details: "La velocidad es clave. Nuestra sintonización de rendimiento incluye optimización de código e imágenes para una experiencia superior.",
+        incidents: {
+          title: "Reporte de Incidentes",
+          description: "Seguimiento de resolución de fallos técnicos.",
+          status: "En Progreso",
+          ticket: "Mantenimiento de ascensor requerido - Piso 4",
         },
-        web: {
-          role: "Desarrollo Web",
-          description: "Construya aplicaciones web robustas, escalables y seguras.",
-          details: "Nuestro proceso utiliza las últimas tecnologías para crear sitios personalizados y plataformas complejas preparadas para crecer.",
+        documents: {
+          title: "Biblioteca de Documentos",
+          description: "Acceso seguro a documentos del edificio.",
+          files: {
+            minutes: "Acta_AG_2024.pdf",
+            regulations: "Reglas_Edificio.pdf",
+            insurance: "Poliza_Seguro.pdf",
+          },
         },
-        uiux: {
-          role: "Diseño UI/UX",
-          description: "Cree interfaces impresionantes diseñadas para recorridos de usuario intuitivos.",
-          details: "Mapeamos recorridos de usuario para crear interfaces funcionales que maximicen la usabilidad e interacciones significativas.",
-        },
-        ecommerce: {
-          role: "Soluciones eCommerce",
-          description: "Aumente sus ventas con tiendas online seguras y llenas de funciones.",
-          details: "Transforme su negocio minorista con nuestras soluciones de comercio electrónico a medida, con pagos seguros y experiencias personalizadas.",
+        automation: {
+          title: "Generación Automática de Cargos",
+          stats: "Edificio A — 12 apartamentos",
+          progress: "24,000 MAD generados este mes",
         },
       },
-      close: "Cerrar",
     },
     pricing: {
       title: "Precios Simples y ",
@@ -1258,7 +1314,7 @@ export const translations: Record<Language, Translations> = {
       links: {
         home: "Inicio",
         work: "Nuestro Trabajo",
-        services: "Servicios",
+        functionalities: "Funcionalidades",
         testimonials: "Testimonios",
         pricing: "Precios",
         faq: "FAQ",

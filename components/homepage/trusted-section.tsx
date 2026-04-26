@@ -47,7 +47,7 @@ export default function TrustedSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       key={idx}
-                      className="w-20 h-14 rounded-sm flex items-center justify-center bg-neutral-50 border-2 border-neutral-200 active:border-black transition-all"
+                      className="w-20 h-14 rounded-sm flex items-center justify-center bg-neutral-100 transition-all"
                     >
                       <img
                         src={item.logo || "/placeholder.svg"}
@@ -75,7 +75,7 @@ export default function TrustedSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       key={idx}
-                      className="w-20 h-14 rounded-sm flex items-center justify-center bg-neutral-50 border-2 border-neutral-200 active:border-black transition-all"
+                      className="w-20 h-14 rounded-sm flex items-center justify-center bg-neutral-100 transition-all"
                     >
                       <img
                         src={item.logo || "/placeholder.svg"}
@@ -97,7 +97,7 @@ export default function TrustedSection() {
               target="_blank"
               rel="noopener noreferrer"
               key={index}
-              className="rounded-sm flex items-center justify-center bg-neutral-50 border-2 border-neutral-200 p-2 h-20 hover:border-black transition-all duration-300 group"
+              className="rounded-sm flex items-center justify-center bg-neutral-100 p-2 h-20 transition-all duration-300 group"
             >
               <img
                 src={item.logo || "/placeholder.svg"}

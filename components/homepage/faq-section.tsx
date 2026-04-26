@@ -63,7 +63,7 @@ export default function FAQSection() {
               <div
                 key={index}
                 onClick={() => handleClick(index)}
-                className={`group border-2 transition-colors duration-200 rounded-sm bg-neutral-50 border-neutral-200 overflow-hidden cursor-pointer ${
+                className={`group transition-colors duration-200 rounded-sm bg-neutral-100 border-neutral-200 overflow-hidden cursor-pointer ${
                   openIndex === index ? "border-primary" : "border-neutral-200 hover:border-primary"
                 }`}
               >
@@ -74,7 +74,7 @@ export default function FAQSection() {
                     openIndex === index ? "text-primary" : "text-black group-hover:text-primary"
                   }`}>{faq.question}</span>
                   <Plus
-                    className={`w-4 h-4 transition-all duration-200 shrink-0 ${
+                    className={`w-5 h-5 transition-all duration-200 shrink-0 ${
                       openIndex === index ? "rotate-180 text-primary" : "text-neutral-500 group-hover:text-primary"
                     }`}
                   />
