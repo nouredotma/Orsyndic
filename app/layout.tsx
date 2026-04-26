@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/icon.png",
-    shortcut: "/icon.png",
-    apple: "/icon.png",
+    icon: "/icon.jpeg",
+    shortcut: "/icon.jpeg",
+    apple: "/icon.jpeg",
   },
   openGraph: {
     type: "website",
@@ -104,7 +104,7 @@ export default function RootLayout({
               "@type": "SoftwareApplication",
               "name": "Orsyndic",
               "url": "https://orsyndic.com",
-              "logo": "https://orsyndic.com/icon.png",
+              "logo": "https://orsyndic.com/icon.jpeg",
               "image": "https://orsyndic.com/og-image.png",
               "description": "Application Web de Gestion de Syndic simplifiant la vie des copropriétaires et gestionnaires.",
               "applicationCategory": "BusinessApplication",
