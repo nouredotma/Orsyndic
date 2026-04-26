@@ -45,7 +45,7 @@ export default function PriceSection() {
   ]
 
   return (
-    <section id="pricing" className="w-full py-10 px-2 sm:px-6 lg:px-8 bg-background overflow-hidden scroll-mt-20">
+    <section id="pricing" className="w-full py-10 px-3 sm:px-6 lg:px-8 bg-background overflow-hidden scroll-mt-20">
       <div className="max-w-7xl  mx-auto">
         <div className="flex flex-col items-center gap-6">
           <div className="space-y-2 text-center">

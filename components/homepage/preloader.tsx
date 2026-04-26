@@ -2,91 +2,58 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
-import Image from "next/image"
 
-const words = [
-  "Hello",
-  "Bonjour",
-  "Hola",
-  "Ciao",
-  "Olá",
-  "Hallo",
-  "こんにちは",
-  "你好",
-  "مرحبًا",
-  "Привет",
-]
-
-function Logo({ index }: { index: number }) {
-  return (
-    <div className="relative flex items-center justify-center pointer-events-none">
-      <p className="text-white text-3xl md:text-5xl font-medium tracking-tight">
-        {words[index]}
-      </p>
-    </div>
-  )
-}
+const LETTERS = "Orsyndic".split("")
 
 export default function Preloader() {
   const [loading, setLoading] = useState(true)
-  const [index, setIndex] = useState(0)
 
   useEffect(() => {
+    // Total animation duration:
+    // Each letter takes ~0.15s stagger + 0.5s drop = last letter lands at ~1.05s + 0.5s = ~1.55s
+    // Add a brief hold after all letters land, then exit
     const timer = setTimeout(() => {
       setLoading(false)
       document.documentElement.classList.remove("loading")
-    }, 3000) // 3s total loading
-
-    const interval = setInterval(() => {
-      setIndex(prev => (prev + 1) % words.length) // Loop back to start
-    }, 100) // 100ms transitions
+    }, 2800)
 
     return () => {
       clearTimeout(timer)
-      clearInterval(interval)
     }
   }, [])
 
   return (
     <AnimatePresence>
       {loading && (
-        <div className="fixed inset-0 z-999999 flex flex-row h-svh w-full overflow-hidden pointer-events-none">
-          {/* Left Panel */}
-          <motion.div
-            key="left-panel"
-            initial={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-            className="relative h-full flex-1 bg-linear-to-t from-primary to-white overflow-hidden pointer-events-auto"
-          >
-            <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2">
-              <Logo index={index} />
-            </div>
-            
-            {/* Small White Logo in Bottom Left */}
-            <div className="absolute bottom-5 left-5 w-12 h-12">
-              <Image 
-                src="/whitelogo.png" 
-                alt="Orsyndic Logo" 
-                fill
-                className="object-contain"
-              />
-            </div>
-          </motion.div>
-
-          {/* Right Panel */}
-          <motion.div
-            key="right-panel"
-            initial={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-            className="relative h-full flex-1 bg-linear-to-t from-primary to-white overflow-hidden pointer-events-auto"
-          >
-            <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2">
-              <Logo index={index} />
-            </div>
-          </motion.div>
-        </div>
+        <motion.div
+          key="preloader"
+          initial={{ y: 0 }}
+          exit={{ y: "-100%" }}
+          transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+          className="fixed inset-0 z-999999 flex items-center justify-center bg-white overflow-hidden pointer-events-auto"
+        >
+          <div className="flex items-center justify-center">
+            {LETTERS.map((letter, i) => (
+              <motion.span
+                key={i}
+                initial={{ y: "-100vh", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                  delay: i * 0.15,
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="font-goodly text-primary inline-block"
+                style={{
+                  fontSize: "clamp(2.5rem, 8vw, 6rem)",
+                  lineHeight: 1,
+                }}
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </div>
+        </motion.div>
       )}
     </AnimatePresence>
   )

@@ -24,7 +24,7 @@ export default function TrustedSection() {
   ]
 
   return (
-    <section className="w-full py-5 px-2 sm:px-6 lg:px-8 bg-background">
+    <section className="w-full py-5 px-3 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-2">
           <p className="text-black/50 font-bold text-xs md:text-md"> <span className="font-bold text-black">{t.trusted.text.part1}</span>{t.trusted.text.part2}<span className="font-bold text-black">{t.trusted.text.part3}</span>{t.trusted.text.part4}</p>

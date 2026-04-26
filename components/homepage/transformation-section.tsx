@@ -157,7 +157,7 @@ export default function TransformationSection() {
       <div ref={containerRef} className="relative pb-4">
         {/* Header — sticky behind cards, scrolls away with the container */}
         <div className="sticky top-[12svh] h-[86svh] z-0 pointer-events-none">
-          <div className="max-w-7xl mx-auto text-center space-y-1 py-5 px-2 md:px-6 lg:px-8 pointer-events-auto">
+          <div className="max-w-7xl mx-auto text-center space-y-1 py-5 px-3 md:px-6 lg:px-8 pointer-events-auto">
             <h2 className="text-xl font-bold md:text-4xl text-balance">
               <span className="relative inline-block">
                 <span className="relative z-10">{t.transformation.title}</span>

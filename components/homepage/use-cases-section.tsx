@@ -49,7 +49,7 @@ export default function UseCasesSection() {
   ]
 
   return (
-    <section id="use-cases" className="w-full py-10 px-2 sm:px-6 lg:px-8 bg-background scroll-mt-20">
+    <section id="use-cases" className="w-full py-10 px-3 sm:px-6 lg:px-8 bg-background scroll-mt-20">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center space-y-2 mb-6">

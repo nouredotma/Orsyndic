@@ -40,7 +40,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 w-full h-full bg-background" />
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-2 md:px-6 lg:px-8 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-3 md:px-6 lg:px-8 text-center">
           <div className="inline-flex mb-2 px-3 py-1.5 rounded-full bg-black">
             <span className="text-[10px] md:text-sm font-bold shiny-sweep">{t.hero.badge}</span>
           </div>
@@ -165,7 +165,7 @@ export default function HeroSection() {
         {/* Contact Links — Fixed Bottom Right (Appears on scroll) */}
         <div className={`
           z-50 flex flex-col items-center gap-1 transition-all duration-500
-          fixed bottom-3 right-2 md:bottom-6 md:right-6
+          fixed bottom-3 right-3 md:bottom-6 md:right-6
           ${scrolled ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-10 pointer-events-none"}
         `}>
 

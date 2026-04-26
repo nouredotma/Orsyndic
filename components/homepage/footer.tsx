@@ -25,7 +25,7 @@ export default function Footer() {
   }
  
   return (
-    <footer className="w-full px-2 md:px-8 pb-2 md:pb-8">
+    <footer className="w-full px-3 md:px-8 pb-2 md:pb-8">
       <div className="max-w-full mx-auto bg-primary text-primary-foreground rounded-sm md:rounded-xl px-6 md:px-16 pt-16 pb-0 overflow-hidden">
         {/* Row 1: Five-column link grid */}
         <div className="grid grid-cols-2 gap-y-8 gap-x-8 md:flex md:flex-nowrap md:justify-between md:gap-x-12">
