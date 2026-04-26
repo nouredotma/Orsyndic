@@ -49,7 +49,7 @@ export function PricingCard({ tier }: PricingCardProps) {
             className="flex items-center gap-1.5 bg-linear-to-r from-primary to-primary/80 px-4 py-1.5 rounded-full shadow-lg shadow-primary/20 border border-white/20"
           >
             <Star className="w-3 h-3 text-primary-foreground fill-primary-foreground" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-primary-foreground">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-primary-foreground">
               Most Popular
             </span>
           </motion.div>
@@ -75,7 +75,7 @@ export function PricingCard({ tier }: PricingCardProps) {
           <div className="flex items-center gap-2">
             {Icon && <Icon className={cn("h-4 w-4", isDark ? "text-background/90" : "text-primary")} />}
             <span className={cn(
-              "text-sm font-semibold tracking-wide",
+              "text-sm font-medium tracking-tight",
               isDark ? "text-background/90" : "text-muted-foreground"
             )}>
               {tier.name}
@@ -84,7 +84,7 @@ export function PricingCard({ tier }: PricingCardProps) {
         </div>
 
         <div className="mb-1 flex items-baseline gap-1">
-          <div className="text-4xl font-extrabold tracking-tight flex items-baseline leading-none">
+          <div className="text-4xl font-semibold tracking-tight flex items-baseline leading-none">
             {typeof price === "number" ? (
               <span>${price}</span>
             ) : (

@@ -76,7 +76,7 @@ export default function FeaturesSection() {
             <button
               key={feature.id}
               onClick={() => setActiveFeature(feature.id)}
-              className={`flex items-center gap-1 md:gap-2 px-1 md:px-3 py-1 md:py-2 text-sm md:text-base font-bold transition-all duration-300 cursor-pointer ${
+              className={`flex items-center gap-1 md:gap-2 px-1 md:px-3 py-1 md:py-2 text-sm md:text-base font-semibold tracking-tight transition-all duration-300 cursor-pointer ${
                 activeFeature === feature.id ? "text-black opacity-100" : "text-black opacity-30 hover:opacity-50"
               }`}
             >
@@ -100,17 +100,17 @@ export default function FeaturesSection() {
             <div className="flex flex-col justify-start md:justify-between">
               {/* Category and Title Group */}
               <div className="space-y-6">
-                <span className="inline-block px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/10">
+                <span className="inline-block px-3 py-2 rounded-full text-[10px] font-medium uppercase tracking-wider bg-black/10">
                   {currentFeature.category}
                 </span>
-                <h2 className="text-2xl md:text-4xl font-bold leading-tight max-w-sm">
+                <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-black max-w-sm">
                   {currentFeature.title}
                 </h2>
               </div>
               
               {/* Description */}
               <div className="mt-4 md:mt-12">
-                <p className="text-base md:text-lg opacity-80 max-w-md">
+                <p className="text-base md:text-lg opacity-80 max-w-md text-neutral-400 font-normal tracking-tight">
                   {currentFeature.description}
                 </p>
               </div>

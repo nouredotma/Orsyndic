@@ -13,9 +13,7 @@ export interface Translations {
     badge: string;
     title: {
       part1: string;
-      build: string;
       part2: string;
-      presence: string;
     };
     description: string;
     startProject: string;
@@ -239,10 +237,8 @@ export const translations: Record<Language, Translations> = {
     hero: {
       badge: "Simplified Syndic Management",
       title: {
-        part1: "Manage your",
-        build: "properties",
-        part2: "with",
-        presence: "transparency",
+        part1: "Manage your properties",
+        part2: "with transparency",
       },
       description: "Orsyndic centralizes your finances, automates your charges, and streamlines communication between managers, owners, and residents.",
       startProject: "Discover Orsyndic",
@@ -613,10 +609,8 @@ export const translations: Record<Language, Translations> = {
     hero: {
       badge: "Gestion de Syndic Simplifiée",
       title: {
-        part1: "Gérez vos",
-        build: "copropriétés",
-        part2: "avec",
-        presence: "transparence",
+        part1: "Gérez vos copropriétés",
+        part2: "avec transparence",
       },
       description: "Orsyndic centralise vos finances, automatise vos charges et fluidifie la communication entre syndics, copropriétaires et résidents.",
       startProject: "Découvrir Orsyndic",
@@ -987,10 +981,8 @@ export const translations: Record<Language, Translations> = {
     hero: {
       badge: "Experiencia Digital Re-imaginada",
       title: {
-        part1: "Donde los visionarios",
-        build: "construyen",
-        part2: "su presencia",
-        presence: "digital",
+        part1: "Donde los visionarios construyen",
+        part2: "su presencia digital",
       },
       description: "Nos asociamos con personas y equipos ambiciosos para crear sitios web impresionantes, plataformas potentes y estrategias de crecimiento inteligentes.",
       startProject: "Inicia tu Proyecto",

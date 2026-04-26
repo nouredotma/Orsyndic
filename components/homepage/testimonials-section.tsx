@@ -192,7 +192,7 @@ export default function TestimonialsSection() {
   return (
     <section id="testimonials" className="w-full py-10 bg-background overflow-hidden scroll-mt-20">
       <div className="w-full">
-        <h2 className="text-xl font-bold md:text-3xl lg:text-4xl text-center mb-4 sm:mb-6 text-balance flex items-center justify-center">
+        <h2 className="text-xl font-semibold tracking-tight md:text-3xl lg:text-4xl text-center mb-4 sm:mb-6 text-balance flex items-center justify-center">
           {t.testimonials.title}
           <span className="relative inline-flex items-center">
             <svg

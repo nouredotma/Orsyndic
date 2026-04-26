@@ -120,7 +120,7 @@ export default function Header() {
         className={`relative z-60 mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-sm px-3.5 py-2.5 lg:flex`}
       >
         <Link href="/" className="relative z-20 mr-4 flex items-center px-2 py-1">
-          <span className={`text-2xl font-goodly transition-colors duration-300 ${visible ? "text-primary" : "text-black"}`}>
+          <span className={`text-3xl font-goodly cursor-pointer transition-colors duration-300 ${visible ? "text-primary" : "text-black"}`}>
             Orsyndic
           </span>
         </Link>
@@ -166,7 +166,7 @@ export default function Header() {
         <div className="hidden md:flex items-center justify-end relative z-30 gap-2">
           <Link href="/get-a-quote" className="relative z-30">
             <Button
-              className={`group transition-all duration-300 rounded-full h-13 pl-4 pr-2 py-2 font-semibold text-sm cursor-pointer flex items-center gap-2 ${
+              className={`group transition-all duration-300 rounded-full h-13 pl-4 pr-2 py-2 font-medium tracking-tight text-sm cursor-pointer flex items-center gap-2 ${
                 visible
                   ? "bg-primary text-white hover:bg-primary/90 border border-primary hover:border-primary"
                   : "bg-black text-white hover:bg-black/90 border border-black hover:border-black"

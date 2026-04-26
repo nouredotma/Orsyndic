@@ -25,18 +25,18 @@ export default function GetAQuotePage() {
                 <span className="text-xs md:text-sm font-semibold text-primary">{t.getQuote.badge}</span>
               </div>
               
-              <h1 className="text-xl md:text-5xl font-bold mb-6 text-black tracking-tight leading-[1.1]">
+              <h1 className="text-xl md:text-5xl font-medium mb-6 text-black tracking-tight">
                 {t.getQuote.heading}
               </h1>
               
-              <p className="text-xs md:text-base font-medium text-muted-foreground mb-8">
+              <p className="text-xs md:text-base font-medium text-neutral-400 mb-8">
                 {t.getQuote.subheading}
               </p>
 
               <div className="flex items-center gap-6 mt-4">
                 <div className="flex flex-col">
-                  <span className="text-xs md:text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">{t.getQuote.emailUs}</span>
-                  <a href="mailto:contact@orsyndic.com" className="text-base md:text-lg font-bold text-black hover:underline decoration-2 underline-offset-4">
+                  <span className="text-xs md:text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-1">{t.getQuote.emailUs}</span>
+                  <a href="mailto:contact@orsyndic.com" className="text-base md:text-lg font-medium text-black hover:underline decoration-2 underline-offset-4">
                     contact@orsyndic.com
                   </a>
                 </div>

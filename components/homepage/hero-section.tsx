@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { AnimatedArrow } from "@/components/ui/animated-arrow"
 import { OrsRobotIcon } from "@/components/ui/ors-robot-icon"
@@ -36,60 +37,20 @@ export default function HeroSection() {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <section className="relative w-full h-svh flex items-center justify-center overflow-hidden">
+      <section className="relative w-full flex flex-col items-center justify-center overflow-hidden pt-32 md:pt-40 pb-10 md:pb-16 px-3 sm:px-6 lg:px-8">
         <div className="absolute inset-0 w-full h-full bg-background" />
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-3 md:px-6 lg:px-8 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto text-center">
           <div className="inline-flex mb-2 px-3 py-1.5 rounded-full bg-black">
-            <span className="text-[10px] md:text-sm font-bold shiny-sweep">{t.hero.badge}</span>
+            <span className="text-[10px] md:text-sm font-medium shiny-sweep">{t.hero.badge}</span>
           </div>
 
-          <h1 className="text-4xl md:text-7xl font-bold mb-3 text-black px-2 md:px-0 tracking-tight">
-            {t.hero.title.part1}{" "}
-            <span className="inline-flex -space-x-3 -translate-x-2">
-              <img
-                src="https://images.unsplash.com/photo-1654110455429-cf322b40a906?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=880"
-                alt="Team member"
-                className="h-9 md:h-14 rounded-full border-2 md:border-4 border-[#f0f6fe] translate-y-1 md:translate-y-1.5"
-              />
-              <img
-                src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=880"
-                alt="Team member"
-                className="h-9 md:h-14 rounded-full border-2 md:border-4 border-[#f0f6fe] translate-y-1 md:translate-y-1.5"
-              />
-              <img
-                src="https://plus.unsplash.com/premium_photo-1739786996060-2769f1ded135?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2080"
-                alt="Team member"
-                className="h-9 md:h-14 rounded-full border-2 md:border-4 border-[#f0f6fe] translate-y-1 md:translate-y-1.5"
-              />
-            </span>
-            {t.hero.title.build} <br className="hidden md:block" /> {t.hero.title.part2}{" "}
-            <span className="relative inline-block cursor-default group">
-              <span className="relative z-10">{t.hero.title.presence}</span>
-              <svg
-                className="absolute bottom-0 left-0 w-full h-[10px] md:h-[14px] text-primary select-none pointer-events-none"
-                viewBox="0 0 200 40"
-                preserveAspectRatio="none"
-              >
-                <motion.path
-                  d="M5 20c40-5 90-5 130 2c35 5 55 5 65-2"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="28"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-                  viewport={{ once: true }}
-                />
-              </svg>
-            </span>
-            .
+          <h1 className="text-4xl md:text-7xl font-medium mb-3 text-black px-2 md:px-0 tracking-tighter text-balance">
+            {t.hero.title.part1} <br /> {t.hero.title.part2}.
           </h1>
 
-          <p className="text-xs md:text-xl font-medium text-neutral-500 mb-8 max-w-2xl mx-auto">
+          <p className="text-xs md:text-lg font-normal tracking-tight text-neutral-400 mb-4 max-w-2xl mx-auto">
             {t.hero.description}
           </p>
 
@@ -97,7 +58,7 @@ export default function HeroSection() {
             <Link href="/get-a-quote">
               <Button
                 size="lg"
-                className="group bg-white hover:bg-white/90 border-2 border-neutral-200 text-black font-bold rounded-full pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer text-xs md:text-sm h-auto flex items-center gap-2 transition-all duration-300"
+                className="group bg-white hover:bg-white/90 border-2 border-neutral-200 text-black font-medium rounded-full pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer text-xs md:text-sm h-auto flex items-center gap-2 transition-all duration-300"
               >
                 {t.hero.startProject}
                 <AnimatedArrow wrapperClassName="bg-black shrink-0" arrowClassName="text-white" />
@@ -116,13 +77,32 @@ export default function HeroSection() {
             >
               <Button
                 size="lg"
-                className="group bg-black hover:bg-black/90 text-white border-2 border-black font-bold rounded-full pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer text-xs md:text-sm h-auto flex items-center gap-2 transition-all duration-300"
+                className="group bg-black hover:bg-black/90 text-white border-2 border-black font-medium rounded-full pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer text-xs md:text-sm h-auto flex items-center gap-2 transition-all duration-300"
               >
                 {t.hero.viewServices}
                 <AnimatedArrow wrapperClassName="bg-white shrink-0" arrowClassName="text-black" />
               </Button>
             </Link>
           </div>
+
+          {/* Hero Project Image */}
+          <motion.div
+            className="mt-8 w-full max-w-7xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+          >
+            <div className="relative w-full rounded-lg overflow-hidden border border-neutral-200/60">
+              <Image
+                src="/projects/p1.png"
+                alt="Project showcase"
+                width={1920}
+                height={1080}
+                className="w-full h-auto object-cover"
+                priority
+              />
+            </div>
+          </motion.div>
         </div>
 
 

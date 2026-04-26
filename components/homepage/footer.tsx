@@ -31,7 +31,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-y-8 gap-x-8 md:flex md:flex-nowrap md:justify-between md:gap-x-12">
           {/* Column 1 – Agency */}
           <div>
-            <h4 className="font-bold text-primary-foreground uppercase text-sm tracking-wider mb-5">
+            <h4 className="font-semibold text-primary-foreground uppercase text-sm tracking-wider mb-5">
               {t.footer.columns.agency}
             </h4>
             <ul className="space-y-3 text-sm p-0 list-none">
@@ -89,7 +89,7 @@ export default function Footer() {
  
           {/* Column 2 – Resources */}
           <div>
-            <h4 className="font-bold text-primary-foreground uppercase text-sm tracking-wider mb-5">
+            <h4 className="font-semibold text-primary-foreground uppercase text-sm tracking-wider mb-5">
               {t.footer.columns.resources}
             </h4>
             <ul className="space-y-3 text-sm p-0 list-none">
@@ -132,7 +132,7 @@ export default function Footer() {
  
           {/* Column 3 – Legal */}
           <div className="opacity-40 pointer-events-none select-none">
-            <h4 className="font-bold text-primary-foreground uppercase text-sm tracking-wider mb-5">
+            <h4 className="font-semibold text-primary-foreground uppercase text-sm tracking-wider mb-5">
               {t.footer.columns.legal}
             </h4>
             <ul className="space-y-3 text-sm p-0 list-none">
@@ -168,7 +168,7 @@ export default function Footer() {
  
           {/* Column 4 – Connect */}
           <div className="opacity-40 pointer-events-none select-none">
-            <h4 className="font-bold text-primary-foreground uppercase text-sm tracking-wider mb-5">
+            <h4 className="font-semibold text-primary-foreground uppercase text-sm tracking-wider mb-5">
               {t.footer.columns.connect}
             </h4>
             <ul className="space-y-3 text-sm p-0 list-none">
@@ -210,7 +210,7 @@ export default function Footer() {
  
           {/* Column 5 – Contact Us */}
           <div>
-            <h4 className="font-bold text-primary-foreground uppercase text-sm tracking-wider mb-5">
+            <h4 className="font-semibold text-primary-foreground uppercase text-sm tracking-wider mb-5">
               {t.footer.columns.contact}
             </h4>
             <ul className="space-y-3 text-sm p-0 list-none">

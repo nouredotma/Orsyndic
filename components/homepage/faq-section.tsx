@@ -44,7 +44,7 @@ export default function FAQSection() {
     <section id="faq" className="w-full py-10 px-3 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 space-y-1">
-          <h2 className="text-xl font-bold md:text-4xl text-balance text-black">
+          <h2 className="text-xl font-semibold tracking-tight md:text-4xl text-balance text-black">
             <span className="relative inline-block">
               <span className="relative z-10">{t.faq.title1}</span>
               <svg
@@ -68,7 +68,7 @@ export default function FAQSection() {
             </span>{" "}
             {t.faq.title2}
           </h2>
-          <p className="text-muted-foreground text-sm md:text-base">
+          <p className="text-neutral-400 tracking-tight text-sm md:text-base">
             {t.faq.subtitle}
           </p>
         </div>

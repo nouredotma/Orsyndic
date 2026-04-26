@@ -50,7 +50,7 @@ export default function PriceSection() {
         <div className="flex flex-col items-center gap-6">
           <div className="space-y-2 text-center">
             <div className="space-y-1">
-              <h1 className="text-xl font-bold md:text-4xl text-balance">
+              <h1 className="text-xl font-semibold tracking-tight md:text-4xl text-balance">
                 {t.pricing.title}{" "}
                 <span className="relative inline-block">
                   <span className="relative z-10">{t.pricing.pricing}</span>
@@ -74,7 +74,7 @@ export default function PriceSection() {
                   </svg>
                 </span>
               </h1>
-              <p className="text-muted-foreground text-sm md:text-base">{t.pricing.subtitle}</p>
+              <p className="text-neutral-400 tracking-tight text-sm md:text-base">{t.pricing.subtitle}</p>
             </div>
           </div>
 

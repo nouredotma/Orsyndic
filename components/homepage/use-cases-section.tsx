@@ -53,7 +53,7 @@ export default function UseCasesSection() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center space-y-2 mb-6">
-          <h2 className="text-xl font-bold md:text-4xl text-balance">
+          <h2 className="text-xl font-medium md:text-4xl text-balance tracking-tighter">
             <span className="relative inline-block">
               <span className="relative z-10">{t.useCases.title.part1}</span>
               <svg
@@ -77,7 +77,7 @@ export default function UseCasesSection() {
             </span>{" "}
             {t.useCases.title.part2}
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base">
+          <p className="text-neutral-400 max-w-xl mx-auto text-sm md:text-base tracking-tight font-normal">
             {t.useCases.subtitle}
           </p>
         </div>
@@ -101,8 +101,8 @@ export default function UseCasesSection() {
 
               {/* Content */}
               <div className="p-2 md:p-4 flex flex-col flex-1">
-                  <h3 className="text-sm md:text-lg font-semibold text-gray-900 leading-tight group-hover:text-primary transition-colors">{useCase.role}</h3>
-                  <p className="text-neutral-500 text-[11px] md:text-sm">
+                  <h3 className="text-sm md:text-lg font-semibold tracking-tight text-black leading-tight group-hover:text-primary transition-colors">{useCase.role}</h3>
+                  <p className="text-neutral-400 text-[11px] md:text-sm">
                     {useCase.description}
                   </p>
               </div>

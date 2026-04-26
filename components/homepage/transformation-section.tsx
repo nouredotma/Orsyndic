@@ -85,14 +85,14 @@ function StepCard({
               </div>
 
               <h3 
-                className="text-2xl md:text-5xl font-bold mb-2 md:mb-5 tracking-tight"
+                className="text-2xl md:text-5xl font-semibold mb-2 md:mb-5 tracking-tighter"
                 style={{ color: step.textColor }}
               >
                 {step.title}
               </h3>
 
               <p 
-                className="text-sm md:text-lg leading-relaxed max-w-xl"
+                className="text-sm md:text-lg tracking-tight max-w-xl"
                 style={{ 
                   color: step.textColor,
                   opacity: step.textColor === "#ffffff" ? 0.7 : 0.85 
@@ -158,7 +158,7 @@ export default function TransformationSection() {
         {/* Header — sticky behind cards, scrolls away with the container */}
         <div className="sticky top-[12svh] h-[86svh] z-0 pointer-events-none">
           <div className="max-w-7xl mx-auto text-center space-y-1 py-5 px-3 md:px-6 lg:px-8 pointer-events-auto">
-            <h2 className="text-xl font-bold md:text-4xl text-balance">
+            <h2 className="text-xl font-medium md:text-4xl text-balance tracking-tighter">
               <span className="relative inline-block">
                 <span className="relative z-10">{t.transformation.title}</span>
                 <svg
@@ -181,7 +181,7 @@ export default function TransformationSection() {
                 </svg>
               </span>
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base">
+            <p className="text-neutral-400 max-w-xl mx-auto text-sm md:text-base font-normal tracking-tight">
               {t.transformation.subtitle}
             </p>
           </div>
