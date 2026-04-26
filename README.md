@@ -1,12 +1,12 @@
-# SyndiCare — Modern Property Management System (Syndic)
+# Orsyndic — Modern Property Management System (Syndic)
 
-![SyndiCare Banner](public/og-image.png)
+![Orsyndic Banner](public/og-image.png)
 
-**SyndiCare** is a SaaS-based web application designed to simplify property co-ownership management ("Syndic"). It serves as a digital bridge between property managers (Syndic) and users (co-owners and residents), bringing transparency and efficiency to the real estate sector.
+**Orsyndic** is a SaaS-based web application designed to simplify property co-ownership management ("Syndic"). It serves as a digital bridge between property managers (Syndic) and users (co-owners and residents), bringing transparency and efficiency to the real estate sector.
 
 ## 🚀 Project Overview
 
-The real estate sector is undergoing a massive digital transformation. SyndiCare addresses the traditional challenges of property management — such as financial opacity, administrative burden, and communication gaps — by offering a centralized, automated, and user-friendly platform.
+The real estate sector is undergoing a massive digital transformation. Orsyndic addresses the traditional challenges of property management — such as financial opacity, administrative burden, and communication gaps — by offering a centralized, automated, and user-friendly platform.
 
 ### 🎯 Mission
 - **Centralization:** A single access point for all property-related data.
@@ -93,4 +93,4 @@ The real estate sector is undergoing a massive digital transformation. SyndiCare
 
 ---
 
-*SyndiCare — Modern Property Management Solution*
+*Orsyndic — Modern Property Management Solution*
