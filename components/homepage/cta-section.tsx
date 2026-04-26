@@ -16,10 +16,10 @@ export default function CTASection() {
         <div className="bg-black rounded-sm px-5 py-10 md:px-20 md:py-12 ">
           {/* Centered content */}
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-xl md:text-4xl font-semibold tracking-tight text-white mb-2">
+            <h2 className="text-xl md:text-4xl font-medium tracking-tight text-white mb-2">
               {t.cta.title}
             </h2>
-            <p className="text-white/70 mb-2 md:mb-10 text-sm md:text-base">
+            <p className="text-white/70 font-normal mb-2 md:mb-10 text-sm md:text-base">
               {t.cta.subtitle}
             </p>
 

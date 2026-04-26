@@ -9,14 +9,12 @@ import FAQSection from "@/components/homepage/faq-section"
 import Footer from "@/components/homepage/footer"
 import TransformationSection from "@/components/homepage/transformation-section"
 import FunctionalitiesSection from "@/components/homepage/functionalities-section"
-import { FloatingActions } from "@/components/homepage/floating-actions"
 
 export default function Home() {
   return (
     <main className="w-full">
       <Header />
       <HeroSection />
-      <FloatingActions />
       <div className="relative z-10 bg-background">
         <TrustedSection />
         <FeaturesSection />

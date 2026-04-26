@@ -6,6 +6,7 @@ import "./globals.css"
 import Preloader from "@/components/homepage/preloader"
 import { LanguageProvider } from "@/lib/language-context"
 import { Toaster } from "sonner"
+import { FloatingActions } from "@/components/homepage/floating-actions"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const urbanist = Urbanist({ subsets: ["latin"], variable: "--font-urbanist" })
@@ -120,6 +121,7 @@ export default function RootLayout({
         <Preloader />
         <LanguageProvider>
           {children}
+          <FloatingActions />
         </LanguageProvider>
         <Toaster position="top-center" />
         <Analytics />
