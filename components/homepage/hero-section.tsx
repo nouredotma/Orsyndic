@@ -37,17 +37,7 @@ export default function HeroSection() {
   return (
     <TooltipProvider delayDuration={0}>
       <section className="relative w-full h-svh flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 w-full h-full">
-          {/* Static gradient background */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: "radial-gradient(ellipse at 60% 50%, #ffe0e0 0%, #fff0f0 40%, #ffffff 80%)",
-            }}
-          />
-          {/* Bottom Fade Gradient */}
-          <div className="absolute bottom-0 left-0 right-0 h-20 md:h-40 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-        </div>
+        <div className="absolute inset-0 w-full h-full bg-background" />
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-2 md:px-6 lg:px-8 text-center">
