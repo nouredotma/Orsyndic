@@ -319,7 +319,10 @@ function AdminDashboard({ firstName }: { firstName: string }) {
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-xs font-bold text-white">{charge.amount} MAD</p>
-                    <Badge variant={charge.status === "Partial" ? "warning" : "danger"} className="text-[9px]">
+                    <Badge className={cn(
+                      "text-[9px] border-none text-white",
+                      charge.status === "Partial" ? "bg-amber-600" : "bg-[#FF0000]"
+                    )}>
                       {charge.status}
                     </Badge>
                   </div>
