@@ -102,10 +102,10 @@ export default function HeroSection() {
             <Link href="/contact">
               <Button
                 size="lg"
-                className="group bg-white hover:bg-white/90 border-2 border-neutral-200 text-black font-medium rounded-sm pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer text-xs md:text-sm h-auto flex items-center gap-2 transition-all duration-300"
+                className="group bg-primary hover:bg-primary/90 border-2 border-primary text-white font-medium rounded-sm pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer text-xs md:text-sm h-auto flex items-center gap-2 transition-all duration-300"
               >
                 {t.hero.startProject}
-                <AnimatedArrow wrapperClassName="bg-black shrink-0" arrowClassName="text-white" />
+                <AnimatedArrow wrapperClassName="bg-white shrink-0" arrowClassName="text-primary" />
               </Button>
             </Link>
             
@@ -152,9 +152,9 @@ export default function HeroSection() {
             </div>
 
             {/* Main Project Image */}
-            <div className="relative w-full rounded-sm overflow-hidden border border-neutral-200/60 z-10">
+            <div className="relative w-full rounded-sm overflow-hidden z-10">
               <Image
-                src="/projects/p1.png"
+                src="/hero.png"
                 alt="Project showcase"
                 width={1920}
                 height={1080}

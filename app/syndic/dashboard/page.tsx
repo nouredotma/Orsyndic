@@ -631,10 +631,20 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
 // ========================
 export default function DashboardPage() {
   const { t, language } = useI18n()
-  const user = getCurrentUser()
+  const [mounted, setMounted] = React.useState(false)
+  const [user, setUser] = React.useState<any>(null)
+
+  React.useEffect(() => {
+    setMounted(true)
+    setUser(getCurrentUser())
+  }, [])
+
+  if (!mounted) {
+    return null // Or a loading skeleton
+  }
+
   const firstName = user?.fullName.split(" ")[0] || "User"
   const hour = new Date().getHours()
-
   const greeting = hour < 12 ? t.dashboard.goodMorning : hour < 18 ? t.dashboard.goodAfternoon : t.dashboard.goodEvening
   const dateStr = new Date().toLocaleDateString(language === "en" ? "en-US" : language === "fr" ? "fr-FR" : "es-ES", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
 

@@ -7,20 +7,20 @@ export default function TrustedSection() {
   // 14 company/brand images with black filter
   // 14 company/brand images with their official links
   const trustedData = [
-    { logo: "https://cdn.simpleicons.org/nextdotjs", url: "https://nextjs.org" },
-    { logo: "https://cdn.simpleicons.org/react", url: "https://react.dev" },
-    { logo: "https://cdn.simpleicons.org/tailwindcss", url: "https://tailwindcss.com" },
-    { logo: "https://cdn.simpleicons.org/typescript", url: "https://www.typescriptlang.org" },
-    { logo: "https://cdn.simpleicons.org/nodedotjs", url: "https://nodejs.org" },
-    { logo: "https://cdn.simpleicons.org/cloudflare", url: "https://cloudflare.com" },
-    { logo: "https://cdn.simpleicons.org/rust", url: "https://www.rust-lang.org" },
-    { logo: "https://cdn.simpleicons.org/github", url: "https://github.com" },
-    { logo: "https://cdn.simpleicons.org/postgresql", url: "https://www.postgresql.org" },
-    { logo: "https://cdn.simpleicons.org/python", url: "https://www.python.org" },
-    { logo: "https://cdn.simpleicons.org/supabase", url: "https://supabase.com" },
-    { logo: "https://cdn.simpleicons.org/resend", url: "https://resend.com" },
-    { logo: "https://cdn.simpleicons.org/docker", url: "https://docker.com" },
-    { logo: "https://cdn.simpleicons.org/kubernetes", url: "https://kubernetes.io" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
   ]
 
   return (
@@ -30,10 +30,10 @@ export default function TrustedSection() {
           <p className="text-black/50 font-semibold text-xs md:text-md"> <span className="font-semibold text-black">{t.trusted.text.part1}</span>{t.trusted.text.part2}<span className="font-semibold text-black">{t.trusted.text.part3}</span>{t.trusted.text.part4}</p>
         </div>
 
-        {/* Mobile: Marquee Scrollers */}
-        <div className="md:hidden">
+        {/* Marquee Scrollers (All devices) */}
+        <div className="w-full">
           {/* Row 1: Forward Marquee */}
-          <div className="group flex overflow-hidden py-1 [--gap:0.5rem] gap-(--gap) flex-row max-w-full [--duration:30s] mask-[linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+          <div className="flex overflow-hidden py-0.5 [--gap:0.125rem] md:[--gap:0.25rem] gap-(--gap) flex-row max-w-full [--duration:30s] md:[--duration:40s] mask-[linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]">
             {Array(4)
               .fill(0)
               .map((_, i) => (
@@ -47,12 +47,12 @@ export default function TrustedSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       key={idx}
-                      className="w-20 h-14 rounded-sm flex items-center justify-center bg-neutral-100 transition-all"
+                      className="group w-24 h-14 md:w-48 md:h-24 rounded-sm border-2 border-neutral-200 flex items-center justify-center bg-white transition-all hover:border-primary overflow-hidden"
                     >
                       <img
                         src={item.logo || "/placeholder.svg"}
                         alt={`Trusted branding ${idx}`}
-                        className="w-6 h-6 object-contain grayscale brightness-0"
+                        className="w-full h-full object-contain"
                       />
                     </a>
                   ))}
@@ -61,7 +61,7 @@ export default function TrustedSection() {
           </div>
  
           {/* Row 2: Reverse Marquee */}
-          <div className="group flex overflow-hidden py-1 [--gap:0.5rem] gap-(--gap) flex-row max-w-full [--duration:35s] mask-[linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+          <div className="flex overflow-hidden py-0.5 [--gap:0.125rem] md:[--gap:0.25rem] gap-(--gap) flex-row max-w-full [--duration:35s] md:[--duration:45s] mask-[linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]">
             {Array(4)
               .fill(0)
               .map((_, i) => (
@@ -75,37 +75,18 @@ export default function TrustedSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       key={idx}
-                      className="w-20 h-14 rounded-sm flex items-center justify-center bg-neutral-100 transition-all"
+                      className="group w-24 h-14 md:w-44 md:h-24 rounded-sm border-2 border-neutral-200 flex items-center justify-center bg-white transition-all hover:border-primary overflow-hidden"
                     >
                       <img
                         src={item.logo || "/placeholder.svg"}
                         alt={`Trusted branding reverse ${idx}`}
-                        className="w-6 h-6 object-contain grayscale brightness-0"
+                        className="w-full h-full object-contain"
                       />
                     </a>
                   ))}
                 </div>
               ))}
           </div>
-        </div>
-
-        {/* Desktop: 7-column grid */}
-        <div className="hidden md:grid grid-cols-7 gap-3">
-          {trustedData.map((item, index) => (
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={index}
-              className="rounded-sm flex items-center justify-center bg-neutral-100 p-2 h-20 transition-all duration-300 group"
-            >
-              <img
-                src={item.logo || "/placeholder.svg"}
-                alt={`Trusted company ${index + 1}`}
-                className="w-8 h-8 object-contain grayscale brightness-0 group-hover:brightness-100 group-hover:grayscale-0 transition-all duration-300"
-              />
-            </a>
-          ))}
         </div>
       </div>
     </section>

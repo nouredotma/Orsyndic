@@ -286,9 +286,9 @@ export const translations: Record<Language, Translations> = {
     trusted: {
       text: {
         part1: "Orsyndic",
-        part2: " uses modern ",
-        part3: "cutting-edge technologies",
-        part4: " to build robust and scalable digital experiences.",
+        part2: " is the trusted solution for ",
+        part3: "numerous residential compounds",
+        part4: " across the region, ensuring seamless property management.",
       },
     },
     about: {
@@ -636,9 +636,9 @@ export const translations: Record<Language, Translations> = {
     trusted: {
       text: {
         part1: "Orsyndic",
-        part2: " utilise des ",
-        part3: "technologies de pointe",
-        part4: " pour créer des expériences numériques robustes et évolutives.",
+        part2: " est la solution de confiance pour de ",
+        part3: "nombreux complexes résidentiels",
+        part4: " à travers la région, assurant une gestion fluide des copropriétés.",
       },
     },
     about: {
@@ -986,9 +986,9 @@ export const translations: Record<Language, Translations> = {
     trusted: {
       text: {
         part1: "Orsyndic",
-        part2: " utiliza ",
-        part3: "tecnologías de vanguardia",
-        part4: " para crear experiencias digitales robustas y escalables.",
+        part2: " es la solución de confianza para ",
+        part3: "numerosos complejos residenciales",
+        part4: " en toda la región, garantizando una gestión fluida de la propiedad.",
       },
     },
     about: {
