@@ -1,11 +1,14 @@
 "use client"
 
-export default function InvoicesPage() {
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
+
+export default function ProductsPage() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-black/5 rounded-xl bg-neutral-50/50">
         <p className="text-sm text-neutral-500 font-medium italic">
-          Invoice management module is coming soon.
+          Product management module is coming soon.
         </p>
       </div>
     </div>

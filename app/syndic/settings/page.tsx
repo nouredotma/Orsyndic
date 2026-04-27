@@ -1,11 +1,13 @@
 "use client"
 
-export default function Page() {
+export default function SettingsPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
-      <p className="text-muted-foreground max-w-sm mb-8">
-        Building...
-      </p>
+    <div className="flex flex-col h-full">
+      <div className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-black/5 rounded-xl bg-neutral-50/50">
+        <p className="text-sm text-neutral-500 font-medium italic">
+          Account and system settings are coming soon.
+        </p>
+      </div>
     </div>
   )
 }

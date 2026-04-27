@@ -95,7 +95,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr" className="loading relative" data-scroll-behavior="smooth">
+    <html lang="en" className="loading relative" data-scroll-behavior="smooth">
       <body className={`${inter.variable} ${urbanist.variable} ${caveat.variable} font-sans antialiased relative`}>
         <script
           type="application/ld+json"

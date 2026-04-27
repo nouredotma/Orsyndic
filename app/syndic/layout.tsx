@@ -26,36 +26,20 @@ interface SidebarItem {
   description: string
 }
 
-interface SidebarGroup {
-  label: string
-  items: SidebarItem[]
-}
-
-const dashboardItem: SidebarItem = {
-  title: "Dashboard",
-  icon: Home,
-  path: "/syndic/dashboard",
-  description: "KPI overview, charts, Top 10 clients",
-}
-
-const sidebarGroups: SidebarGroup[] = [
+const sidebarItems: SidebarItem[] = [
   {
-    label: "Sales & CRM",
-    items: [
-      { title: "Clients", icon: Users, path: "/syndic/clients", description: "CRM Lite: add/edit/delete; billing history" },
-      { title: "Products", icon: Package, path: "/syndic/products", description: "Product catalog and management" },
-      { title: "Inventory", icon: Box, path: "/syndic/inventory", description: "Inventory and stock movements" },
-    ],
+    title: "Dashboard",
+    icon: Home,
+    path: "/syndic/dashboard",
+    description: "KPI overview, charts, Top 10 clients",
   },
-  {
-    label: "Documents",
-    items: [
-      { title: "Quotes", icon: FileText, path: "/syndic/quotes", description: "Create/edit; AI assistant" },
-      { title: "Invoices", icon: FileText, path: "/syndic/invoices", description: "Convert quotes; status tracking" },
-      { title: "Payments", icon: CreditCard, path: "/syndic/payments", description: "Record payments" },
-      { title: "Credit Notes", icon: Receipt, path: "/syndic/credit-notes", description: "Credit note management" },
-    ],
-  },
+  { title: "Clients", icon: Users, path: "/syndic/clients", description: "CRM Lite: add/edit/delete; billing history" },
+  { title: "Products", icon: Package, path: "/syndic/products", description: "Product catalog and management" },
+  { title: "Inventory", icon: Box, path: "/syndic/inventory", description: "Inventory and stock movements" },
+  { title: "Quotes", icon: FileText, path: "/syndic/quotes", description: "Create/edit; AI assistant" },
+  { title: "Invoices", icon: FileText, path: "/syndic/invoices", description: "Convert quotes; status tracking" },
+  { title: "Payments", icon: CreditCard, path: "/syndic/payments", description: "Record payments" },
+  { title: "Credit Notes", icon: Receipt, path: "/syndic/credit-notes", description: "Credit note management" },
 ]
 
 const languages = [
@@ -105,15 +89,15 @@ const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="top" align="start" className="w-[12.5rem] mb-2 bg-white border-none shadow-lg rounded-lg p-1.5">
-          <DropdownMenuItem asChild className="cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-lg py-2.5 transition-colors group">
+        <DropdownMenuContent side="top" align="start" className="w-[12.5rem] mb-2 bg-white border-none shadow-lg rounded-sm p-1.5">
+          <DropdownMenuItem asChild className="cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2.5 transition-colors group">
             <Link href="/syndic/settings" className="flex items-center gap-2.5 w-full">
               <Settings className="h-4.5 w-4.5 text-black/60 group-hover:text-black group-focus:text-black" />
               <span className="text-sm font-medium text-black">Settings</span>
             </Link>
           </DropdownMenuItem>
           <div className="h-px bg-black/5 my-1.5" />
-          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 hover:text-red-600 hover:bg-red-50 focus:text-red-600 focus:bg-red-50 rounded-lg py-2.5 transition-colors flex items-center gap-2.5">
+          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 hover:text-red-600 hover:bg-red-50 focus:text-red-600 focus:bg-red-50 rounded-sm py-2.5 transition-colors flex items-center gap-2.5">
             <LogOut className="h-4.5 w-4.5 text-red-500" />
             <span className="text-sm font-semibold">Logout</span>
           </DropdownMenuItem>
@@ -159,13 +143,9 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
       const company = JSON.parse(companyJson)
       setCompanyName(company.name || "Company")
     }
-    if (pathname === dashboardItem.path) {
-      setCurrentPageTitle(dashboardItem.title)
-    } else {
-      for (const group of sidebarGroups) {
-        const item = group.items.find((item) => item.path === pathname)
-        if (item) { setCurrentPageTitle(item.title); break }
-      }
+    const currentItem = sidebarItems.find((item) => item.path === pathname)
+    if (currentItem) {
+      setCurrentPageTitle(currentItem.title)
     }
   }, [pathname, router])
 
@@ -193,18 +173,11 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
           <span className="sr-only">Toggle menu</span>
         </Button>
       )}
-      <div className="space-y-1.5 mb-2">
-        <SidebarNavItem item={dashboardItem} pathname={pathname} collapsed={collapsed} isMobileSidebar={isMobileSidebar} />
+      <div className="space-y-1">
+        {sidebarItems.map((item) => (
+          <SidebarNavItem key={item.path} item={item} pathname={pathname} collapsed={collapsed} isMobileSidebar={isMobileSidebar} />
+        ))}
       </div>
-      {sidebarGroups.map((group) => (
-        <div key={group.label} className="mb-2">
-          <div className="space-y-1">
-            {group.items.map((item) => (
-              <SidebarNavItem key={item.path} item={item} pathname={pathname} collapsed={collapsed} isMobileSidebar={isMobileSidebar} />
-            ))}
-          </div>
-        </div>
-      ))}
     </>
   )
 
