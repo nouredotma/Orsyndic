@@ -2,40 +2,51 @@
 
 import { useState } from "react"
 import { TicketCheck, Search } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { tickets } from "@/lib/mock-data"
-import type { TicketStatus } from "@/lib/mock-data"
+import { tickets as initialTickets } from "@/lib/mock-data"
+import type { TicketStatus, Ticket } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/lib/i18n-context"
 
 export default function HelpdeskPage() {
+  const { t } = useI18n()
+  const [localTickets, setLocalTickets] = useState<Ticket[]>(initialTickets)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState<"All" | TicketStatus>("All")
 
-  const filtered = tickets.filter((t) => {
+  const filtered = localTickets.filter((t) => {
     const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || t.submittedBy.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === "All" || t.status === filterStatus
     return matchesSearch && matchesStatus
   })
 
+  const handleUpdateStatus = (ticketId: string, newStatus: TicketStatus) => {
+    setLocalTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status: newStatus } : t))
+  }
+
+  const openCount = localTickets.filter(t => t.status === "Open").length
+  const inProgressCount = localTickets.filter(t => t.status === "In Progress").length
+  const resolvedCount = localTickets.filter(t => t.status === "Resolved").length
+
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-3 gap-2">
-        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-[#FF0000]">{tickets.filter(t => t.status === "Open").length}</p><p className="text-[10px] text-neutral-500">Open</p></CardContent></Card>
-        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-amber-600">{tickets.filter(t => t.status === "In Progress").length}</p><p className="text-[10px] text-neutral-500">In Progress</p></CardContent></Card>
-        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-[#00D100]">{tickets.filter(t => t.status === "Resolved").length}</p><p className="text-[10px] text-neutral-500">Resolved</p></CardContent></Card>
+        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-[#FF0000]">{openCount}</p><p className="text-[10px] text-neutral-500">{t.helpdesk.open}</p></CardContent></Card>
+        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-amber-600">{inProgressCount}</p><p className="text-[10px] text-neutral-500">{t.helpdesk.inProgress}</p></CardContent></Card>
+        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-[#00D100]">{resolvedCount}</p><p className="text-[10px] text-neutral-500">{t.helpdesk.resolved}</p></CardContent></Card>
       </div>
 
       <div className="flex items-center gap-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
-          <Input placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm" />
+          <Input placeholder={t.users.search} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm" />
         </div>
         <div className="flex rounded-md bg-neutral-100 p-0.5 gap-0.5">
           {(["All", "Open", "In Progress", "Resolved"] as const).map((s) => (
-            <button key={s} onClick={() => setFilterStatus(s)} className={cn("px-3 py-1.5 rounded text-xs font-medium transition-all cursor-pointer whitespace-nowrap", filterStatus === s ? "bg-white text-black shadow-sm" : "text-neutral-500")}>{s}</button>
+            <button key={s} onClick={() => setFilterStatus(s)} className={cn("px-3 py-1.5 rounded text-xs font-medium transition-all cursor-pointer whitespace-nowrap", filterStatus === s ? "bg-white text-black shadow-sm" : "text-neutral-500")}>{s === "All" ? t.common.all : s === "Open" ? t.helpdesk.open : s === "In Progress" ? t.helpdesk.inProgress : t.helpdesk.resolved}</button>
           ))}
         </div>
       </div>
@@ -57,15 +68,15 @@ export default function HelpdeskPage() {
                     </div>
                     <p className="text-xs text-neutral-500 mt-1 line-clamp-1">{ticket.description}</p>
                     <div className="flex items-center gap-3 mt-2 text-[10px] text-neutral-400">
-                      <span>By <strong className="text-neutral-600">{ticket.submittedBy}</strong> ({ticket.submittedByRole})</span>
-                      <span>Apt {ticket.apartmentNumber} · {ticket.buildingName}</span>
+                      <span>{t.helpdesk.by} <strong className="text-neutral-600">{ticket.submittedBy}</strong> ({ticket.submittedByRole})</span>
+                      <span>{t.charges.apt} {ticket.apartmentNumber} · {ticket.buildingName}</span>
                       <span>{ticket.createdAt}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  {ticket.status === "Open" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer">Start</Button>}
-                  {ticket.status === "In Progress" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer">Resolve</Button>}
+                  {ticket.status === "Open" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={() => handleUpdateStatus(ticket.id, "In Progress")}>Start</Button>}
+                  {ticket.status === "In Progress" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={() => handleUpdateStatus(ticket.id, "Resolved")}>Resolve</Button>}
                 </div>
               </div>
             </CardContent>

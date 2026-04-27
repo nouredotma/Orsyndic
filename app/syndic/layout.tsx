@@ -13,6 +13,8 @@ import {
 
 import { logoutUser, getCurrentUser } from "@/lib/auth"
 import type { UserRole } from "@/lib/auth"
+import { I18nProvider, useI18n } from "@/lib/i18n-context"
+import type { DashboardLanguage } from "@/lib/dashboard-translations"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
@@ -62,6 +64,12 @@ const getSidebarItems = (role: UserRole): SidebarItem[] => {
   }
 }
 
+const allowedRoutes: Record<UserRole, string[]> = {
+  Admin: ["/syndic/dashboard", "/syndic/users", "/syndic/buildings", "/syndic/charges", "/syndic/helpdesk", "/syndic/documents", "/syndic/announcements", "/syndic/profile", "/syndic/settings"],
+  Owner: ["/syndic/dashboard", "/syndic/my-charges", "/syndic/documents", "/syndic/my-tickets", "/syndic/profile", "/syndic/settings"],
+  Tenant: ["/syndic/dashboard", "/syndic/my-tickets", "/syndic/profile", "/syndic/settings"],
+}
+
 const languages = [
   { name: "English", code: "en", flag: "https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" },
   { name: "French", code: "fr", flag: "https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg" },
@@ -69,7 +77,15 @@ const languages = [
 ]
 
 const SidebarNavItem = ({ item, pathname, collapsed, isMobileSidebar }: { item: SidebarItem; pathname: string; collapsed: boolean; isMobileSidebar: boolean }) => {
+  const { t } = useI18n()
   const isActive = pathname === item.path
+  
+  // Use translated title from sidebar map
+  const key = item.path.split("/").pop() || "dashboard"
+  // CamelCase key for myCharges and myTickets
+  const camelKey = key.includes("-") ? key.replace(/-([a-z])/g, (g) => g[1].toUpperCase()) : key
+  const title = t.sidebar[camelKey as keyof typeof t.sidebar] || item.title
+
   return (
     <Link href={item.path} className="block">
       <Button
@@ -83,14 +99,15 @@ const SidebarNavItem = ({ item, pathname, collapsed, isMobileSidebar }: { item: 
       >
         {isActive && <div className="absolute right-0 top-[15%] bottom-[15%] w-1 bg-primary rounded-l-full" />}
         <item.icon className={cn("h-5.5 w-5.5", collapsed && !isMobileSidebar ? "" : "mr-2.5")} />
-        {(!collapsed || isMobileSidebar) && <span>{item.title}</span>}
-        {collapsed && !isMobileSidebar && <span className="sr-only">{item.title}</span>}
+        {(!collapsed || isMobileSidebar) && <span>{title}</span>}
+        {collapsed && !isMobileSidebar && <span className="sr-only">{title}</span>}
       </Button>
     </Link>
   )
 }
 
 const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar = false }: { collapsed: boolean; userData: { fullName: string; role: string; avatar?: string } | null; handleLogout: () => void; isMobileSidebar?: boolean }) => {
+  const { t } = useI18n()
   if (!userData) return null
   return (
     <div className={cn("mt-auto pb-1", isMobileSidebar ? "px-0" : "px-0")}>
@@ -113,19 +130,19 @@ const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar
           <DropdownMenuItem asChild className="cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2.5 transition-colors group">
             <Link href="/syndic/profile" className="flex items-center gap-2.5 w-full">
               <UserCircle className="h-4.5 w-4.5 text-black/60 group-hover:text-black group-focus:text-black" />
-              <span className="text-sm font-medium text-black">Profile</span>
+              <span className="text-sm font-medium text-black">{t.header.profile}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild className="cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2.5 transition-colors group">
             <Link href="/syndic/settings" className="flex items-center gap-2.5 w-full">
               <Settings className="h-4.5 w-4.5 text-black/60 group-hover:text-black group-focus:text-black" />
-              <span className="text-sm font-medium text-black">Settings</span>
+              <span className="text-sm font-medium text-black">{t.header.settings}</span>
             </Link>
           </DropdownMenuItem>
           <div className="h-px bg-black/5 my-1.5" />
           <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-500 hover:text-red-600 hover:bg-red-50 focus:text-red-600 focus:bg-red-50 rounded-sm py-2.5 transition-colors flex items-center gap-2.5">
             <LogOut className="h-4.5 w-4.5 text-red-500" />
-            <span className="text-sm font-semibold">Logout</span>
+            <span className="text-sm font-semibold">{t.header.logout}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -134,7 +151,15 @@ const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar
 }
 
 export default function SyndicLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <I18nProvider>
+      <SyndicLayoutContent>{children}</SyndicLayoutContent>
+    </I18nProvider>
+  )
+}
 
+function SyndicLayoutContent({ children }: { children: React.ReactNode }) {
+  const { language, setLanguage, t } = useI18n()
   const router = useRouter()
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
@@ -142,8 +167,9 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
   const [userData, setUserData] = useState<{ fullName: string; role: UserRole; avatar?: string } | null>(null)
   const [currentPageTitle, setCurrentPageTitle] = useState("")
   const [animate, setAnimate] = useState(false)
-  const [currentLanguage, setCurrentLanguage] = useState(languages[0])
   const [isDesktop, setIsDesktop] = useState(true)
+  
+  const currentLanguage = languages.find(l => l.code === language) || languages[0]
 
   useEffect(() => {
     const checkScreenSize = () => { setIsDesktop(window.innerWidth >= 1024) }
@@ -159,6 +185,13 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
     const user = getCurrentUser()
     if (user) {
       setUserData({ fullName: user.fullName, role: user.role, avatar: user.avatar })
+      // Route-level role guard
+      if (isDashboardPath && pathname) {
+        const allowed = allowedRoutes[user.role] || []
+        if (!allowed.includes(pathname)) {
+          router.push("/syndic/dashboard")
+        }
+      }
     } else if (isDashboardPath) {
       router.push("/syndic/login")
     }
@@ -169,14 +202,17 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
       const items = getSidebarItems(userData.role)
       const currentItem = items.find((item) => item.path === pathname)
       if (currentItem) {
-        setCurrentPageTitle(currentItem.title)
+        // Use translated title from sidebar map
+        const key = currentItem.path.split("/").pop() || "dashboard"
+        const translatedTitle = t.sidebar[key as keyof typeof t.sidebar] || currentItem.title
+        setCurrentPageTitle(translatedTitle)
       } else if (pathname === "/syndic/profile") {
-        setCurrentPageTitle("Profile")
+        setCurrentPageTitle(t.header.profile)
       } else if (pathname === "/syndic/settings") {
-        setCurrentPageTitle("Settings")
+        setCurrentPageTitle(t.header.settings)
       }
     }
-  }, [pathname, userData])
+  }, [pathname, userData, language, t])
 
   useEffect(() => {
     setMobileOpen(false)
@@ -266,7 +302,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-lg rounded-sm p-1.5">
                 {languages.map((lang) => (
-                  <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
+                  <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code as DashboardLanguage)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
                     <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
                     <span className={cn("text-xs font-medium", currentLanguage.code === lang.code && "text-primary font-bold")}>{lang.name}</span>
                   </DropdownMenuItem>

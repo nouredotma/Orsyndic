@@ -14,6 +14,8 @@ import {
   Megaphone,
   AlertTriangle,
   Plus,
+  Camera,
+  Check,
 } from "lucide-react"
 import {
   Card,
@@ -58,6 +60,7 @@ import {
   chartConfig
 } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/lib/i18n-context"
 
 const iconMap: Record<string, any> = {
   CreditCard,
@@ -74,6 +77,7 @@ function RevenueOverview({ timeframe, setTimeframe }: {
   timeframe: keyof typeof revenueDataSets, 
   setTimeframe: (v: keyof typeof revenueDataSets) => void 
 }) {
+  const { t } = useI18n()
   return (
     <Card className="border-none bg-neutral-100 lg:col-span-2">
       <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
@@ -135,47 +139,48 @@ function RevenueOverview({ timeframe, setTimeframe }: {
 // ADMIN DASHBOARD
 // ========================
 function AdminDashboard({ firstName }: { firstName: string }) {
+  const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const unpaidCharges = charges.filter(c => c.status === "Unpaid" || c.status === "Partial")
   const openTickets = tickets.filter(t => t.status === "Open" || t.status === "In Progress")
+  const [buildingForm, setBuildingForm] = useState({ name: "", address: "", floors: "" })
+  const [buildingAdded, setBuildingAdded] = useState(false)
+
+  const handleAddBuilding = () => {
+    if (!buildingForm.name || !buildingForm.address || !buildingForm.floors) return
+    setBuildingAdded(true)
+    setBuildingForm({ name: "", address: "", floors: "" })
+    setTimeout(() => setBuildingAdded(false), 2000)
+  }
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-black">Welcome, {firstName}!</h2>
+          <h2 className="text-xl font-bold text-black">{t.dashboard.welcomeBack}, {firstName}!</h2>
           <p className="text-xs text-neutral-500">Here's what's happening in your properties today.</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="gap-2 cursor-pointer text-sm h-9">
               <Plus className="h-4 w-4" />
-              Add Building
+              {t.dashboard.admin.addBuilding}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
             <DialogHeader>
-              <DialogTitle>Add New Building</DialogTitle>
+              <DialogTitle>{t.dashboard.admin.addBuilding}</DialogTitle>
               <DialogDescription>
-                Register a new building in the system.
+                {t.dashboard.admin.registerBuilding}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="b-name" className="text-xs">Building Name</Label>
-                <Input id="b-name" placeholder="Résidence Al Andalous" className="bg-neutral-100 border-none rounded-sm" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="b-address" className="text-xs">Address</Label>
-                <Input id="b-address" placeholder="12 Rue Mohammed V, Casablanca" className="bg-neutral-100 border-none rounded-sm" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="b-floors" className="text-xs">Total Floors</Label>
-                <Input id="b-floors" type="number" placeholder="5" className="bg-neutral-100 border-none rounded-sm" />
-              </div>
+              <div className="grid gap-2"><Label htmlFor="b-name" className="text-xs">{t.dashboard.admin.buildingName}</Label><Input id="b-name" placeholder="Résidence Al Andalous" className="bg-neutral-100 border-none rounded-sm" value={buildingForm.name} onChange={(e) => setBuildingForm(p => ({ ...p, name: e.target.value }))} /></div>
+              <div className="grid gap-2"><Label htmlFor="b-address" className="text-xs">{t.dashboard.admin.address}</Label><Input id="b-address" placeholder="12 Rue Mohammed V, Casablanca" className="bg-neutral-100 border-none rounded-sm" value={buildingForm.address} onChange={(e) => setBuildingForm(p => ({ ...p, address: e.target.value }))} /></div>
+              <div className="grid gap-2"><Label htmlFor="b-floors" className="text-xs">{t.dashboard.admin.totalFloors}</Label><Input id="b-floors" type="number" placeholder="5" className="bg-neutral-100 border-none rounded-sm" value={buildingForm.floors} onChange={(e) => setBuildingForm(p => ({ ...p, floors: e.target.value }))} /></div>
             </div>
             <DialogFooter>
-              <Button type="submit" className="w-full cursor-pointer">Register Building</Button>
+              <Button className="w-full cursor-pointer" onClick={handleAddBuilding}>{buildingAdded ? <><Check className="h-4 w-4 mr-1" />Added!</> : t.dashboard.admin.registerBuilding}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -184,7 +189,13 @@ function AdminDashboard({ firstName }: { firstName: string }) {
 
       {/* Stats Cards */}
       <div className="grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
-        {adminStatsData.map((stat) => {
+        {[
+          { ...adminStatsData[2], title: t.dashboard.admin.totalBuildings },
+          { ...adminStatsData[3], title: t.dashboard.admin.totalApartments },
+          { ...adminStatsData[4], title: t.dashboard.admin.activeUsers },
+          { ...adminStatsData[0], title: t.dashboard.admin.unpaidCharges },
+          { ...adminStatsData[1], title: t.dashboard.admin.latestTickets },
+        ].map((stat) => {
           const Icon = iconMap[stat.iconName] || Activity
           return (
             <Card key={stat.title} className="overflow-hidden border-none bg-neutral-100">
@@ -224,7 +235,7 @@ function AdminDashboard({ firstName }: { firstName: string }) {
         {/* Latest Tickets */}
         <Card className="border-none bg-neutral-100 lg:col-span-1">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-base">Latest Tickets</CardTitle>
+            <CardTitle className="text-base">{t.dashboard.admin.latestTickets}</CardTitle>
             <CardDescription className="text-xs">
               {openTickets.length} open tickets
             </CardDescription>
@@ -340,59 +351,55 @@ function AdminDashboard({ firstName }: { firstName: string }) {
 // OWNER DASHBOARD
 // ========================
 function OwnerDashboard({ firstName }: { firstName: string }) {
+  const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const user = getCurrentUser()
   const myCharges = charges.filter(c => c.apartmentId === user?.apartmentId)
   const unpaidTotal = myCharges.filter(c => c.status === "Unpaid" || c.status === "Partial").reduce((sum, c) => sum + c.amount, 0)
   const paidTotal = myCharges.filter(c => c.status === "Paid").reduce((sum, c) => sum + c.amount, 0)
+  const [ticketForm, setTicketForm] = useState({ title: "", priority: "", description: "" })
+  const [ticketSubmitted, setTicketSubmitted] = useState(false)
+
+  const handleSubmitTicket = () => {
+    if (!ticketForm.title || !ticketForm.description) return
+    setTicketSubmitted(true)
+    setTicketForm({ title: "", priority: "", description: "" })
+    setTimeout(() => setTicketSubmitted(false), 2000)
+  }
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-black">Hello, {firstName}!</h2>
-          <p className="text-xs text-neutral-500">You have {unpaidTotal > 0 ? "some pending charges" : "no pending charges"}.</p>
+          <h2 className="text-xl font-bold text-black">{t.dashboard.welcomeBack}, {firstName}!</h2>
+          <p className="text-xs text-neutral-500">{unpaidTotal > 0 ? "You have some pending charges" : "No pending charges"}.</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="gap-2 cursor-pointer">
               <Plus className="h-4 w-4" />
-              Report Incident
+              {t.dashboard.owner.reportIncident}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
             <DialogHeader>
-              <DialogTitle>Submit New Ticket</DialogTitle>
+              <DialogTitle>{t.dashboard.owner.reportIncident}</DialogTitle>
               <DialogDescription>
                 Describe the issue you're facing and we'll look into it.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="t-title" className="text-xs">Subject</Label>
-                <Input id="t-title" placeholder="Elevator issue, Leakage, etc." className="bg-neutral-100 border-none rounded-sm" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="t-priority" className="text-xs">Priority</Label>
-                <Select>
-                  <SelectTrigger className="bg-neutral-100 border-none rounded-sm">
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-none shadow-lg">
-                    <SelectItem value="Low">Low</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Urgent">Urgent</SelectItem>
-                  </SelectContent>
+              <div className="grid gap-2"><Label htmlFor="t-title" className="text-xs">{t.dashboard.owner.subject}</Label><Input id="t-title" placeholder="Elevator issue, Leakage, etc." className="bg-neutral-100 border-none rounded-sm" value={ticketForm.title} onChange={(e) => setTicketForm(p => ({ ...p, title: e.target.value }))} /></div>
+              <div className="grid gap-2"><Label htmlFor="t-priority" className="text-xs">{t.dashboard.owner.priority}</Label>
+                <Select value={ticketForm.priority} onValueChange={(v) => setTicketForm(p => ({ ...p, priority: v }))}>
+                  <SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder="Select priority" /></SelectTrigger>
+                  <SelectContent className="bg-white border-none shadow-lg"><SelectItem value="Low">Low</SelectItem><SelectItem value="Medium">Medium</SelectItem><SelectItem value="High">High</SelectItem></SelectContent>
                 </Select>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="t-desc" className="text-xs">Description</Label>
-                <Textarea id="t-desc" placeholder="Provide more details..." className="bg-neutral-100 border-none rounded-sm min-h-[100px]" />
-              </div>
+              <div className="grid gap-2"><Label htmlFor="t-desc" className="text-xs">{t.dashboard.owner.description}</Label><Textarea id="t-desc" placeholder="Provide more details..." className="bg-neutral-100 border-none rounded-sm min-h-[100px]" value={ticketForm.description} onChange={(e) => setTicketForm(p => ({ ...p, description: e.target.value }))} /></div>
             </div>
             <DialogFooter>
-              <Button type="submit" className="w-full cursor-pointer">Submit Ticket</Button>
+              <Button className="w-full cursor-pointer" onClick={handleSubmitTicket}>{ticketSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.dashboard.owner.submitTicket}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -403,7 +410,7 @@ function OwnerDashboard({ firstName }: { firstName: string }) {
       <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
         <Card className="border-none bg-neutral-100">
           <CardHeader className="pb-1.5 pt-3.5 px-4">
-            <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">Outstanding Balance</CardTitle>
+            <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">{t.dashboard.owner.outstanding}</CardTitle>
           </CardHeader>
           <CardContent className="px-4 pb-3.5">
             <div className="text-2xl font-bold text-[#FF0000]">{unpaidTotal} MAD</div>
@@ -412,7 +419,7 @@ function OwnerDashboard({ firstName }: { firstName: string }) {
         </Card>
         <Card className="border-none bg-neutral-100">
           <CardHeader className="pb-1.5 pt-3.5 px-4">
-            <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">Total Paid</CardTitle>
+            <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">{t.dashboard.owner.totalPaid}</CardTitle>
           </CardHeader>
           <CardContent className="px-4 pb-3.5">
             <div className="text-2xl font-bold text-[#00D100]">{paidTotal} MAD</div>
@@ -421,7 +428,7 @@ function OwnerDashboard({ firstName }: { firstName: string }) {
         </Card>
         <Card className="border-none bg-neutral-100">
           <CardHeader className="pb-1.5 pt-3.5 px-4">
-            <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">My Apartment</CardTitle>
+            <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">{t.dashboard.owner.apartment}</CardTitle>
           </CardHeader>
           <CardContent className="px-4 pb-3.5">
             <div className="text-2xl font-bold">Apt {user?.apartmentId?.split("-")[1] || "—"}</div>
@@ -436,8 +443,8 @@ function OwnerDashboard({ firstName }: { firstName: string }) {
         {/* Announcements for Owner */}
         <Card className="border-none bg-neutral-100 lg:col-span-1">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-base">Latest Announcements</CardTitle>
-            <CardDescription className="text-xs">Stay updated with building notices</CardDescription>
+            <CardTitle className="text-base">{t.dashboard.admin.announcements}</CardTitle>
+            <CardDescription className="text-xs">Recent updates for residents</CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-1 pb-2">
             <div className="space-y-2">
@@ -471,39 +478,43 @@ function OwnerDashboard({ firstName }: { firstName: string }) {
 // TENANT DASHBOARD
 // ========================
 function TenantDashboard({ firstName }: { firstName: string }) {
+  const { t } = useI18n()
+  const [complaintForm, setComplaintForm] = useState({ title: "", description: "" })
+  const [complaintSubmitted, setComplaintSubmitted] = useState(false)
+
+  const handleSubmitComplaint = () => {
+    if (!complaintForm.title || !complaintForm.description) return
+    setComplaintSubmitted(true)
+    setComplaintForm({ title: "", description: "" })
+    setTimeout(() => setComplaintSubmitted(false), 2000)
+  }
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-black">Hello, {firstName}!</h2>
+          <h2 className="text-xl font-bold text-black">{t.dashboard.welcomeBack}, {firstName}!</h2>
           <p className="text-xs text-neutral-500">Welcome to your dashboard.</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
             <Button className="gap-2 cursor-pointer">
               <Plus className="h-4 w-4" />
-              Submit Complaint
+              {t.dashboard.tenant.submitComplaint}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
             <DialogHeader>
-              <DialogTitle>New Complaint</DialogTitle>
+              <DialogTitle>{t.dashboard.tenant.submitComplaint}</DialogTitle>
               <DialogDescription>
                 We're here to help you with any issues in your apartment.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="tc-title" className="text-xs">Subject</Label>
-                <Input id="tc-title" placeholder="Noise complaint, Plumbing, etc." className="bg-neutral-100 border-none rounded-sm" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="tc-desc" className="text-xs">Details</Label>
-                <Textarea id="tc-desc" placeholder="Describe the issue..." className="bg-neutral-100 border-none rounded-sm min-h-[100px]" />
-              </div>
+              <div className="grid gap-2"><Label htmlFor="tc-title" className="text-xs">{t.dashboard.tenant.subject}</Label><Input id="tc-title" placeholder="Noise complaint, Plumbing, etc." className="bg-neutral-100 border-none rounded-sm" value={complaintForm.title} onChange={(e) => setComplaintForm(p => ({ ...p, title: e.target.value }))} /></div>
+              <div className="grid gap-2"><Label htmlFor="tc-desc" className="text-xs">{t.dashboard.tenant.details}</Label><Textarea id="tc-desc" placeholder="Describe the issue..." className="bg-neutral-100 border-none rounded-sm min-h-[100px]" value={complaintForm.description} onChange={(e) => setComplaintForm(p => ({ ...p, description: e.target.value }))} /></div>
             </div>
             <DialogFooter>
-              <Button type="submit" className="w-full cursor-pointer">Submit Ticket</Button>
+              <Button className="w-full cursor-pointer" onClick={handleSubmitComplaint}>{complaintSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.dashboard.tenant.submitTicket}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -513,7 +524,7 @@ function TenantDashboard({ firstName }: { firstName: string }) {
       {/* Announcements */}
       <Card className="border-none bg-neutral-100">
         <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-base">Announcements</CardTitle>
+          <CardTitle className="text-base">{t.dashboard.admin.announcements}</CardTitle>
           <CardDescription className="text-xs">Building notices and updates</CardDescription>
         </CardHeader>
         <CardContent className="p-4 pt-1 pb-2">
@@ -557,33 +568,22 @@ function getGreeting() {
 // MAIN DASHBOARD PAGE
 // ========================
 export default function DashboardPage() {
-  const [userRole, setUserRole] = React.useState<UserRole | null>(null)
-  const [firstName, setFirstName] = React.useState("User")
+  const { t } = useI18n()
+  const user = getCurrentUser()
+  const firstName = user?.fullName.split(" ")[0] || "User"
 
-  React.useEffect(() => {
-    const user = getCurrentUser()
-    if (user) {
-      setUserRole(user.role)
-      setFirstName(user.fullName.split(" ")[0])
-    }
-  }, [])
-
-  if (!userRole) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-pulse text-neutral-400 text-sm">Loading dashboard...</div>
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold tracking-tight">{t.dashboard.welcomeBack}, {firstName}!</h1>
+        <p className="text-xs text-neutral-500">
+          {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+        </p>
       </div>
-    )
-  }
 
-  switch (userRole) {
-    case "Admin":
-      return <AdminDashboard firstName={firstName} />
-    case "Owner":
-      return <OwnerDashboard firstName={firstName} />
-    case "Tenant":
-      return <TenantDashboard firstName={firstName} />
-    default:
-      return null
-  }
+      {user?.role === "Admin" && <AdminDashboard firstName={firstName} />}
+      {user?.role === "Owner" && <OwnerDashboard firstName={firstName} />}
+      {user?.role === "Tenant" && <TenantDashboard firstName={firstName} />}
+    </div>
+  )
 }

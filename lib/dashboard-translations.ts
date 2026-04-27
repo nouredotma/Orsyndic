@@ -1,0 +1,805 @@
+export type DashboardLanguage = "en" | "fr" | "es"
+
+export interface DashboardTranslations {
+  sidebar: {
+    dashboard: string
+    users: string
+    buildings: string
+    charges: string
+    helpdesk: string
+    documents: string
+    announcements: string
+    myCharges: string
+    myTickets: string
+  }
+  header: {
+    profile: string
+    settings: string
+    logout: string
+  }
+  dashboard: {
+    welcomeBack: string
+    admin: {
+      totalBuildings: string
+      totalApartments: string
+      monthlyRevenue: string
+      activeUsers: string
+      unpaidCharges: string
+      latestTickets: string
+      announcements: string
+      addBuilding: string
+      registerBuilding: string
+      buildingName: string
+      address: string
+      totalFloors: string
+    }
+    owner: {
+      outstanding: string
+      totalPaid: string
+      apartment: string
+      reportIncident: string
+      subject: string
+      priority: string
+      description: string
+      submitTicket: string
+    }
+    tenant: {
+      submitComplaint: string
+      subject: string
+      details: string
+      submitTicket: string
+    }
+  }
+  users: {
+    addUser: string
+    createUser: string
+    fullName: string
+    role: string
+    building: string
+    apartment: string
+    username: string
+    phone: string
+    password: string
+    editUser: string
+    saveChanges: string
+    deactivate: string
+    activate: string
+    activeUsers: string
+    owners: string
+    tenants: string
+    search: string
+    status: string
+    selectRole: string
+    selectBuilding: string
+    userHeader: string
+    usernamePhoneHeader: string
+  }
+  buildings: {
+    addBuilding: string
+    registerBuilding: string
+    addApartment: string
+    buildingName: string
+    address: string
+    totalFloors: string
+    apartmentNumber: string
+    floor: string
+    tantiemes: string
+    owner: string
+    tenant: string
+    paymentHistory: string
+    occupants: string
+    apts: string
+    floorsRegistered: string
+    noTenant: string
+    selectBuildingToView: string
+    viewAll: string
+    noHistoryFound: string
+    addApartmentTo: string
+    selectOwner: string
+    selectBuilding: string
+  }
+  charges: {
+    total: string
+    paid: string
+    unpaid: string
+    generateCharges: string
+    calculateCharges: string
+    rate: string
+    perTantieme: string
+    emailNotifications: string
+    sendAutomatedEmail: string
+    validate: string
+    markPaid: string
+    search: string
+    all: string
+    partial: string
+    amount: string
+    status: string
+    actions: string
+    owner: string
+    apt: string
+    period: string
+    validated: string
+  }
+  helpdesk: {
+    open: string
+    inProgress: string
+    resolved: string
+    start: string
+    resolve: string
+    search: string
+    by: string
+  }
+  documents: {
+    upload: string
+    download: string
+    documentName: string
+    category: string
+    file: string
+    uploadDocument: string
+    assemblyMinutes: string
+    regulations: string
+    financialReports: string
+    contracts: string
+    other: string
+    dragDrop: string
+  }
+  announcements: {
+    newAnnouncement: string
+    title: string
+    content: string
+    urgent: string
+    urgentDescription: string
+    postAnnouncement: string
+  }
+  myCharges: {
+    outstanding: string
+    totalCharges: string
+    chargeHistory: string
+    downloadPDF: string
+  }
+  myTickets: {
+    newTicket: string
+    submit: string
+    attachPhoto: string
+    cancel: string
+    noTickets: string
+    reportIssue: string
+  }
+  profile: {
+    accountInfo: string
+    changePassword: string
+    currentPassword: string
+    newPassword: string
+    confirmPassword: string
+    updatePassword: string
+  }
+  settings: {
+    notifications: string
+    notificationsDesc: string
+    emailNotifs: string
+    smsNotifs: string
+    ticketUpdates: string
+    chargeReminders: string
+    language: string
+    languageDesc: string
+    save: string
+    saved: string
+  }
+  common: {
+    all: string
+    search: string
+    cancel: string
+    save: string
+    delete: string
+    edit: string
+    close: string
+    confirm: string
+    loading: string
+    noResults: string
+    back: string
+  }
+}
+
+export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslations> = {
+  en: {
+    sidebar: {
+      dashboard: "Dashboard",
+      users: "Users",
+      buildings: "Buildings",
+      charges: "Charges",
+      helpdesk: "Helpdesk",
+      documents: "Documents",
+      announcements: "Announcements",
+      myCharges: "My Charges",
+      myTickets: "My Tickets",
+    },
+    header: {
+      profile: "Profile",
+      settings: "Settings",
+      logout: "Log out",
+    },
+    dashboard: {
+      welcomeBack: "Welcome back",
+      admin: {
+        totalBuildings: "Total Buildings",
+        totalApartments: "Total Apartments",
+        monthlyRevenue: "Monthly Revenue",
+        activeUsers: "Active Users",
+        unpaidCharges: "Unpaid Charges",
+        latestTickets: "Latest Tickets",
+        announcements: "Announcements",
+        addBuilding: "Add Building",
+        registerBuilding: "Register Building",
+        buildingName: "Building Name",
+        address: "Address",
+        totalFloors: "Total Floors",
+      },
+      owner: {
+        outstanding: "Outstanding",
+        totalPaid: "Total Paid",
+        apartment: "Apartment",
+        reportIncident: "Report Incident",
+        subject: "Subject",
+        priority: "Priority",
+        description: "Description",
+        submitTicket: "Submit Ticket",
+      },
+      tenant: {
+        submitComplaint: "Submit Complaint",
+        subject: "Subject",
+        details: "Details",
+        submitTicket: "Submit Ticket",
+      },
+    },
+    users: {
+      addUser: "Add User",
+      createUser: "Create User",
+      fullName: "Full Name",
+      role: "Role",
+      building: "Building",
+      apartment: "Apartment Number",
+      username: "Username",
+      phone: "Phone Number",
+      password: "Password",
+      editUser: "Edit User",
+      saveChanges: "Save Changes",
+      deactivate: "Deactivate",
+      activate: "Activate",
+      activeUsers: "Active Users",
+      owners: "Owners",
+      tenants: "Tenants",
+      search: "Search by name, username or phone...",
+      status: "Status",
+      selectRole: "Select role",
+      selectBuilding: "Select building",
+      userHeader: "User",
+      usernamePhoneHeader: "Username / Phone",
+    },
+    buildings: {
+      addBuilding: "Add Building",
+      registerBuilding: "Register Building",
+      addApartment: "Add Apartment",
+      buildingName: "Building Name",
+      address: "Address",
+      totalFloors: "Total Floors",
+      apartmentNumber: "Apartment Number",
+      floor: "Floor",
+      tantiemes: "Tantièmes (m²)",
+      owner: "Owner",
+      tenant: "Tenant",
+      paymentHistory: "Payment History",
+      occupants: "Occupants",
+      apts: "Apts",
+      floorsRegistered: "floors · apartments registered",
+      noTenant: "No tenant",
+      selectBuildingToView: "Select a building to view apartments",
+      viewAll: "View All",
+      noHistoryFound: "No payment history found.",
+      addApartmentTo: "Add a new apartment to",
+      selectOwner: "Select owner",
+      selectBuilding: "Select building",
+    },
+    charges: {
+      total: "Total",
+      paid: "Paid",
+      unpaid: "Unpaid",
+      generateCharges: "Generate Charges",
+      calculateCharges: "Automatically calculate charges based on apartment tantièmes (m²).",
+      rate: "Rate (MAD)",
+      perTantieme: "per tantième",
+      emailNotifications: "Email Notifications",
+      sendAutomatedEmail: "Send an automated email to owners.",
+      validate: "Validate",
+      markPaid: "Mark Paid",
+      search: "Search by owner or apartment...",
+      all: "All",
+      partial: "Partial",
+      amount: "Amount",
+      status: "Status",
+      actions: "Actions",
+      owner: "Owner",
+      apt: "Apt",
+      period: "Period",
+      validated: "Validated",
+    },
+    helpdesk: {
+      open: "Open",
+      inProgress: "In Progress",
+      resolved: "Resolved",
+      start: "Start",
+      resolve: "Resolve",
+      search: "Search...",
+      by: "By",
+    },
+    documents: {
+      upload: "Upload File",
+      download: "Download",
+      documentName: "Document Name",
+      category: "Category",
+      file: "File",
+      uploadDocument: "Upload Document",
+      assemblyMinutes: "Assembly Minutes",
+      regulations: "Regulations",
+      financialReports: "Financial Reports",
+      contracts: "Contracts",
+      other: "Other",
+      dragDrop: "Click to browse or drag and drop",
+    },
+    announcements: {
+      newAnnouncement: "New Announcement",
+      title: "Title",
+      content: "Content",
+      urgent: "Mark as Urgent",
+      urgentDescription: "This will highlight the announcement in red.",
+      postAnnouncement: "Post Announcement",
+    },
+    myCharges: {
+      outstanding: "Outstanding",
+      totalCharges: "Total Charges",
+      chargeHistory: "Charge History",
+      downloadPDF: "PDF",
+    },
+    myTickets: {
+      newTicket: "New Ticket",
+      submit: "Submit",
+      attachPhoto: "Attach Photo",
+      cancel: "Cancel",
+      noTickets: "No tickets submitted yet.",
+      reportIssue: "Click \"New Ticket\" to report an issue.",
+    },
+    profile: {
+      accountInfo: "Account Information",
+      changePassword: "Change Password",
+      currentPassword: "Current Password",
+      newPassword: "New Password",
+      confirmPassword: "Confirm New Password",
+      updatePassword: "Update Password",
+    },
+    settings: {
+      notifications: "Notifications",
+      notificationsDesc: "Choose how you want to be notified",
+      emailNotifs: "Email Notifications",
+      smsNotifs: "SMS Notifications",
+      ticketUpdates: "Ticket Updates",
+      chargeReminders: "Charge Reminders",
+      language: "Language",
+      languageDesc: "Set your preferred language",
+      save: "Save Settings",
+      saved: "✓ Saved!",
+    },
+    common: {
+      all: "All",
+      search: "Search",
+      cancel: "Cancel",
+      save: "Save",
+      delete: "Delete",
+      edit: "Edit",
+      close: "Close",
+      confirm: "Confirm",
+      loading: "Loading...",
+      noResults: "No results found",
+      back: "Back",
+    },
+  },
+  fr: {
+    sidebar: {
+      dashboard: "Tableau de bord",
+      users: "Utilisateurs",
+      buildings: "Immeubles",
+      charges: "Charges",
+      helpdesk: "Support",
+      documents: "Documents",
+      announcements: "Annonces",
+      myCharges: "Mes Charges",
+      myTickets: "Mes Tickets",
+    },
+    header: {
+      profile: "Profil",
+      settings: "Paramètres",
+      logout: "Déconnexion",
+    },
+    dashboard: {
+      welcomeBack: "Bon retour",
+      admin: {
+        totalBuildings: "Immeubles",
+        totalApartments: "Appartements",
+        monthlyRevenue: "Revenus Mensuels",
+        activeUsers: "Utilisateurs Actifs",
+        unpaidCharges: "Charges Impayées",
+        latestTickets: "Derniers Tickets",
+        announcements: "Annonces",
+        addBuilding: "Ajouter un Immeuble",
+        registerBuilding: "Enregistrer l'Immeuble",
+        buildingName: "Nom de l'Immeuble",
+        address: "Adresse",
+        totalFloors: "Nombre d'Étages",
+      },
+      owner: {
+        outstanding: "Impayé",
+        totalPaid: "Total Payé",
+        apartment: "Appartement",
+        reportIncident: "Signaler un Incident",
+        subject: "Sujet",
+        priority: "Priorité",
+        description: "Description",
+        submitTicket: "Soumettre le Ticket",
+      },
+      tenant: {
+        submitComplaint: "Soumettre une Plainte",
+        subject: "Sujet",
+        details: "Détails",
+        submitTicket: "Soumettre le Ticket",
+      },
+    },
+    users: {
+      addUser: "Ajouter un Utilisateur",
+      createUser: "Créer l'Utilisateur",
+      fullName: "Nom Complet",
+      role: "Rôle",
+      building: "Immeuble",
+      apartment: "Numéro d'Appartement",
+      username: "Nom d'Utilisateur",
+      phone: "Numéro de Téléphone",
+      password: "Mot de Passe",
+      editUser: "Modifier l'Utilisateur",
+      saveChanges: "Enregistrer",
+      deactivate: "Désactiver",
+      activate: "Activer",
+      activeUsers: "Utilisateurs Actifs",
+      owners: "Propriétaires",
+      tenants: "Locataires",
+      search: "Rechercher par nom, identifiant ou téléphone...",
+      status: "Statut",
+      selectRole: "Sélectionner le rôle",
+      selectBuilding: "Sélectionner l'immeuble",
+      userHeader: "Utilisateur",
+      usernamePhoneHeader: "Identifiant / Tél",
+    },
+    buildings: {
+      addBuilding: "Ajouter un Immeuble",
+      registerBuilding: "Enregistrer l'Immeuble",
+      addApartment: "Ajouter un Appartement",
+      buildingName: "Nom de l'Immeuble",
+      address: "Adresse",
+      totalFloors: "Nombre d'Étages",
+      apartmentNumber: "Numéro d'Appartement",
+      floor: "Étage",
+      tantiemes: "Tantièmes (m²)",
+      owner: "Propriétaire",
+      tenant: "Locataire",
+      paymentHistory: "Historique des Paiements",
+      occupants: "Occupants",
+      apts: "Appts",
+      floorsRegistered: "étages · appartements enregistrés",
+      noTenant: "Pas de locataire",
+      selectBuildingToView: "Sélectionnez un immeuble pour voir les appartements",
+      viewAll: "Voir Tout",
+      noHistoryFound: "Aucun historique de paiement trouvé.",
+      addApartmentTo: "Ajouter un nouvel appartement à",
+      selectOwner: "Sélectionner le propriétaire",
+      selectBuilding: "Sélectionner l'immeuble",
+    },
+    charges: {
+      total: "Total",
+      paid: "Payé",
+      unpaid: "Impayé",
+      generateCharges: "Générer les Charges",
+      calculateCharges: "Calculer automatiquement les charges basées sur les tantièmes (m²) de l'appartement.",
+      rate: "Taux (MAD)",
+      perTantieme: "par tantième",
+      emailNotifications: "Notifications par Email",
+      sendAutomatedEmail: "Envoyer un e-mail automatique aux propriétaires.",
+      validate: "Valider",
+      markPaid: "Marquer Payé",
+      search: "Rechercher par propriétaire ou appartement...",
+      all: "Tous",
+      partial: "Partiel",
+      amount: "Montant",
+      status: "Statut",
+      actions: "Actions",
+      owner: "Propriétaire",
+      apt: "Appt",
+      period: "Période",
+      validated: "Validé",
+    },
+    helpdesk: {
+      open: "Ouvert",
+      inProgress: "En Cours",
+      resolved: "Résolu",
+      start: "Démarrer",
+      resolve: "Résoudre",
+      search: "Rechercher...",
+      by: "Par",
+    },
+    documents: {
+      upload: "Importer un Fichier",
+      download: "Télécharger",
+      documentName: "Nom du Document",
+      category: "Catégorie",
+      file: "Fichier",
+      uploadDocument: "Importer le Document",
+      assemblyMinutes: "Procès-Verbaux d'AG",
+      regulations: "Règlements",
+      financialReports: "Rapports Financiers",
+      contracts: "Contrats",
+      other: "Autre",
+      dragDrop: "Cliquez pour parcourir ou glissez-déposez",
+    },
+    announcements: {
+      newAnnouncement: "Nouvelle Annonce",
+      title: "Titre",
+      content: "Contenu",
+      urgent: "Marquer comme Urgent",
+      urgentDescription: "Cela mettra l'annonce en évidence en rouge.",
+      postAnnouncement: "Publier l'Annonce",
+    },
+    myCharges: {
+      outstanding: "Impayé",
+      totalCharges: "Total des Charges",
+      chargeHistory: "Historique des Charges",
+      downloadPDF: "PDF",
+    },
+    myTickets: {
+      newTicket: "Nouveau Ticket",
+      submit: "Soumettre",
+      attachPhoto: "Joindre une Photo",
+      cancel: "Annuler",
+      noTickets: "Aucun ticket soumis pour le moment.",
+      reportIssue: "Cliquez sur \"Nouveau Ticket\" pour signaler un problème.",
+    },
+    profile: {
+      accountInfo: "Informations du Compte",
+      changePassword: "Changer le Mot de Passe",
+      currentPassword: "Mot de Passe Actuel",
+      newPassword: "Nouveau Mot de Passe",
+      confirmPassword: "Confirmer le Nouveau Mot de Passe",
+      updatePassword: "Mettre à Jour le Mot de Passe",
+    },
+    settings: {
+      notifications: "Notifications",
+      notificationsDesc: "Choisissez comment vous souhaitez être notifié",
+      emailNotifs: "Notifications par Email",
+      smsNotifs: "Notifications par SMS",
+      ticketUpdates: "Mises à jour des Tickets",
+      chargeReminders: "Rappels de Charges",
+      language: "Langue",
+      languageDesc: "Définissez votre langue préférée",
+      save: "Enregistrer les Paramètres",
+      saved: "✓ Enregistré !",
+    },
+    common: {
+      all: "Tous",
+      search: "Rechercher",
+      cancel: "Annuler",
+      save: "Enregistrer",
+      delete: "Supprimer",
+      edit: "Modifier",
+      close: "Fermer",
+      confirm: "Confirmer",
+      loading: "Chargement...",
+      noResults: "Aucun résultat trouvé",
+      back: "Retour",
+    },
+  },
+  es: {
+    sidebar: {
+      dashboard: "Panel",
+      users: "Usuarios",
+      buildings: "Edificios",
+      charges: "Cargos",
+      helpdesk: "Soporte",
+      documents: "Documentos",
+      announcements: "Anuncios",
+      myCharges: "Mis Cargos",
+      myTickets: "Mis Tickets",
+    },
+    header: {
+      profile: "Perfil",
+      settings: "Configuración",
+      logout: "Cerrar Sesión",
+    },
+    dashboard: {
+      welcomeBack: "Bienvenido de nuevo",
+      admin: {
+        totalBuildings: "Edificios Totales",
+        totalApartments: "Apartamentos Totales",
+        monthlyRevenue: "Ingresos Mensuales",
+        activeUsers: "Usuarios Activos",
+        unpaidCharges: "Cargos Impagos",
+        latestTickets: "Últimos Tickets",
+        announcements: "Anuncios",
+        addBuilding: "Agregar Edificio",
+        registerBuilding: "Registrar Edificio",
+        buildingName: "Nombre del Edificio",
+        address: "Dirección",
+        totalFloors: "Número de Pisos",
+      },
+      owner: {
+        outstanding: "Pendiente",
+        totalPaid: "Total Pagado",
+        apartment: "Apartamento",
+        reportIncident: "Reportar Incidente",
+        subject: "Asunto",
+        priority: "Prioridad",
+        description: "Descripción",
+        submitTicket: "Enviar Ticket",
+      },
+      tenant: {
+        submitComplaint: "Enviar Queja",
+        subject: "Asunto",
+        details: "Detalles",
+        submitTicket: "Enviar Ticket",
+      },
+    },
+    users: {
+      addUser: "Agregar Usuario",
+      createUser: "Crear Usuario",
+      fullName: "Nombre Complet",
+      role: "Rol",
+      building: "Edificio",
+      apartment: "Número de Apartamento",
+      username: "Nombre de Usuario",
+      phone: "Número de Teléfono",
+      password: "Contraseña",
+      editUser: "Editar Usuario",
+      saveChanges: "Guardar Cambios",
+      deactivate: "Desactivar",
+      activate: "Activar",
+      activeUsers: "Usuarios Activos",
+      owners: "Propietarios",
+      tenants: "Inquilinos",
+      search: "Buscar por nombre, usuario o teléfono...",
+      status: "Estado",
+      selectRole: "Seleccionar rol",
+      selectBuilding: "Seleccionar edificio",
+      userHeader: "Usuario",
+      usernamePhoneHeader: "Usuario / Tel",
+    },
+    buildings: {
+      addBuilding: "Agregar Edificio",
+      registerBuilding: "Registrar Edificio",
+      addApartment: "Agregar Apartamento",
+      buildingName: "Nombre del Edificio",
+      address: "Dirección",
+      totalFloors: "Número de Pisos",
+      apartmentNumber: "Número de Apartamento",
+      floor: "Piso",
+      tantiemes: "Tantièmes (m²)",
+      owner: "Propietario",
+      tenant: "Inquilino",
+      paymentHistory: "Historial de Pagos",
+      occupants: "Ocupantes",
+      apts: "Aptos",
+      floorsRegistered: "pisos · apartamentos registrados",
+      noTenant: "Sin inquilino",
+      selectBuildingToView: "Seleccione un edificio para ver los apartamentos",
+      viewAll: "Ver Todo",
+      noHistoryFound: "No se encontró historial de pagos.",
+      addApartmentTo: "Agregar un nuevo apartamento a",
+      selectOwner: "Seleccionar propietario",
+      selectBuilding: "Seleccionar edificio",
+    },
+    charges: {
+      total: "Total",
+      paid: "Pagado",
+      unpaid: "Impago",
+      generateCharges: "Generar Cargos",
+      calculateCharges: "Calcule automáticamente los cargos basados en los tantièmes (m²) del apartamento.",
+      rate: "Tasa (MAD)",
+      perTantieme: "por tantième",
+      emailNotifications: "Notificaciones por Email",
+      sendAutomatedEmail: "Enviar un correo electrónico automático a los propietarios.",
+      validate: "Validar",
+      markPaid: "Marcar Pagado",
+      search: "Buscar por propietario o apartamento...",
+      all: "Todos",
+      partial: "Parcial",
+      amount: "Monto",
+      status: "Estado",
+      actions: "Acciones",
+      owner: "Propietario",
+      apt: "Apt",
+      period: "Período",
+      validated: "Validado",
+    },
+    helpdesk: {
+      open: "Abierto",
+      inProgress: "En Progreso",
+      resolved: "Resuelto",
+      start: "Iniciar",
+      resolve: "Resolver",
+      search: "Buscar...",
+      by: "Por",
+    },
+    documents: {
+      upload: "Subir Archivo",
+      download: "Descargar",
+      documentName: "Nombre del Documento",
+      category: "Categoría",
+      file: "Archivo",
+      uploadDocument: "Subir Documento",
+      assemblyMinutes: "Actas de Asamblea",
+      regulations: "Reglamentos",
+      financialReports: "Informes Financieros",
+      contracts: "Contratos",
+      other: "Otro",
+      dragDrop: "Haga clic para explorar o arrastre y suelte",
+    },
+    announcements: {
+      newAnnouncement: "Nuevo Anuncio",
+      title: "Título",
+      content: "Contenido",
+      urgent: "Marcar como Urgente",
+      urgentDescription: "Esto resaltará el anuncio en rojo.",
+      postAnnouncement: "Publicar Anuncio",
+    },
+    myCharges: {
+      outstanding: "Pendiente",
+      totalCharges: "Total de Cargos",
+      chargeHistory: "Historial de Cargos",
+      downloadPDF: "PDF",
+    },
+    myTickets: {
+      newTicket: "Nuevo Ticket",
+      submit: "Enviar",
+      attachPhoto: "Adjuntar Foto",
+      cancel: "Cancelar",
+      noTickets: "No se han enviado tickets aún.",
+      reportIssue: "Haga clic en \"Nuevo Ticket\" para reportar un problema.",
+    },
+    profile: {
+      accountInfo: "Información de la Cuenta",
+      changePassword: "Cambiar Contraseña",
+      currentPassword: "Contraseña Actual",
+      newPassword: "Nueva Contraseña",
+      confirmPassword: "Confirmar Nueva Contraseña",
+      updatePassword: "Actualizar Contraseña",
+    },
+    settings: {
+      notifications: "Notificaciones",
+      notificationsDesc: "Elija cómo desea ser notificado",
+      emailNotifs: "Notificaciones por Email",
+      smsNotifs: "Notificaciones por SMS",
+      ticketUpdates: "Actualizaciones de Tickets",
+      chargeReminders: "Recordatorios de Cargos",
+      language: "Idioma",
+      languageDesc: "Configure su idioma preferido",
+      save: "Guardar Configuración",
+      saved: "✓ ¡Guardado!",
+    },
+    common: {
+      all: "Todos",
+      search: "Buscar",
+      cancel: "Cancelar",
+      save: "Guardar",
+      delete: "Eliminar",
+      edit: "Editar",
+      close: "Cerrar",
+      confirm: "Confirmar",
+      loading: "Cargando...",
+      noResults: "No se encontraron resultados",
+      back: "Volver",
+    },
+  },
+}
