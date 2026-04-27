@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
-import { isAuthenticated, registerUser } from "@/lib/auth"
+import { isAuthenticated, registerUser, getDashboardPath } from "@/lib/auth"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,9 +38,7 @@ export default function RegisterPage() {
     if (isAuthenticated()) {
       const userData = JSON.parse(localStorage.getItem("user") || "{}")
       if (pathname !== "/syndic/register") {
-        if (userData.role === "Admin") router.push("/syndic/dashboard")
-        else if (userData.role === "Editor") router.push("/syndic/dashboard/editor")
-        else if (userData.role === "Viewer") router.push("/syndic/dashboard/viewer")
+        router.push(getDashboardPath(userData.role))
       }
     }
   }, [router, pathname])
@@ -66,6 +64,7 @@ export default function RegisterPage() {
       if (!formData.fullName || !formData.email || !formData.password || !formData.companyName) throw new Error("All fields are required")
       if (formData.password.length < 6) throw new Error("Password must be at least 6 characters")
       await registerUser(formData.fullName, formData.email, formData.password, formData.companyName)
+      router.push("/syndic/dashboard")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")
     } finally {

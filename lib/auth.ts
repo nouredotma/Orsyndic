@@ -1,49 +1,72 @@
 // Mock authentication functions for local storage
 
 // Types
-interface User {
+export type UserRole = "Admin" | "Owner" | "Tenant"
+
+export interface User {
   id: string
   fullName: string
-  email: string
-  role: "Admin" | "Editor" | "Viewer"
-  companyId: string
-  avatar?: string
-}
-
-interface Company {
-  id: string
-  name: string
-  ice?: string
-  rc?: string
-  address?: string
+  email?: string
+  username?: string
   phone?: string
-  website?: string
-  logo?: string
+  role: UserRole
+  avatar?: string
+  apartmentId?: string
+  buildingId?: string
 }
 
 // Mock users for testing
-const mockUsers: (User & { password: string })[] = [
+// Admin logs in with email + password
+// Owner logs in with username + password
+// Tenant logs in with phone + password
+const mockUsers: (User & { password: string; email?: string; username?: string; phone?: string })[] = [
   {
-    id: "user-1",
+    id: "user-admin-1",
     fullName: "Noureddine Elm",
     email: "admin@orsyndic.com",
     password: "password123",
     role: "Admin",
-    companyId: "company-1",
     avatar: "/me.webp",
   },
-]
-
-// Mock companies
-const mockCompanies = [
   {
-    id: "company-1",
-    name: "L u z",
-    ice: "123456789",
-    rc: "RC123456",
-    address: "123 Main St, City",
-    phone: "+1234567890",
-    website: "https://acme.example.com",
+    id: "user-owner-1",
+    fullName: "Ahmed Benali",
+    username: "ahmed.benali",
+    password: "password123",
+    role: "Owner",
+    avatar: "",
+    buildingId: "building-1",
+    apartmentId: "apt-101",
+  },
+  {
+    id: "user-owner-2",
+    fullName: "Fatima Zahra",
+    username: "fatima.zahra",
+    password: "password123",
+    role: "Owner",
+    avatar: "",
+    buildingId: "building-1",
+    apartmentId: "apt-202",
+  },
+  {
+    id: "user-tenant-1",
+    fullName: "Karim Moussaoui",
+    phone: "0661234567",
+    password: "password123",
+    role: "Tenant",
+    avatar: "",
+    buildingId: "building-1",
+    apartmentId: "apt-101",
+  },
+  {
+    id: "user-tenant-2",
+    fullName: "Sara Idrissi",
+    phone: "0677654321",
+    password: "password123",
+    role: "Tenant",
+    avatar: "",
+    buildingId: "building-2",
+    apartmentId: "apt-301",
   },
 ]
 
@@ -53,35 +76,91 @@ const generateId = () => `id-${Math.random().toString(36).substring(2, 9)}`
 // Check if user is authenticated
 export const isAuthenticated = (): boolean => {
   if (typeof window === "undefined") return false
-
   const user = localStorage.getItem("user")
   return !!user
 }
 
-// Register a new user (admin only)
+// Get the current user from localStorage
+export const getCurrentUser = (): User | null => {
+  if (typeof window === "undefined") return null
+  const userJson = localStorage.getItem("user")
+  if (!userJson) return null
+  return JSON.parse(userJson) as User
+}
+
+// Login with email + password (Admin)
+export const loginWithEmail = async (email: string, password: string): Promise<User> => {
+  await new Promise((resolve) => setTimeout(resolve, 800))
+
+  const user = mockUsers.find(
+    (u) => u.email === email && u.password === password && u.role === "Admin"
+  )
+
+  if (!user) {
+    throw new Error("Invalid email or password")
+  }
+
+  const { password: _, ...userWithoutPassword } = user
+  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
+
+  return userWithoutPassword
+}
+
+// Login with username + password (Owner)
+export const loginWithUsername = async (username: string, password: string): Promise<User> => {
+  await new Promise((resolve) => setTimeout(resolve, 800))
+
+  const user = mockUsers.find(
+    (u) => u.username === username && u.password === password && u.role === "Owner"
+  )
+
+  if (!user) {
+    throw new Error("Invalid username or password")
+  }
+
+  const { password: _, ...userWithoutPassword } = user
+  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
+
+  return userWithoutPassword
+}
+
+// Login with phone + password (Tenant)
+export const loginWithPhone = async (phone: string, password: string): Promise<User> => {
+  await new Promise((resolve) => setTimeout(resolve, 800))
+
+  const user = mockUsers.find(
+    (u) => u.phone === phone && u.password === password && u.role === "Tenant"
+  )
+
+  if (!user) {
+    throw new Error("Invalid phone number or password")
+  }
+
+  const { password: _, ...userWithoutPassword } = user
+  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
+
+  return userWithoutPassword
+}
+
+// Legacy login (kept for compatibility — Admin only via email)
+export const loginUser = async (email: string, password: string): Promise<User> => {
+  return loginWithEmail(email, password)
+}
+
+// Register a new admin user (admin-only registration)
 export const registerUser = async (
   fullName: string,
   email: string,
   password: string,
   companyName: string,
 ): Promise<User> => {
-  // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  // Check if email already exists
   const existingUser = mockUsers.find((user) => user.email === email)
   if (existingUser) {
     throw new Error("Email already in use")
   }
 
-  // Create new company
-  const companyId = generateId()
-  const company: Company = {
-    id: companyId,
-    name: companyName,
-  }
-
-  // Create new user (admin role)
   const userId = generateId()
   const user: User & { password: string } = {
     id: userId,
@@ -89,39 +168,10 @@ export const registerUser = async (
     email,
     password,
     role: "Admin",
-    companyId,
   }
 
-  // Store in localStorage
   const { password: _, ...userWithoutPassword } = user
   localStorage.setItem("user", JSON.stringify(userWithoutPassword))
-  localStorage.setItem("company", JSON.stringify(company))
-
-  return userWithoutPassword
-}
-
-// Login user
-export const loginUser = async (email: string, password: string): Promise<User> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  // Find user by email and password
-  const user = mockUsers.find((user) => user.email === email && user.password === password)
-
-  if (!user) {
-    throw new Error("Invalid email or password")
-  }
-
-  // Find company
-  const company = mockCompanies.find((company) => company.id === user.companyId)
-
-  // Store in localStorage
-  const { password: _, ...userWithoutPassword } = user
-  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
-
-  if (company) {
-    localStorage.setItem("company", JSON.stringify(company))
-  }
 
   return userWithoutPassword
 }
@@ -131,22 +181,16 @@ export const logoutUser = (): void => {
   localStorage.removeItem("user")
 }
 
-export const updateCompanyProfile = async (formData: any): Promise<Company> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  // Get existing company from localStorage
-  const companyJson = localStorage.getItem("company")
-  let company: Company = companyJson ? JSON.parse(companyJson) : { id: generateId(), name: "New Company" }
-
-  // Update company with form data
-  company = {
-    ...company,
-    ...formData,
+// Get the dashboard path based on user role
+export const getDashboardPath = (role: UserRole): string => {
+  switch (role) {
+    case "Admin":
+      return "/syndic/dashboard"
+    case "Owner":
+      return "/syndic/dashboard"
+    case "Tenant":
+      return "/syndic/dashboard"
+    default:
+      return "/syndic/dashboard"
   }
-
-  // Store updated company in localStorage
-  localStorage.setItem("company", JSON.stringify(company))
-
-  return company
 }

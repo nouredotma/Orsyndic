@@ -1,257 +1,182 @@
-export interface StatCardData {
-  title: string;
-  value: string;
-  description: string;
-  trend: "up" | "down" | "neutral";
-  trendValue: string;
-  iconName: string;
+// Mock data for Orsyndic property management dashboard
+
+// ========================
+// BUILDINGS & APARTMENTS
+// ========================
+export interface Building {
+  id: string
+  name: string
+  address: string
+  floors: number
+  totalApartments: number
 }
 
-export const statsData: StatCardData[] = [
-  {
-    title: "Total Revenue",
-    value: "$128,430",
-    description: "Total earnings this month",
-    trend: "up",
-    trendValue: "+12.5%",
-    iconName: "DollarSign",
-  },
-  {
-    title: "Active Clients",
-    value: "2,543",
-    description: "New clients added this week",
-    trend: "up",
-    trendValue: "+4.2%",
-    iconName: "Users",
-  },
-  {
-    title: "Pending Invoices",
-    value: "42",
-    description: "Invoices awaiting payment",
-    trend: "down",
-    trendValue: "-8.1%",
-    iconName: "FileText",
-  },
-  {
-    title: "Total Products",
-    value: "856",
-    description: "Items across all categories",
-    trend: "neutral",
-    trendValue: "0%",
-    iconName: "Package",
-  },
-  {
-    title: "Conversion Rate",
-    value: "14.2%",
-    description: "Average conversion score",
-    trend: "up",
-    trendValue: "+2.1%",
-    iconName: "TrendingUp",
-  },
-];
+export interface Apartment {
+  id: string
+  buildingId: string
+  floor: number
+  number: string
+  ownerId: string
+  ownerName: string
+  tenantId?: string
+  tenantName?: string
+}
 
-export const revenueChartData = [
-  { month: "Jan", revenue: 4500, expenses: 3200 },
-  { month: "Feb", revenue: 5200, expenses: 3500 },
-  { month: "Mar", revenue: 4800, expenses: 3100 },
-  { month: "Apr", revenue: 6100, expenses: 4000 },
-  { month: "May", revenue: 5900, expenses: 3800 },
-  { month: "Jun", revenue: 7200, expenses: 4500 },
-  { month: "Jul", revenue: 6800, expenses: 4200 },
-];
+export const buildings: Building[] = [
+  { id: "building-1", name: "Résidence Al Andalous", address: "12 Rue Mohammed V, Casablanca", floors: 6, totalApartments: 24 },
+  { id: "building-2", name: "Résidence Les Jardins", address: "45 Avenue Hassan II, Rabat", floors: 4, totalApartments: 16 },
+  { id: "building-3", name: "Résidence Palm View", address: "8 Boulevard Zerktouni, Marrakech", floors: 5, totalApartments: 20 },
+]
 
-export const recentTransactions = [
-  {
-    id: "TX-1001",
-    client: "Acme Corp",
-    amount: "$2,400.00",
-    status: "Completed",
-    date: "2024-03-24",
-    avatar: "AC",
-    image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: "TX-1002",
-    client: "Global Tech",
-    amount: "$1,250.00",
-    status: "Pending",
-    date: "2024-03-23",
-    avatar: "GT",
-    image: "https://plus.unsplash.com/premium_photo-1733971878518-fee3ce2b7aa6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: "TX-1003",
-    client: "Blue Sky Inc",
-    amount: "$850.00",
-    status: "Completed",
-    date: "2024-03-22",
-    avatar: "BS",
-    image: "https://plus.unsplash.com/premium_photo-1690294614341-cf346ba0a637?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: "TX-1004",
-    client: "Innovate Ltd",
-    amount: "$3,100.00",
-    status: "Processing",
-    date: "2024-03-21",
-    avatar: "IL",
-    image: "https://images.unsplash.com/photo-1532170579297-281918c8ae72?q=80&w=1184&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: "TX-1005",
-    client: "Star Systems",
-    amount: "$1,800.00",
-    status: "Completed",
-    date: "2024-03-20",
-    avatar: "SS",
-    image: "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=880",
-  },
-];
+export const apartments: Apartment[] = [
+  { id: "apt-101", buildingId: "building-1", floor: 1, number: "101", ownerId: "user-owner-1", ownerName: "Ahmed Benali", tenantId: "user-tenant-1", tenantName: "Karim Moussaoui" },
+  { id: "apt-102", buildingId: "building-1", floor: 1, number: "102", ownerId: "user-owner-3", ownerName: "Youssef Alami" },
+  { id: "apt-201", buildingId: "building-1", floor: 2, number: "201", ownerId: "user-owner-4", ownerName: "Rachid Tazi" },
+  { id: "apt-202", buildingId: "building-1", floor: 2, number: "202", ownerId: "user-owner-2", ownerName: "Fatima Zahra" },
+  { id: "apt-301", buildingId: "building-2", floor: 3, number: "301", ownerId: "user-owner-5", ownerName: "Hassan Bennani", tenantId: "user-tenant-2", tenantName: "Sara Idrissi" },
+  { id: "apt-302", buildingId: "building-2", floor: 3, number: "302", ownerId: "user-owner-6", ownerName: "Amina Chraibi" },
+]
 
-export const categoryData = [
-  { category: "Services", value: 450, fill: "var(--primary)" },
-  { category: "Products", value: 300, fill: "#000000" },
-  { category: "Subscriptions", value: 200, fill: "#22c55e" },
-  { category: "Other", value: 100, fill: "#f5f4f3" },
-];
+// ========================
+// CHARGES & PAYMENTS
+// ========================
+export type ChargeStatus = "Paid" | "Unpaid" | "Partial"
 
-export const userGrowthData = [
-  { day: "Mon", users: 120 },
-  { day: "Tue", users: 180 },
-  { day: "Wed", users: 150 },
-  { day: "Thu", users: 240 },
-  { day: "Fri", users: 210 },
-  { day: "Sat", users: 280 },
-  { day: "Sun", users: 260 },
-];
+export interface Charge {
+  id: string
+  apartmentId: string
+  apartmentNumber: string
+  buildingName: string
+  ownerName: string
+  month: string
+  year: number
+  amount: number
+  status: ChargeStatus
+  paidDate?: string
+  validatedByAdmin: boolean
+}
 
-export const upcomingTasks = [
-  {
-    id: 1,
-    title: "Quarterly Tax Filing",
-    dueDate: "Tomorrow",
-    priority: "High",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    title: "Client Meeting: Acme Corp",
-    dueDate: "Feb 15, 2024",
-    priority: "Medium",
-    status: "Scheduled",
-  },
-  {
-    id: 3,
-    title: "Product Launch Prep",
-    dueDate: "Feb 20, 2024",
-    priority: "High",
-    status: "In Progress",
-  },
-  {
-    id: 4,
-    title: "Annual Security Audit",
-    dueDate: "Mar 01, 2024",
-    priority: "Low",
-    status: "Planning",
-  },
-  {
-    id: 5,
-    title: "Quarterly Board Review",
-    dueDate: "Mar 05, 2024",
-    priority: "High",
-    status: "Planning",
-  },
-];
+export const charges: Charge[] = [
+  { id: "chg-001", apartmentId: "apt-101", apartmentNumber: "101", buildingName: "Résidence Al Andalous", ownerName: "Ahmed Benali", month: "April", year: 2026, amount: 500, status: "Paid", paidDate: "2026-04-05", validatedByAdmin: true },
+  { id: "chg-002", apartmentId: "apt-102", apartmentNumber: "102", buildingName: "Résidence Al Andalous", ownerName: "Youssef Alami", month: "April", year: 2026, amount: 500, status: "Unpaid", validatedByAdmin: false },
+  { id: "chg-003", apartmentId: "apt-201", apartmentNumber: "201", buildingName: "Résidence Al Andalous", ownerName: "Rachid Tazi", month: "April", year: 2026, amount: 450, status: "Unpaid", validatedByAdmin: false },
+  { id: "chg-004", apartmentId: "apt-202", apartmentNumber: "202", buildingName: "Résidence Al Andalous", ownerName: "Fatima Zahra", month: "April", year: 2026, amount: 450, status: "Paid", paidDate: "2026-04-10", validatedByAdmin: true },
+  { id: "chg-005", apartmentId: "apt-301", apartmentNumber: "301", buildingName: "Résidence Les Jardins", ownerName: "Hassan Bennani", month: "April", year: 2026, amount: 600, status: "Partial", validatedByAdmin: false },
+  { id: "chg-006", apartmentId: "apt-302", apartmentNumber: "302", buildingName: "Résidence Les Jardins", ownerName: "Amina Chraibi", month: "April", year: 2026, amount: 600, status: "Unpaid", validatedByAdmin: false },
+  { id: "chg-007", apartmentId: "apt-101", apartmentNumber: "101", buildingName: "Résidence Al Andalous", ownerName: "Ahmed Benali", month: "March", year: 2026, amount: 500, status: "Paid", paidDate: "2026-03-08", validatedByAdmin: true },
+  { id: "chg-008", apartmentId: "apt-202", apartmentNumber: "202", buildingName: "Résidence Al Andalous", ownerName: "Fatima Zahra", month: "March", year: 2026, amount: 450, status: "Paid", paidDate: "2026-03-12", validatedByAdmin: true },
+]
 
-export const teamMembers = [
-  {
-    id: 1,
-    name: "Alex Rivera",
-    role: "Lead Designer",
-    status: "online",
-    lastSeen: "Just now",
-    avatar: "AR",
-    image: "https://images.unsplash.com/photo-1532170579297-281918c8ae72?q=80&w=1184&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 2,
-    name: "Sarah Chen",
-    role: "Fullstack Dev",
-    status: "online",
-    lastSeen: "2m ago",
-    avatar: "SC",
-    image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 3,
-    name: "Marcus Bell",
-    role: "Backend Dev",
-    status: "away",
-    lastSeen: "15m ago",
-    avatar: "MB",
-    image: "https://plus.unsplash.com/premium_photo-1690294614341-cf346ba0a637?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 4,
-    name: "Elena Rodriguez",
-    role: "PO",
-    status: "online",
-    lastSeen: "Just now",
-    avatar: "ER",
-    image: "https://plus.unsplash.com/premium_photo-1733971878518-fee3ce2b7aa6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 5,
-    name: "David Park",
-    role: "UX Researcher",
-    status: "online",
-    lastSeen: "1m ago",
-    avatar: "DP",
-    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop",
-  },
-  {
-    id: 6,
-    name: "David Park",
-    role: "UX Researcher",
-    status: "online",
-    lastSeen: "1m ago",
-    avatar: "DP",
-    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop",
-  },
-  {
-    id: 7,
-    name: "David Park",
-    role: "UX Researcher",
-    status: "online",
-    lastSeen: "1m ago",
-    avatar: "DP",
-    image: "https://plus.unsplash.com/premium_photo-1733971878518-fee3ce2b7aa6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 8,
-    name: "David Park",
-    role: "UX Researcher",
-    status: "online",
-    lastSeen: "1m ago",
-    avatar: "DP",
-    image: "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=880",
-  },
-  {
-    id: 10,
-    name: "David Park",
-    role: "UX Researcher",
-    status: "online",
-    lastSeen: "1m ago",
-    avatar: "DP",
-    image: "https://plus.unsplash.com/premium_photo-1690294614341-cf346ba0a637?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 9,
-    name: "Lisa Wong",
-    role: "Marketing Tech",
-    status: "offline",
-    lastSeen: "2h ago",
-    avatar: "LW",
-    image: "https://images.unsplash.com/photo-1532170579297-281918c8ae72?q=80&w=1184&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
+// ========================
+// HELPDESK TICKETS
+// ========================
+export type TicketStatus = "Open" | "In Progress" | "Resolved"
+export type TicketPriority = "Low" | "Medium" | "High"
+
+export interface Ticket {
+  id: string
+  title: string
+  description: string
+  submittedBy: string
+  submittedByRole: "Owner" | "Tenant"
+  buildingName: string
+  apartmentNumber: string
+  status: TicketStatus
+  priority: TicketPriority
+  createdAt: string
+  photo?: string
+}
+
+export const tickets: Ticket[] = [
+  { id: "TKT-001", title: "Water leak in bathroom", description: "There is a persistent water leak coming from the ceiling in the bathroom. It has been getting worse over the past week.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "Open", priority: "High", createdAt: "2026-04-25", photo: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400" },
+  { id: "TKT-002", title: "Broken elevator", description: "The main elevator in building A has been out of service for 3 days. Elderly residents are having difficulty accessing upper floors.", submittedBy: "Ahmed Benali", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", priority: "High", createdAt: "2026-04-22" },
+  { id: "TKT-003", title: "Noisy neighbors", description: "Neighbors on the 3rd floor are consistently playing loud music past midnight. This has been ongoing for 2 weeks.", submittedBy: "Sara Idrissi", submittedByRole: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Open", priority: "Medium", createdAt: "2026-04-24" },
+  { id: "TKT-004", title: "Parking space dispute", description: "Another resident has been parking in my designated spot (P-12) repeatedly.", submittedBy: "Fatima Zahra", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "202", status: "Resolved", priority: "Low", createdAt: "2026-04-15" },
+  { id: "TKT-005", title: "Lobby lights not working", description: "Several light fixtures in the ground floor lobby are not functioning, making it very dark at night.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", priority: "Medium", createdAt: "2026-04-20" },
+]
+
+// ========================
+// DOCUMENTS
+// ========================
+export interface Document {
+  id: string
+  name: string
+  category: "Assembly Minutes" | "Regulations" | "Financial Reports" | "Contracts" | "Other"
+  uploadedAt: string
+  fileSize: string
+  uploadedBy: string
+}
+
+export const documents: Document[] = [
+  { id: "doc-001", name: "General Assembly Minutes - March 2026", category: "Assembly Minutes", uploadedAt: "2026-03-20", fileSize: "2.4 MB", uploadedBy: "Admin" },
+  { id: "doc-002", name: "Building Regulations v3.0", category: "Regulations", uploadedAt: "2026-01-15", fileSize: "1.8 MB", uploadedBy: "Admin" },
+  { id: "doc-003", name: "Annual Financial Report 2025", category: "Financial Reports", uploadedAt: "2026-02-01", fileSize: "5.2 MB", uploadedBy: "Admin" },
+  { id: "doc-004", name: "Maintenance Contract - Elevator", category: "Contracts", uploadedAt: "2026-01-10", fileSize: "890 KB", uploadedBy: "Admin" },
+  { id: "doc-005", name: "General Assembly Minutes - January 2026", category: "Assembly Minutes", uploadedAt: "2026-01-25", fileSize: "2.1 MB", uploadedBy: "Admin" },
+  { id: "doc-006", name: "Insurance Policy 2026", category: "Contracts", uploadedAt: "2026-01-05", fileSize: "3.4 MB", uploadedBy: "Admin" },
+]
+
+// ========================
+// ANNOUNCEMENTS
+// ========================
+export interface Announcement {
+  id: string
+  title: string
+  content: string
+  createdAt: string
+  urgent: boolean
+  createdBy: string
+}
+
+export const announcements: Announcement[] = [
+  { id: "ann-001", title: "Water supply interruption", content: "Please be informed that water supply will be interrupted on April 30th from 9:00 AM to 2:00 PM for maintenance work on the main pipeline.", createdAt: "2026-04-26", urgent: true, createdBy: "Admin" },
+  { id: "ann-002", title: "General Assembly Meeting", content: "The next General Assembly meeting is scheduled for May 15th at 6:00 PM in the ground floor meeting room. All owners are required to attend.", createdAt: "2026-04-24", urgent: false, createdBy: "Admin" },
+  { id: "ann-003", title: "New parking regulations", content: "Starting May 1st, new parking regulations will be enforced. Please review the updated rules posted in the lobby.", createdAt: "2026-04-20", urgent: false, createdBy: "Admin" },
+  { id: "ann-004", title: "Elevator maintenance", content: "Elevator maintenance is scheduled for May 5th. The elevator will be unavailable from 8:00 AM to 12:00 PM.", createdAt: "2026-04-18", urgent: true, createdBy: "Admin" },
+]
+
+// ========================
+// ADMIN DASHBOARD STATS
+// ========================
+export interface AdminStatCard {
+  title: string
+  value: string
+  description: string
+  trend: "up" | "down" | "neutral"
+  trendValue: string
+  iconName: string
+}
+
+export const adminStatsData: AdminStatCard[] = [
+  { title: "Unpaid Charges", value: "12", description: "Charges pending this month", trend: "down", trendValue: "-3", iconName: "CreditCard" },
+  { title: "Open Tickets", value: "5", description: "Active helpdesk tickets", trend: "up", trendValue: "+2", iconName: "TicketCheck" },
+  { title: "Total Buildings", value: "3", description: "Buildings under management", trend: "neutral", trendValue: "0", iconName: "Building2" },
+  { title: "Total Apartments", value: "60", description: "Across all buildings", trend: "up", trendValue: "+4", iconName: "DoorOpen" },
+  { title: "Active Users", value: "48", description: "Owners & Tenants", trend: "up", trendValue: "+6", iconName: "Users" },
+]
+
+// ========================
+// USER MANAGEMENT (for Admin)
+// ========================
+export interface ManagedUser {
+  id: string
+  fullName: string
+  username?: string
+  phone?: string
+  role: "Owner" | "Tenant"
+  buildingName: string
+  apartmentNumber: string
+  status: "Active" | "Inactive"
+  createdAt: string
+}
+
+export const managedUsers: ManagedUser[] = [
+  { id: "user-owner-1", fullName: "Ahmed Benali", username: "ahmed.benali", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "Active", createdAt: "2025-06-15" },
+  { id: "user-owner-2", fullName: "Fatima Zahra", username: "fatima.zahra", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "202", status: "Active", createdAt: "2025-07-20" },
+  { id: "user-owner-3", fullName: "Youssef Alami", username: "youssef.alami", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "102", status: "Active", createdAt: "2025-08-10" },
+  { id: "user-owner-4", fullName: "Rachid Tazi", username: "rachid.tazi", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "201", status: "Active", createdAt: "2025-09-05" },
+  { id: "user-owner-5", fullName: "Hassan Bennani", username: "hassan.b", role: "Owner", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Active", createdAt: "2025-10-01" },
+  { id: "user-tenant-1", fullName: "Karim Moussaoui", phone: "0661234567", role: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "Active", createdAt: "2025-11-15" },
+  { id: "user-tenant-2", fullName: "Sara Idrissi", phone: "0677654321", role: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Active", createdAt: "2025-12-01" },
+  { id: "user-owner-6", fullName: "Amina Chraibi", username: "amina.c", role: "Owner", buildingName: "Résidence Les Jardins", apartmentNumber: "302", status: "Inactive", createdAt: "2025-06-20" },
+]

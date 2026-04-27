@@ -6,11 +6,13 @@ import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import {
-  Box, CreditCard, FileText, Home, LogOut, Menu, Package, Receipt, Settings, Users, X, UserPlus, CheckCircle2, AlertTriangle, Bell,
+  Building2, CreditCard, FileText, Home, LogOut, Menu, Settings, Users, X, Bell,
+  TicketCheck, Megaphone, FolderOpen, UserCircle, DoorOpen,
+  UserPlus, CheckCircle2, AlertTriangle,
 } from "lucide-react"
 
-import { Input } from "@/components/ui/input"
-import { logoutUser } from "@/lib/auth"
+import { logoutUser, getCurrentUser } from "@/lib/auth"
+import type { UserRole } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
@@ -26,21 +28,39 @@ interface SidebarItem {
   description: string
 }
 
-const sidebarItems: SidebarItem[] = [
-  {
-    title: "Dashboard",
-    icon: Home,
-    path: "/syndic/dashboard",
-    description: "KPI overview, charts, Top 10 clients",
-  },
-  { title: "Clients", icon: Users, path: "/syndic/clients", description: "CRM Lite: add/edit/delete; billing history" },
-  { title: "Products", icon: Package, path: "/syndic/products", description: "Product catalog and management" },
-  { title: "Inventory", icon: Box, path: "/syndic/inventory", description: "Inventory and stock movements" },
-  { title: "Quotes", icon: FileText, path: "/syndic/quotes", description: "Create/edit; AI assistant" },
-  { title: "Invoices", icon: FileText, path: "/syndic/invoices", description: "Convert quotes; status tracking" },
-  { title: "Payments", icon: CreditCard, path: "/syndic/payments", description: "Record payments" },
-  { title: "Credit Notes", icon: Receipt, path: "/syndic/credit-notes", description: "Credit note management" },
+// Admin pages
+const adminSidebarItems: SidebarItem[] = [
+  { title: "Dashboard", icon: Home, path: "/syndic/dashboard", description: "Overview, unpaid charges, tickets, announcements" },
+  { title: "Users", icon: Users, path: "/syndic/users", description: "Manage Owner and Tenant accounts" },
+  { title: "Buildings", icon: Building2, path: "/syndic/buildings", description: "Buildings, floors, and apartments" },
+  { title: "Charges", icon: CreditCard, path: "/syndic/charges", description: "Generate and track monthly charges" },
+  { title: "Helpdesk", icon: TicketCheck, path: "/syndic/helpdesk", description: "View and manage all tickets" },
+  { title: "Documents", icon: FolderOpen, path: "/syndic/documents", description: "Upload and organize files" },
+  { title: "Announcements", icon: Megaphone, path: "/syndic/announcements", description: "Post notices for all users" },
 ]
+
+// Owner pages
+const ownerSidebarItems: SidebarItem[] = [
+  { title: "Dashboard", icon: Home, path: "/syndic/dashboard", description: "Balance and announcements" },
+  { title: "My Charges", icon: CreditCard, path: "/syndic/my-charges", description: "Charge history and receipts" },
+  { title: "Documents", icon: FolderOpen, path: "/syndic/documents", description: "Download shared files" },
+  { title: "My Tickets", icon: TicketCheck, path: "/syndic/my-tickets", description: "Submit and track incidents" },
+]
+
+// Tenant pages
+const tenantSidebarItems: SidebarItem[] = [
+  { title: "Dashboard", icon: Home, path: "/syndic/dashboard", description: "Announcements" },
+  { title: "My Tickets", icon: TicketCheck, path: "/syndic/my-tickets", description: "Submit and track complaints" },
+]
+
+const getSidebarItems = (role: UserRole): SidebarItem[] => {
+  switch (role) {
+    case "Admin": return adminSidebarItems
+    case "Owner": return ownerSidebarItems
+    case "Tenant": return tenantSidebarItems
+    default: return []
+  }
+}
 
 const languages = [
   { name: "English", code: "en", flag: "https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" },
@@ -91,6 +111,12 @@ const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar
         </DropdownMenuTrigger>
         <DropdownMenuContent side="top" align="start" className="w-[12.5rem] mb-2 bg-white border-none shadow-lg rounded-sm p-1.5">
           <DropdownMenuItem asChild className="cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2.5 transition-colors group">
+            <Link href="/syndic/profile" className="flex items-center gap-2.5 w-full">
+              <UserCircle className="h-4.5 w-4.5 text-black/60 group-hover:text-black group-focus:text-black" />
+              <span className="text-sm font-medium text-black">Profile</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2.5 transition-colors group">
             <Link href="/syndic/settings" className="flex items-center gap-2.5 w-full">
               <Settings className="h-4.5 w-4.5 text-black/60 group-hover:text-black group-focus:text-black" />
               <span className="text-sm font-medium text-black">Settings</span>
@@ -113,8 +139,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [userData, setUserData] = useState<{ fullName: string; role: string; avatar?: string } | null>(null)
-  const [companyName, setCompanyName] = useState("Company")
+  const [userData, setUserData] = useState<{ fullName: string; role: UserRole; avatar?: string } | null>(null)
   const [currentPageTitle, setCurrentPageTitle] = useState("")
   const [animate, setAnimate] = useState(false)
   const [currentLanguage, setCurrentLanguage] = useState(languages[0])
@@ -131,23 +156,27 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
   const isDashboardPath = pathname?.startsWith("/syndic") && !isAuthPage && pathname !== "/syndic"
 
   useEffect(() => {
-    const userJson = localStorage.getItem("user")
-    if (userJson) {
-      const user = JSON.parse(userJson)
-      setUserData({ fullName: user.fullName || "User", role: user.role || "Admin", avatar: user.avatar })
+    const user = getCurrentUser()
+    if (user) {
+      setUserData({ fullName: user.fullName, role: user.role, avatar: user.avatar })
     } else if (isDashboardPath) {
       router.push("/syndic/login")
     }
-    const companyJson = localStorage.getItem("company")
-    if (companyJson) {
-      const company = JSON.parse(companyJson)
-      setCompanyName(company.name || "Company")
-    }
-    const currentItem = sidebarItems.find((item) => item.path === pathname)
-    if (currentItem) {
-      setCurrentPageTitle(currentItem.title)
-    }
   }, [pathname, router])
+
+  useEffect(() => {
+    if (userData) {
+      const items = getSidebarItems(userData.role)
+      const currentItem = items.find((item) => item.path === pathname)
+      if (currentItem) {
+        setCurrentPageTitle(currentItem.title)
+      } else if (pathname === "/syndic/profile") {
+        setCurrentPageTitle("Profile")
+      } else if (pathname === "/syndic/settings") {
+        setCurrentPageTitle("Settings")
+      }
+    }
+  }, [pathname, userData])
 
   useEffect(() => {
     setMobileOpen(false)
@@ -164,6 +193,8 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
   if (!isDashboardPath) {
     return <>{children}</>
   }
+
+  const sidebarItems = userData ? getSidebarItems(userData.role) : []
 
   const SidebarContent = ({ isMobileSidebar = false }: { isMobileSidebar?: boolean }) => (
     <>
@@ -186,7 +217,9 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
       <aside className={cn("hidden md:flex md:flex-col bg-black text-white transition-all duration-300", collapsed ? "md:w-14" : "md:w-52")}>
         <div className="flex flex-col h-full p-2 pr-0">
           <div className={cn("flex justify-center items-center mb-6 mt-4", collapsed ? "px-2" : "px-3")}>
-            <h2 className={cn("font-bold transition-all duration-300 text-white text-center", collapsed ? "text-xs" : "text-xl")}>{collapsed ? companyName.substring(0, 1) : companyName}</h2>
+            <h2 className={cn("font-bold transition-all duration-300 text-white text-center", collapsed ? "text-xs" : "text-xl")}>
+              {collapsed ? "O" : "Orsyndic"}
+            </h2>
           </div>
           <div className="flex-1 flex flex-col min-h-0 overflow-x-hidden">
             <div className="relative flex-1 overflow-hidden">
@@ -202,7 +235,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
         <SheetContent side="left" className="p-0 w-[80%] max-w-[300px] [&>button]:hidden bg-black text-white pr-2">
           <div className="flex flex-col h-full p-2">
             <div className="flex items-center justify-between mb-6 mt-4 px-3">
-              <h2 className="text-xl font-semibold text-white">{companyName}</h2>
+              <h2 className="text-xl font-semibold text-white">Orsyndic</h2>
               <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)} className="text-white/60 hover:bg-white/10 hover:text-white cursor-pointer"><X className="h-5 w-5" /></Button>
             </div>
             <div className="flex-1 flex flex-col min-h-0 overflow-x-hidden">
@@ -226,7 +259,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
           <div className="flex items-center gap-1.5 flex-1 justify-end">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9 p-0 bg-black/5 hover:bg-primary/15 rounded-full cursor-pointer overflow-hidden border border-black/10 transition-colors">
+                <Button variant="ghost" size="icon" className="h-9 w-9 p-0 bg-neutral-100 hover:bg-primary/15 rounded-full cursor-pointer overflow-hidden border border-black/10 transition-colors">
                   <img src={currentLanguage.flag} alt={currentLanguage.name} className="h-full w-full object-cover" />
                   <span className="sr-only">Change language</span>
                 </Button>
@@ -243,7 +276,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative cursor-pointer bg-black/5 text-black/60 hover:text-primary hover:bg-primary/15 rounded-full transition-colors">
+                <Button variant="ghost" size="icon" className="relative cursor-pointer bg-neutral-100 text-black/60 hover:text-primary hover:bg-primary/15 rounded-full transition-colors">
                   <Bell className="h-5 w-5" />
                   <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-primary rounded-full border-2 border-white" />
                 </Button>
@@ -255,9 +288,9 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
                 </div>
                 <div className="max-h-[300px] overflow-y-auto hide-scrollbar">
                   {[
-                    { title: "New client registered", desc: "Noureddine Elm just signed up as a new Admin.", time: "2m ago", read: false, icon: <UserPlus className="h-4 w-4 text-blue-500" />, iconBg: "bg-blue-50" },
-                    { title: "Invoice #INV-2024-001", desc: "Payment of $1,250.00 confirmed by Acme Inc.", time: "1h ago", read: false, icon: <CheckCircle2 className="h-4 w-4 text-green-500" />, iconBg: "bg-green-50" },
-                    { title: "Inventory Alert", desc: "5 products are below their minimum stock level.", time: "3h ago", read: true, icon: <AlertTriangle className="h-4 w-4 text-orange-500" />, iconBg: "bg-orange-50" },
+                    { title: "New ticket submitted", desc: "Karim Moussaoui reported a water leak in Apt 101.", time: "2m ago", read: false, icon: <TicketCheck className="h-4 w-4 text-blue-500" />, iconBg: "bg-blue-50" },
+                    { title: "Payment validated", desc: "Ahmed Benali's April charge has been confirmed.", time: "1h ago", read: false, icon: <CheckCircle2 className="h-4 w-4 text-green-500" />, iconBg: "bg-green-50" },
+                    { title: "Unpaid charges alert", desc: "3 apartments have unpaid charges for this month.", time: "3h ago", read: true, icon: <AlertTriangle className="h-4 w-4 text-orange-500" />, iconBg: "bg-orange-50" },
                   ].map((notif, i) => (
                     <div key={i} className={cn("px-3.5 py-3 flex gap-3 transition-all border-b border-black/5 last:border-0 cursor-pointer", notif.read ? "bg-transparent hover:bg-black/5" : "bg-white hover:bg-primary/5")}>
                       <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center shrink-0 shadow-sm", notif.iconBg)}>{notif.icon}</div>
