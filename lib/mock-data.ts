@@ -16,6 +16,7 @@ export interface Apartment {
   buildingId: string
   floor: number
   number: string
+  tantiemes: number
   ownerId: string
   ownerName: string
   tenantId?: string
@@ -29,12 +30,12 @@ export const buildings: Building[] = [
 ]
 
 export const apartments: Apartment[] = [
-  { id: "apt-101", buildingId: "building-1", floor: 1, number: "101", ownerId: "user-owner-1", ownerName: "Ahmed Benali", tenantId: "user-tenant-1", tenantName: "Karim Moussaoui" },
-  { id: "apt-102", buildingId: "building-1", floor: 1, number: "102", ownerId: "user-owner-3", ownerName: "Youssef Alami" },
-  { id: "apt-201", buildingId: "building-1", floor: 2, number: "201", ownerId: "user-owner-4", ownerName: "Rachid Tazi" },
-  { id: "apt-202", buildingId: "building-1", floor: 2, number: "202", ownerId: "user-owner-2", ownerName: "Fatima Zahra" },
-  { id: "apt-301", buildingId: "building-2", floor: 3, number: "301", ownerId: "user-owner-5", ownerName: "Hassan Bennani", tenantId: "user-tenant-2", tenantName: "Sara Idrissi" },
-  { id: "apt-302", buildingId: "building-2", floor: 3, number: "302", ownerId: "user-owner-6", ownerName: "Amina Chraibi" },
+  { id: "apt-101", buildingId: "building-1", floor: 1, number: "101", tantiemes: 120, ownerId: "user-owner-1", ownerName: "Ahmed Benali", tenantId: "user-tenant-1", tenantName: "Karim Moussaoui" },
+  { id: "apt-102", buildingId: "building-1", floor: 1, number: "102", tantiemes: 120, ownerId: "user-owner-3", ownerName: "Youssef Alami" },
+  { id: "apt-201", buildingId: "building-1", floor: 2, number: "201", tantiemes: 100, ownerId: "user-owner-4", ownerName: "Rachid Tazi" },
+  { id: "apt-202", buildingId: "building-1", floor: 2, number: "202", tantiemes: 100, ownerId: "user-owner-2", ownerName: "Fatima Zahra" },
+  { id: "apt-301", buildingId: "building-2", floor: 3, number: "301", tantiemes: 150, ownerId: "user-owner-5", ownerName: "Hassan Bennani", tenantId: "user-tenant-2", tenantName: "Sara Idrissi" },
+  { id: "apt-302", buildingId: "building-2", floor: 3, number: "302", tantiemes: 150, ownerId: "user-owner-6", ownerName: "Amina Chraibi" },
 ]
 
 // ========================
@@ -165,7 +166,7 @@ export interface ManagedUser {
   fullName: string
   username?: string
   phone?: string
-  role: "Owner" | "Tenant"
+  role: "Owner" | "Tenant" | "Admin"
   buildingName: string
   apartmentNumber: string
   status: "Active" | "Inactive"
@@ -183,3 +184,51 @@ export const managedUsers: ManagedUser[] = [
   { id: "user-tenant-2", fullName: "Sara Idrissi", phone: "0677654321", role: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Active", createdAt: "2025-12-01", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
   { id: "user-owner-6", fullName: "Amina Chraibi", username: "amina.c", role: "Owner", buildingName: "Résidence Les Jardins", apartmentNumber: "302", status: "Inactive", createdAt: "2025-06-20", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop" },
 ]
+
+// ========================
+// CHART DATA
+// ========================
+export const revenueDataSets = {
+  day: [
+    { label: "08:00", revenue: 120 },
+    { label: "10:00", revenue: 450 },
+    { label: "12:00", revenue: 890 },
+    { label: "14:00", revenue: 1200 },
+    { label: "16:00", revenue: 950 },
+    { label: "18:00", revenue: 1500 },
+    { label: "20:00", revenue: 1100 },
+  ],
+  month: [
+    { label: "Week 1", revenue: 12000 },
+    { label: "Week 2", revenue: 15000 },
+    { label: "Week 3", revenue: 11000 },
+    { label: "Week 4", revenue: 18000 },
+  ],
+  year: [
+    { label: "Jan", revenue: 4500 },
+    { label: "Feb", revenue: 4800 },
+    { label: "Mar", revenue: 5000 },
+    { label: "Apr", revenue: 4200 },
+    { label: "May", revenue: 5100 },
+    { label: "Jun", revenue: 4900 },
+    { label: "Jul", revenue: 5500 },
+    { label: "Aug", revenue: 5800 },
+    { label: "Sep", revenue: 5200 },
+    { label: "Oct", revenue: 6000 },
+    { label: "Nov", revenue: 5700 },
+    { label: "Dec", revenue: 6200 },
+  ],
+  all: [
+    { label: "2022", revenue: 45000 },
+    { label: "2023", revenue: 58000 },
+    { label: "2024", revenue: 62000 },
+    { label: "2025", revenue: 75000 },
+  ],
+}
+
+export const chartConfig = {
+  revenue: {
+    label: "Revenue",
+    color: "var(--primary)",
+  },
+}

@@ -127,12 +127,12 @@ export default function UsersPage() {
               </thead>
               <tbody>
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="border-b border-black/5 last:border-0 hover:bg-neutral-50 transition-colors">
+                  <tr key={user.id} className="border-b border-black/5 last:border-0 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <Avatar className="h-8 w-8 border border-black/5">
                           <AvatarImage src={user.avatar} alt={user.fullName} />
-                          <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                          <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">
                             {user.fullName.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
@@ -143,19 +143,25 @@ export default function UsersPage() {
                       {user.role === "Owner" ? user.username : user.phone}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant={user.role === "Owner" ? "default" : "secondary"} className="text-[10px]">
+                      <Badge 
+                        variant={
+                          user.role === "Owner" ? "info" : 
+                          user.role === "Admin" ? "admin" : "tenant"
+                        } 
+                        className="text-[10px]"
+                      >
                         {user.role}
                       </Badge>
                     </td>
                     <td className="px-4 py-3 text-xs text-neutral-600">{user.buildingName}</td>
                     <td className="px-4 py-3 text-xs text-neutral-600">Apt {user.apartmentNumber}</td>
                     <td className="px-4 py-3">
-                      <span className={cn(
-                        "text-[10px] px-2 py-0.5 rounded-full font-semibold",
-                        user.status === "Active" ? "bg-emerald-100 text-emerald-700" : "bg-neutral-100 text-neutral-500"
-                      )}>
+                      <Badge 
+                        variant={user.status === "Active" ? "success" : "secondary"} 
+                        className="text-[10px] px-2.5 py-1 font-normal"
+                      >
                         {user.status}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3">
                       <Button variant="ghost" size="icon" className="h-7 w-7 cursor-pointer">

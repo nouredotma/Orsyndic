@@ -18,7 +18,7 @@ export default function MyChargesPage() {
         <Card className="border-none bg-neutral-100">
           <CardContent className="p-4">
             <p className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider mb-1">Outstanding</p>
-            <p className="text-2xl font-bold text-rose-600">{unpaidTotal} MAD</p>
+            <p className="text-2xl font-bold text-[#FF0000]">{unpaidTotal} MAD</p>
           </CardContent>
         </Card>
         <Card className="border-none bg-neutral-100">
@@ -49,7 +49,7 @@ export default function MyChargesPage() {
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <p className="text-sm font-bold">{c.amount} MAD</p>
-                    <Badge variant={c.status === "Paid" ? "default" : c.status === "Partial" ? "secondary" : "destructive"} className="text-[10px]">{c.status}</Badge>
+                    <Badge variant={c.status === "Paid" ? "success" : c.status === "Partial" ? "warning" : "danger"} className="text-[10px]">{c.status}</Badge>
                   </div>
                   {c.status === "Paid" && c.validatedByAdmin && (
                     <Button variant="ghost" size="sm" className="text-[10px] h-7 gap-1 cursor-pointer text-primary">

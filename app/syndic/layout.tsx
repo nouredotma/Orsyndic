@@ -99,7 +99,7 @@ const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar
           <Button variant="ghost" className={cn("w-full justify-start h-auto py-2 hover:bg-white/10 cursor-pointer focus-visible:ring-0 border-none px-2 text-white", collapsed && !isMobileSidebar ? "justify-center" : "gap-3")}>
             <Avatar className="h-9 w-9 border border-white/10">
               <AvatarImage src={userData.avatar} alt={userData.fullName} />
-              <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm">{userData.fullName.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold text-sm">{userData.fullName.charAt(0)}</AvatarFallback>
             </Avatar>
             {(!collapsed || isMobileSidebar) && (
               <div className="flex flex-col items-start overflow-hidden text-left">

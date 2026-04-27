@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { UserCircle, Eye, EyeOff } from "lucide-react"
+import { UserCircle, Eye, EyeOff, Camera } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +13,18 @@ export default function ProfilePage() {
   const user = getCurrentUser()
   const [showOld, setShowOld] = useState(false)
   const [showNew, setShowNew] = useState(false)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4 max-w-2xl">
@@ -23,8 +36,17 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="p-4 pt-2 space-y-3">
           <div className="flex items-center gap-4 pb-3 border-b border-black/5">
-            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-xl font-bold text-primary">{user?.fullName?.charAt(0) || "U"}</span>
+            <div className="relative group">
+              <Avatar className="h-16 w-16 border border-black/5">
+                <AvatarImage src={previewImage || user?.avatar} />
+                <AvatarFallback className="bg-red-100 text-[#FF0000] text-xl font-bold">
+                  {user?.fullName?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <Camera className="h-5 w-5 text-white" />
+                <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+              </label>
             </div>
             <div>
               <p className="text-sm font-bold">{user?.fullName || "User"}</p>

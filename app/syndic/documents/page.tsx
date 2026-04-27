@@ -48,7 +48,7 @@ export default function DocumentsPage() {
           <CardContent className="p-4 pt-1">
             <div className="space-y-1.5">
               {docs.map((doc) => (
-                <div key={doc.id} className="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-neutral-50 transition-colors">
+                <div key={doc.id} className="flex items-center justify-between py-2 px-2 rounded-lg transition-colors">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <FileText className="h-4 w-4 text-neutral-400 shrink-0" />
                     <div className="min-w-0">

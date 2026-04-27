@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react"
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -23,6 +24,9 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getCurrentUser } from "@/lib/auth"
 import type { UserRole } from "@/lib/auth"
 import {
@@ -30,6 +34,8 @@ import {
   charges,
   tickets,
   announcements,
+  revenueDataSets,
+  chartConfig
 } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
@@ -45,6 +51,7 @@ const iconMap: Record<string, any> = {
 // ADMIN DASHBOARD
 // ========================
 function AdminDashboard({ firstName }: { firstName: string }) {
+  const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const unpaidCharges = charges.filter(c => c.status === "Unpaid" || c.status === "Partial")
   const openTickets = tickets.filter(t => t.status === "Open" || t.status === "In Progress")
 
@@ -70,13 +77,13 @@ function AdminDashboard({ firstName }: { firstName: string }) {
                 <div className="text-xl font-bold">{stat.value}</div>
                 <div className="flex items-center gap-1 mt-0.5">
                   {stat.trend === "up" ? (
-                    <ArrowUpRight className="h-3 w-3 text-emerald-500" />
+                    <ArrowUpRight className="h-3 w-3 text-[#00D100]" />
                   ) : stat.trend === "down" ? (
-                    <ArrowDownRight className="h-3 w-3 text-rose-500" />
+                    <ArrowDownRight className="h-3 w-3 text-[#FF0000]" />
                   ) : null}
                   <span className={cn(
                     "text-[10px] font-semibold",
-                    stat.trend === "up" ? "text-emerald-500" : stat.trend === "down" ? "text-rose-500" : "text-neutral-500"
+                    stat.trend === "up" ? "text-[#00D100]" : stat.trend === "down" ? "text-[#FF0000]" : "text-neutral-500"
                   )}>
                     {stat.trendValue}
                   </span>
@@ -91,44 +98,8 @@ function AdminDashboard({ firstName }: { firstName: string }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Unpaid Charges */}
-        <Card className="border-none bg-neutral-100 lg:col-span-2">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-base">Unpaid Charges</CardTitle>
-            <CardDescription className="text-xs">
-              {unpaidCharges.length} charges pending payment
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-4 pt-1 pb-2">
-            <div className="space-y-2">
-              {unpaidCharges.map((charge) => (
-                <div key={charge.id} className="flex items-center justify-between py-2 border-b border-black/5 last:border-0">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8 border border-black/5">
-                      <AvatarImage src={charge.ownerAvatar} alt={charge.ownerName} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
-                        {charge.ownerName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-xs font-semibold">{charge.ownerName}</p>
-                      <p className="text-[10px] text-neutral-500">Apt {charge.apartmentNumber} · {charge.buildingName}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs font-bold">{charge.amount} MAD</p>
-                    <Badge variant={charge.status === "Partial" ? "secondary" : "destructive"} className="text-[9px] py-0 h-4 px-1.5">
-                      {charge.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Latest Tickets */}
-        <Card className="border-none bg-neutral-100">
+        <Card className="border-none bg-neutral-100 lg:col-span-1">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-base">Latest Tickets</CardTitle>
             <CardDescription className="text-xs">
@@ -141,7 +112,7 @@ function AdminDashboard({ firstName }: { firstName: string }) {
                 <div key={ticket.id} className="flex items-start gap-3 py-1.5">
                   <Avatar className="h-8 w-8 border border-black/5 shrink-0">
                     <AvatarImage src={ticket.submittedByAvatar} alt={ticket.submittedBy} />
-                    <AvatarFallback className="bg-neutral-200 text-neutral-600 text-[10px] font-bold">
+                    <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">
                       {ticket.submittedBy.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
@@ -150,9 +121,9 @@ function AdminDashboard({ firstName }: { firstName: string }) {
                     <div className="flex items-center gap-2 mt-1">
                       <p className="text-[10px] text-neutral-500">{ticket.submittedBy}</p>
                       <Badge variant={
-                        ticket.status === "Open" ? "destructive" :
-                        ticket.status === "In Progress" ? "secondary" : "default"
-                      } className="text-[9px] py-0 h-3.5 px-1">
+                        ticket.status === "Open" ? "info" :
+                        ticket.status === "In Progress" ? "warning" : "success"
+                      } className="text-[9px]">
                         {ticket.status}
                       </Badge>
                     </div>
@@ -162,39 +133,132 @@ function AdminDashboard({ firstName }: { firstName: string }) {
             </div>
           </CardContent>
         </Card>
+
+        {/* Revenue Chart */}
+        <Card className="border-none bg-neutral-100 lg:col-span-2">
+          <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
+            <div>
+              <CardTitle className="text-base">Revenue Overview</CardTitle>
+              <CardDescription className="text-xs">Revenue statistics for the selected period</CardDescription>
+            </div>
+            <Tabs value={timeframe} onValueChange={(v) => setTimeframe(v as any)} className="w-auto">
+              <TabsList className="h-8 bg-neutral-200 rounded-sm shadow-none">
+                <TabsTrigger value="day" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">Day</TabsTrigger>
+                <TabsTrigger value="month" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">Month</TabsTrigger>
+                <TabsTrigger value="year" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">Year</TabsTrigger>
+                <TabsTrigger value="all" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">All Time</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <ChartContainer config={chartConfig} className="h-[250px] w-full">
+              <AreaChart data={revenueDataSets[timeframe]} margin={{ top: 20, left: -20, right: 10, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-revenue)" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="var(--color-revenue)" stopOpacity={0.1} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="label" 
+                  tickLine={false} 
+                  axisLine={false} 
+                  tickMargin={8}
+                  className="text-[10px]"
+                />
+                <YAxis 
+                  tickLine={false} 
+                  axisLine={false} 
+                  tickMargin={8}
+                  className="text-[10px]"
+                />
+                <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                <Area
+                  dataKey="revenue"
+                  type="monotone"
+                  fill="url(#fillRevenue)"
+                  fillOpacity={1}
+                  stroke="var(--color-revenue)"
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: "var(--color-revenue)", strokeWidth: 0 }}
+                  activeDot={{ r: 6 }}
+                />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Announcements */}
-      <Card className="border-none bg-neutral-100">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-base">Announcements Board</CardTitle>
-          <CardDescription className="text-xs">
-            Recent notices posted to all residents
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-4 pt-1 pb-2">
-          <div className="space-y-2">
-            {announcements.map((ann) => (
-              <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
-                <div className={cn(
-                  "p-1.5 rounded-full shrink-0",
-                  ann.urgent ? "bg-rose-100 text-rose-600" : "bg-blue-100 text-blue-600"
-                )}>
-                  {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-semibold">{ann.title}</p>
-                    {ann.urgent && <Badge variant="destructive" className="text-[9px] py-0 h-3.5 px-1">Urgent</Badge>}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        {/* Announcements */}
+        <Card className="border-none bg-neutral-100 lg:col-span-2">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-base">Announcements Board</CardTitle>
+            <CardDescription className="text-xs">
+              Recent notices posted to all residents
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-1 pb-2">
+            <div className="space-y-2">
+              {announcements.map((ann) => (
+                <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
+                  <div className={cn(
+                    "p-1.5 rounded-full shrink-0",
+                    ann.urgent ? "bg-red-50 text-[#FF0000]" : "bg-blue-50 text-blue-600"
+                  )}>
+                    {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
                   </div>
-                  <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
-                  <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-semibold">{ann.title}</p>
+                      {ann.urgent && <Badge variant="orange" className="text-[9px]">Urgent</Badge>}
+                    </div>
+                    <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
+                    <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Unpaid Charges */}
+        <Card className="border-none bg-neutral-100 lg:col-span-1">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-base">Unpaid Charges</CardTitle>
+            <CardDescription className="text-xs">
+              {unpaidCharges.length} charges pending payment
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-1 pb-2">
+            <div className="space-y-2">
+              {unpaidCharges.map((charge) => (
+                <div key={charge.id} className="flex items-center justify-between py-2 border-b border-black/5 last:border-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <Avatar className="h-8 w-8 border border-black/5 shrink-0">
+                      <AvatarImage src={charge.ownerAvatar} alt={charge.ownerName} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                        {charge.ownerName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1 pr-2">
+                      <p className="text-xs font-semibold truncate">{charge.ownerName}</p>
+                      <p className="text-[10px] text-neutral-500 truncate">Apt {charge.apartmentNumber} · {charge.buildingName}</p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-xs font-bold">{charge.amount} MAD</p>
+                    <Badge variant={charge.status === "Partial" ? "warning" : "danger"} className="text-[9px]">
+                      {charge.status}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

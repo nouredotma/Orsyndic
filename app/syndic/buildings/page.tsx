@@ -9,13 +9,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { buildings, apartments } from "@/lib/mock-data"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { buildings, apartments, charges } from "@/lib/mock-data"
+import type { Apartment } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
 export default function BuildingsPage() {
   const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null)
+  const [selectedApartment, setSelectedApartment] = useState<Apartment | null>(null)
 
   const selectedBuildingData = buildings.find(b => b.id === selectedBuilding)
   const buildingApartments = apartments.filter(a => a.buildingId === selectedBuilding)
@@ -39,7 +43,7 @@ export default function BuildingsPage() {
               <Card
                 key={building.id}
                 className={cn(
-                  "border-none bg-neutral-100 cursor-pointer transition-all hover:shadow-md",
+                  "border-none bg-neutral-100 cursor-pointer transition-all",
                   selectedBuilding === building.id && "border-primary ring-1 ring-primary/20"
                 )}
                 onClick={() => setSelectedBuilding(building.id)}
@@ -89,13 +93,18 @@ export default function BuildingsPage() {
                       <tr className="border-b border-black/5">
                         <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">Apt #</th>
                         <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">Floor</th>
+                        <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">Tantièmes</th>
                         <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">Owner</th>
                         <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">Tenant</th>
                       </tr>
                     </thead>
                     <tbody>
                       {buildingApartments.map((apt) => (
-                        <tr key={apt.id} className="border-b border-black/5 last:border-0 hover:bg-neutral-50 transition-colors">
+                        <tr 
+                          key={apt.id} 
+                          className="border-b border-black/5 last:border-0 transition-colors cursor-pointer"
+                          onClick={() => setSelectedApartment(apt)}
+                        >
                           <td className="px-3 py-2.5">
                             <div className="flex items-center gap-2">
                               <DoorOpen className="h-3.5 w-3.5 text-primary" />
@@ -103,6 +112,7 @@ export default function BuildingsPage() {
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-xs text-neutral-600">Floor {apt.floor}</td>
+                          <td className="px-3 py-2.5 text-xs font-medium">{apt.tantiemes}</td>
                           <td className="px-3 py-2.5 text-xs font-medium">{apt.ownerName}</td>
                           <td className="px-3 py-2.5 text-xs text-neutral-600">{apt.tenantName || <span className="text-neutral-300 italic">No tenant</span>}</td>
                         </tr>
@@ -120,6 +130,87 @@ export default function BuildingsPage() {
           )}
         </div>
       </div>
+
+      <Sheet open={!!selectedApartment} onOpenChange={(open) => !open && setSelectedApartment(null)}>
+        <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+          {selectedApartment && (
+            <>
+              <SheetHeader className="mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <DoorOpen className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <SheetTitle>Apartment {selectedApartment.number}</SheetTitle>
+                    <SheetDescription>
+                      {selectedBuildingData?.name} · Floor {selectedApartment.floor} · {selectedApartment.tantiemes} Tantièmes
+                    </SheetDescription>
+                  </div>
+                </div>
+              </SheetHeader>
+
+              <div className="space-y-6">
+                {/* People Info */}
+                <div className="space-y-3">
+                  <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Occupants</h4>
+                  
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 border border-black/5">
+                    <Avatar className="h-10 w-10 border border-black/5">
+                      <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedApartment.ownerName.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
+                      <p className="text-[10px] text-neutral-500">Owner</p>
+                    </div>
+                  </div>
+
+                  {selectedApartment.tenantName && (
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 border border-black/5">
+                      <Avatar className="h-10 w-10 border border-black/5">
+                        <AvatarFallback className="bg-neutral-200 text-neutral-600">{selectedApartment.tenantName.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-semibold">{selectedApartment.tenantName}</p>
+                        <p className="text-[10px] text-neutral-500">Tenant</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Payment History */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Payment History</h4>
+                    <Button variant="outline" size="sm" className="h-7 text-[10px] px-2">View All</Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {charges
+                      .filter(c => c.apartmentId === selectedApartment.id)
+                      .map((charge) => (
+                        <div key={charge.id} className="flex items-center justify-between p-3 rounded-lg bg-neutral-50 border border-black/5">
+                          <div>
+                            <p className="text-sm font-medium">{charge.month} {charge.year}</p>
+                            <p className="text-xs font-bold text-neutral-900 mt-0.5">{charge.amount} MAD</p>
+                          </div>
+                          <div className="text-right">
+                            <Badge variant={charge.status === "Paid" ? "success" : charge.status === "Partial" ? "warning" : "danger"} className="text-[10px] mb-1 block w-fit ml-auto">
+                              {charge.status}
+                            </Badge>
+                            {charge.paidDate && <p className="text-[9px] text-neutral-400">Paid on {charge.paidDate}</p>}
+                          </div>
+                        </div>
+                      ))}
+                    {charges.filter(c => c.apartmentId === selectedApartment.id).length === 0 && (
+                      <p className="text-xs text-neutral-500 text-center py-4 italic">No payment history found.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   )
 }

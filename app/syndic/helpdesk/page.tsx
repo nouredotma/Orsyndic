@@ -23,9 +23,9 @@ export default function HelpdeskPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-3 gap-2">
-        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-rose-600">{tickets.filter(t => t.status === "Open").length}</p><p className="text-[10px] text-neutral-500">Open</p></CardContent></Card>
+        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-[#FF0000]">{tickets.filter(t => t.status === "Open").length}</p><p className="text-[10px] text-neutral-500">Open</p></CardContent></Card>
         <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-amber-600">{tickets.filter(t => t.status === "In Progress").length}</p><p className="text-[10px] text-neutral-500">In Progress</p></CardContent></Card>
-        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-emerald-600">{tickets.filter(t => t.status === "Resolved").length}</p><p className="text-[10px] text-neutral-500">Resolved</p></CardContent></Card>
+        <Card className="border-none bg-neutral-100"><CardContent className="p-3 text-center"><p className="text-lg font-bold text-[#00D100]">{tickets.filter(t => t.status === "Resolved").length}</p><p className="text-[10px] text-neutral-500">Resolved</p></CardContent></Card>
       </div>
 
       <div className="flex items-center gap-2">
@@ -42,18 +42,18 @@ export default function HelpdeskPage() {
 
       <div className="space-y-2">
         {filtered.map((ticket) => (
-          <Card key={ticket.id} className="border-none bg-neutral-100 hover:shadow-md transition-shadow cursor-pointer">
+          <Card key={ticket.id} className="border-none bg-neutral-100 transition-shadow cursor-pointer">
             <CardContent className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className={cn("p-2 rounded-lg shrink-0", ticket.priority === "High" ? "bg-rose-50" : ticket.priority === "Medium" ? "bg-amber-50" : "bg-neutral-50")}>
-                    <TicketCheck className={cn("h-4 w-4", ticket.priority === "High" ? "text-rose-500" : ticket.priority === "Medium" ? "text-amber-500" : "text-neutral-500")} />
+                  <div className={cn("p-2 rounded-lg shrink-0", ticket.priority === "High" ? "bg-orange-50" : ticket.priority === "Medium" ? "bg-amber-50" : "bg-neutral-50")}>
+                    <TicketCheck className={cn("h-4 w-4", ticket.priority === "High" ? "text-orange-600" : ticket.priority === "Medium" ? "text-amber-500" : "text-neutral-500")} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-sm font-semibold">{ticket.title}</p>
-                      <Badge variant={ticket.status === "Open" ? "destructive" : ticket.status === "In Progress" ? "secondary" : "default"} className="text-[10px]">{ticket.status}</Badge>
-                      <Badge variant="outline" className="text-[10px]">{ticket.priority}</Badge>
+                      <Badge variant={ticket.status === "Open" ? "info" : ticket.status === "In Progress" ? "warning" : "success"} className="text-[10px] font-normal">{ticket.status}</Badge>
+                      <Badge variant={ticket.priority === "High" ? "orange" : ticket.priority === "Medium" ? "warning" : "success"} className="text-[10px] font-normal">{ticket.priority}</Badge>
                     </div>
                     <p className="text-xs text-neutral-500 mt-1 line-clamp-1">{ticket.description}</p>
                     <div className="flex items-center gap-3 mt-2 text-[10px] text-neutral-400">
