@@ -141,9 +141,9 @@ export default function LoginPage() {
                 <span className="sr-only">Change language</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-neutral-100 border-none shadow-xl rounded-lg p-1.5">
+            <DropdownMenuContent align="end" className="w-40 bg-neutral-100 border-none shadow-xl rounded-sm p-1.5">
               {languages.map((lang) => (
-                <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-lg py-2 px-2.5">
+                <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
                   <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
                   <span className={cn("text-xs font-semibold", currentLanguage.code === lang.code && "text-primary")}>{lang.name}</span>
                 </DropdownMenuItem>
@@ -159,23 +159,23 @@ export default function LoginPage() {
           </div>
 
           {/* Login Mode Toggle — 3 tabs */}
-          <div className="flex rounded-lg bg-neutral-100 p-1 gap-1">
+          <div className="flex rounded-sm bg-neutral-100 p-1 gap-1">
             <button type="button" onClick={() => { setLoginMode("owner"); setError("") }}
-              className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-md text-xs font-medium transition-all cursor-pointer", loginMode === "owner" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
+              className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-sm text-xs font-medium transition-all cursor-pointer", loginMode === "owner" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
               <User className="h-3.5 w-3.5" />Owner
             </button>
             <button type="button" onClick={() => { setLoginMode("tenant"); setError("") }}
-              className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-md text-xs font-medium transition-all cursor-pointer", loginMode === "tenant" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
+              className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-sm text-xs font-medium transition-all cursor-pointer", loginMode === "tenant" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
               <Phone className="h-3.5 w-3.5" />Tenant
             </button>
             <button type="button" onClick={() => { setLoginMode("admin"); setError("") }}
-              className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-md text-xs font-medium transition-all cursor-pointer", loginMode === "admin" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
+              className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-sm text-xs font-medium transition-all cursor-pointer", loginMode === "admin" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
               <Mail className="h-3.5 w-3.5" />Admin
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-2">
-            {error && <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">{error}</div>}
+            {error && <div className="rounded-sm bg-destructive/15 p-3 text-sm text-destructive">{error}</div>}
 
             {loginMode === "admin" ? (
               <div className="space-y-1">
@@ -217,7 +217,7 @@ export default function LoginPage() {
           </form>
 
           {/* Demo credentials */}
-          <div className="rounded-lg bg-neutral-50 border border-neutral-200 p-3 space-y-2">
+          <div className="rounded-sm bg-neutral-50 border border-neutral-200 p-3 space-y-2">
             <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Demo Credentials</p>
             {loginMode === "admin" ? (
               <div className="text-xs text-neutral-600 space-y-0.5">
@@ -249,7 +249,7 @@ export default function LoginPage() {
       {/* Password Reset Modal */}
       {showResetModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-sm shadow-2xl w-full max-w-sm mx-4 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
             {resetSent ? (
               <div className="text-center space-y-2 py-4">
                 <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">

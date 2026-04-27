@@ -6,9 +6,9 @@ import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import {
-  Building2, CreditCard, FileText, Home, LogOut, Menu, Settings, Users, X, Bell,
+  Building2, CreditCard, FileText, Home, LogOut, Menu, Settings, Users, X,
   TicketCheck, Megaphone, FolderOpen, UserCircle, DoorOpen,
-  UserPlus, CheckCircle2, AlertTriangle,
+  UserPlus, AlertTriangle,
 } from "lucide-react"
 
 import { logoutUser, getCurrentUser } from "@/lib/auth"
@@ -199,7 +199,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
   const SidebarContent = ({ isMobileSidebar = false }: { isMobileSidebar?: boolean }) => (
     <>
       {!isMobileSidebar && (
-        <Button variant="ghost" className={cn("w-full justify-center mb-3 h-auto py-2.5 text-white/40 hover:bg-primary/10 hover:text-primary border border-white/20 hover:border-primary cursor-pointer", collapsed ? "px-2" : "px-3")} onClick={() => setCollapsed(!collapsed)}>
+        <Button variant="ghost" className={cn("w-full justify-center mb-3 h-auto py-2.5 text-white/60 hover:bg-white/10 hover:text-white border border-white/60 hover:border-white cursor-pointer transition-colors", collapsed ? "px-2" : "px-3")} onClick={() => setCollapsed(!collapsed)}>
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle menu</span>
         </Button>
@@ -249,7 +249,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
       </Sheet>
 
       <div className={`flex flex-1 flex-col overflow-hidden bg-white transition-all duration-700 ease-out md:rounded-sm md:m-2 ${animate ? "opacity-100 scale-100 transform-none" : "opacity-0 scale-0 transform origin-center"}`}>
-        <header className="flex items-center justify-between border-b border-black/5 bg-white px-4 py-2.5 md:rounded-t-lg sticky top-0 z-10 min-h-[64px]">
+        <header className="flex items-center justify-between border-b border-black/5 bg-white px-4 py-2.5 md:rounded-t-sm sticky top-0 z-10 min-h-[64px]">
           <div className="flex items-center gap-4 flex-1">
             <Button variant="ghost" size="icon" className="md:hidden cursor-pointer" onClick={() => setMobileOpen(true)}><Menu className="h-5 w-5" /></Button>
             <h1 className="text-lg font-bold truncate hidden lg:block">{currentPageTitle}</h1>
@@ -264,9 +264,9 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
                   <span className="sr-only">Change language</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-lg rounded-lg p-1.5">
+              <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-lg rounded-sm p-1.5">
                 {languages.map((lang) => (
-                  <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-lg py-2 px-2.5">
+                  <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
                     <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
                     <span className={cn("text-xs font-medium", currentLanguage.code === lang.code && "text-primary font-bold")}>{lang.name}</span>
                   </DropdownMenuItem>
@@ -274,42 +274,7 @@ export default function SyndicLayout({ children }: { children: React.ReactNode }
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative cursor-pointer bg-neutral-100 text-black/60 hover:text-primary hover:bg-primary/15 rounded-full transition-colors">
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute top-2.5 right-2.5 h-2 w-2 bg-primary rounded-full border-2 border-white" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[320px] mt-2 p-0 bg-white border-none shadow-xl rounded-lg overflow-hidden">
-                <div className="p-3.5 flex items-center justify-between bg-white border-b border-black/5">
-                  <h3 className="font-semibold text-sm text-slate-800">Notifications</h3>
-                  <button className="text-[11px] font-semibold text-primary hover:underline cursor-pointer bg-transparent border-none">Mark all as read</button>
-                </div>
-                <div className="max-h-[300px] overflow-y-auto hide-scrollbar">
-                  {[
-                    { title: "New ticket submitted", desc: "Karim Moussaoui reported a water leak in Apt 101.", time: "2m ago", read: false, icon: <TicketCheck className="h-4 w-4 text-blue-500" />, iconBg: "bg-blue-50" },
-                    { title: "Payment validated", desc: "Ahmed Benali's April charge has been confirmed.", time: "1h ago", read: false, icon: <CheckCircle2 className="h-4 w-4 text-green-500" />, iconBg: "bg-green-50" },
-                    { title: "Unpaid charges alert", desc: "3 apartments have unpaid charges for this month.", time: "3h ago", read: true, icon: <AlertTriangle className="h-4 w-4 text-orange-500" />, iconBg: "bg-orange-50" },
-                  ].map((notif, i) => (
-                    <div key={i} className={cn("px-3.5 py-3 flex gap-3 transition-all border-b border-black/5 last:border-0 cursor-pointer", notif.read ? "bg-transparent hover:bg-black/5" : "bg-white hover:bg-primary/5")}>
-                      <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center shrink-0 shadow-sm", notif.iconBg)}>{notif.icon}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start gap-2 mb-1">
-                          <p className={cn("text-xs font-bold truncate", notif.read ? "text-slate-600" : "text-slate-800")}>{notif.title}</p>
-                          <span className="text-[9px] font-bold text-slate-400 whitespace-nowrap mt-0.5">{notif.time}</span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 leading-tight line-clamp-2">{notif.desc}</p>
-                      </div>
-                      {!notif.read && <div className="h-2 w-2 bg-primary rounded-full mt-2 shrink-0 animate-pulse" />}
-                    </div>
-                  ))}
-                </div>
-                <div className="py-2 px-1 bg-white border-t border-black/5">
-                  <Button variant="ghost" className="w-full text-xs font-bold text-neutral-500 hover:text-primary hover:bg-primary/10 transition-colors py-1.5 h-auto rounded-sm">View all notifications</Button>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+
           </div>
         </header>
 

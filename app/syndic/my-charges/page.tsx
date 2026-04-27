@@ -38,7 +38,7 @@ export default function MyChargesPage() {
             {myCharges.map((c) => (
               <div key={c.id} className="flex items-center justify-between py-3 border-b border-black/5 last:border-0">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-sm bg-primary/10 flex items-center justify-center">
                     <CreditCard className="h-4 w-4 text-primary" />
                   </div>
                   <div>

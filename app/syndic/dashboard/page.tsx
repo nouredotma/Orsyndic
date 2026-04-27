@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { getCurrentUser } from "@/lib/auth"
 import type { UserRole } from "@/lib/auth"
 import {
@@ -61,7 +62,7 @@ function AdminDashboard({ firstName }: { firstName: string }) {
                 <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">
                   {stat.title}
                 </CardTitle>
-                <div className="p-1.5 bg-primary/10 rounded-lg">
+                <div className="p-1.5 bg-primary/10 rounded-sm">
                   <Icon className="h-3.5 w-3.5 text-primary" />
                 </div>
               </CardHeader>
@@ -103,9 +104,12 @@ function AdminDashboard({ firstName }: { firstName: string }) {
               {unpaidCharges.map((charge) => (
                 <div key={charge.id} className="flex items-center justify-between py-2 border-b border-black/5 last:border-0">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-rose-50 flex items-center justify-center">
-                      <CreditCard className="h-4 w-4 text-rose-500" />
-                    </div>
+                    <Avatar className="h-8 w-8 border border-black/5">
+                      <AvatarImage src={charge.ownerAvatar} alt={charge.ownerName} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                        {charge.ownerName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
                     <div>
                       <p className="text-xs font-semibold">{charge.ownerName}</p>
                       <p className="text-[10px] text-neutral-500">Apt {charge.apartmentNumber} · {charge.buildingName}</p>
@@ -135,14 +139,12 @@ function AdminDashboard({ firstName }: { firstName: string }) {
             <div className="space-y-2">
               {tickets.slice(0, 4).map((ticket) => (
                 <div key={ticket.id} className="flex items-start gap-3 py-1.5">
-                  <div className={cn(
-                    "p-1.5 rounded-full shrink-0",
-                    ticket.priority === "High" ? "bg-rose-100 text-rose-600" :
-                    ticket.priority === "Medium" ? "bg-amber-100 text-amber-600" :
-                    "bg-neutral-100 text-neutral-600"
-                  )}>
-                    <TicketCheck className="h-3 w-3" />
-                  </div>
+                  <Avatar className="h-8 w-8 border border-black/5 shrink-0">
+                    <AvatarImage src={ticket.submittedByAvatar} alt={ticket.submittedBy} />
+                    <AvatarFallback className="bg-neutral-200 text-neutral-600 text-[10px] font-bold">
+                      {ticket.submittedBy.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold leading-none truncate">{ticket.title}</p>
                     <div className="flex items-center gap-2 mt-1">

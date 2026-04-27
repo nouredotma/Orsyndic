@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { managedUsers } from "@/lib/mock-data"
 import type { ManagedUser } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
@@ -46,7 +47,7 @@ export default function UsersPage() {
       <div className="grid grid-cols-3 gap-2">
         <Card className="border-none bg-neutral-100">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
+            <div className="p-2 bg-primary/10 rounded-sm">
               <Users className="h-4 w-4 text-primary" />
             </div>
             <div>
@@ -57,7 +58,7 @@ export default function UsersPage() {
         </Card>
         <Card className="border-none bg-neutral-100">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className="p-2 bg-blue-50 rounded-lg">
+            <div className="p-2 bg-blue-50 rounded-sm">
               <Shield className="h-4 w-4 text-blue-500" />
             </div>
             <div>
@@ -68,7 +69,7 @@ export default function UsersPage() {
         </Card>
         <Card className="border-none bg-neutral-100">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className="p-2 bg-amber-50 rounded-lg">
+            <div className="p-2 bg-amber-50 rounded-sm">
               <User className="h-4 w-4 text-amber-500" />
             </div>
             <div>
@@ -90,7 +91,7 @@ export default function UsersPage() {
             className="pl-9 rounded-sm bg-neutral-50 border-black/10 text-sm"
           />
         </div>
-        <div className="flex rounded-md bg-neutral-100 p-0.5 gap-0.5">
+        <div className="flex rounded-sm bg-neutral-100 p-0.5 gap-0.5">
           {(["All", "Owner", "Tenant"] as const).map((role) => (
             <button
               key={role}
@@ -129,9 +130,12 @@ export default function UsersPage() {
                   <tr key={user.id} className="border-b border-black/5 last:border-0 hover:bg-neutral-50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
-                          {user.fullName.charAt(0)}
-                        </div>
+                        <Avatar className="h-8 w-8 border border-black/5">
+                          <AvatarImage src={user.avatar} alt={user.fullName} />
+                          <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                            {user.fullName.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
                         <span className="text-sm font-medium">{user.fullName}</span>
                       </div>
                     </td>

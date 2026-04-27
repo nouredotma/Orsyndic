@@ -26,8 +26,8 @@ export default function MyTicketsPage() {
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-4 space-y-3">
             <h3 className="text-sm font-semibold">Submit a new {user?.role === "Owner" ? "incident" : "complaint"}</h3>
-            <input type="text" placeholder="Title" className="w-full px-3 py-2 text-sm rounded-md border border-none bg-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary" />
-            <textarea placeholder="Description..." rows={3} className="w-full px-3 py-2 text-sm rounded-md border border-none bg-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary resize-none" />
+            <input type="text" placeholder="Title" className="w-full px-3 py-2 text-sm rounded-sm border border-none bg-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary" />
+            <textarea placeholder="Description..." rows={3} className="w-full px-3 py-2 text-sm rounded-sm border border-none bg-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary resize-none" />
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" className="gap-1.5 text-xs cursor-pointer"><Camera className="h-3.5 w-3.5" />Attach Photo</Button>
               <div className="flex-1" />
@@ -52,7 +52,7 @@ export default function MyTicketsPage() {
             <Card key={ticket.id} className="border-none bg-neutral-100 hover:shadow-md transition-shadow">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className={cn("p-2 rounded-lg shrink-0", ticket.priority === "High" ? "bg-rose-50" : ticket.priority === "Medium" ? "bg-amber-50" : "bg-neutral-50")}>
+                  <div className={cn("p-2 rounded-sm shrink-0", ticket.priority === "High" ? "bg-rose-50" : ticket.priority === "Medium" ? "bg-amber-50" : "bg-neutral-50")}>
                     <TicketCheck className={cn("h-4 w-4", ticket.priority === "High" ? "text-rose-500" : ticket.priority === "Medium" ? "text-amber-500" : "text-neutral-500")} />
                   </div>
                   <div className="flex-1 min-w-0">
