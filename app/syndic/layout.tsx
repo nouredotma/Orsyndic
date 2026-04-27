@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import {
-  Building2, CreditCard, FileText, Home, LogOut, Menu, Settings, Users, X,
+  Building2, CreditCard, FileText, Home, LogOut, Menu, Users, X,
   TicketCheck, Megaphone, FolderOpen, UserCircle, DoorOpen,
   UserPlus, AlertTriangle,
 } from "lucide-react"
@@ -65,9 +65,9 @@ const getSidebarItems = (role: UserRole): SidebarItem[] => {
 }
 
 const allowedRoutes: Record<UserRole, string[]> = {
-  Admin: ["/syndic/dashboard", "/syndic/users", "/syndic/buildings", "/syndic/charges", "/syndic/helpdesk", "/syndic/documents", "/syndic/announcements", "/syndic/profile", "/syndic/settings"],
-  Owner: ["/syndic/dashboard", "/syndic/my-charges", "/syndic/documents", "/syndic/my-tickets", "/syndic/profile", "/syndic/settings"],
-  Tenant: ["/syndic/dashboard", "/syndic/my-tickets", "/syndic/profile", "/syndic/settings"],
+  Admin: ["/syndic/dashboard", "/syndic/users", "/syndic/buildings", "/syndic/charges", "/syndic/helpdesk", "/syndic/documents", "/syndic/announcements", "/syndic/profile"],
+  Owner: ["/syndic/dashboard", "/syndic/my-charges", "/syndic/documents", "/syndic/my-tickets", "/syndic/profile"],
+  Tenant: ["/syndic/dashboard", "/syndic/my-tickets", "/syndic/profile"],
 }
 
 const languages = [
@@ -131,12 +131,6 @@ const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar
             <Link href="/syndic/profile" className="flex items-center gap-2.5 w-full">
               <UserCircle className="h-4.5 w-4.5 text-black/60 group-hover:text-black group-focus:text-black" />
               <span className="text-sm font-medium text-black">{t.header.profile}</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2.5 transition-colors group">
-            <Link href="/syndic/settings" className="flex items-center gap-2.5 w-full">
-              <Settings className="h-4.5 w-4.5 text-black/60 group-hover:text-black group-focus:text-black" />
-              <span className="text-sm font-medium text-black">{t.header.settings}</span>
             </Link>
           </DropdownMenuItem>
           <div className="h-px bg-black/5 my-1.5" />
@@ -208,8 +202,6 @@ function SyndicLayoutContent({ children }: { children: React.ReactNode }) {
         setCurrentPageTitle(translatedTitle)
       } else if (pathname === "/syndic/profile") {
         setCurrentPageTitle(t.header.profile)
-      } else if (pathname === "/syndic/settings") {
-        setCurrentPageTitle(t.header.settings)
       }
     }
   }, [pathname, userData, language, t])

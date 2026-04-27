@@ -14,11 +14,13 @@ export interface DashboardTranslations {
   }
   header: {
     profile: string
-    settings: string
     logout: string
   }
   dashboard: {
     welcomeBack: string
+    goodMorning: string
+    goodAfternoon: string
+    goodEvening: string
     admin: {
       totalBuildings: string
       totalApartments: string
@@ -39,7 +41,6 @@ export interface DashboardTranslations {
       apartment: string
       reportIncident: string
       subject: string
-      priority: string
       description: string
       submitTicket: string
     }
@@ -174,18 +175,6 @@ export interface DashboardTranslations {
     confirmPassword: string
     updatePassword: string
   }
-  settings: {
-    notifications: string
-    notificationsDesc: string
-    emailNotifs: string
-    smsNotifs: string
-    ticketUpdates: string
-    chargeReminders: string
-    language: string
-    languageDesc: string
-    save: string
-    saved: string
-  }
   common: {
     all: string
     search: string
@@ -216,11 +205,13 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
     },
     header: {
       profile: "Profile",
-      settings: "Settings",
       logout: "Log out",
     },
     dashboard: {
       welcomeBack: "Welcome back",
+      goodMorning: "Good morning",
+      goodAfternoon: "Good afternoon",
+      goodEvening: "Good evening",
       admin: {
         totalBuildings: "Total Buildings",
         totalApartments: "Total Apartments",
@@ -241,7 +232,6 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         apartment: "Apartment",
         reportIncident: "Report Incident",
         subject: "Subject",
-        priority: "Priority",
         description: "Description",
         submitTicket: "Submit Ticket",
       },
@@ -376,18 +366,6 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmPassword: "Confirm New Password",
       updatePassword: "Update Password",
     },
-    settings: {
-      notifications: "Notifications",
-      notificationsDesc: "Choose how you want to be notified",
-      emailNotifs: "Email Notifications",
-      smsNotifs: "SMS Notifications",
-      ticketUpdates: "Ticket Updates",
-      chargeReminders: "Charge Reminders",
-      language: "Language",
-      languageDesc: "Set your preferred language",
-      save: "Save Settings",
-      saved: "✓ Saved!",
-    },
     common: {
       all: "All",
       search: "Search",
@@ -416,11 +394,13 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
     },
     header: {
       profile: "Profil",
-      settings: "Paramètres",
       logout: "Déconnexion",
     },
     dashboard: {
       welcomeBack: "Bon retour",
+      goodMorning: "Bon matin",
+      goodAfternoon: "Bon après-midi",
+      goodEvening: "Bonsoir",
       admin: {
         totalBuildings: "Immeubles",
         totalApartments: "Appartements",
@@ -441,7 +421,6 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         apartment: "Appartement",
         reportIncident: "Signaler un Incident",
         subject: "Sujet",
-        priority: "Priorité",
         description: "Description",
         submitTicket: "Soumettre le Ticket",
       },
@@ -576,18 +555,6 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmPassword: "Confirmer le Nouveau Mot de Passe",
       updatePassword: "Mettre à Jour le Mot de Passe",
     },
-    settings: {
-      notifications: "Notifications",
-      notificationsDesc: "Choisissez comment vous souhaitez être notifié",
-      emailNotifs: "Notifications par Email",
-      smsNotifs: "Notifications par SMS",
-      ticketUpdates: "Mises à jour des Tickets",
-      chargeReminders: "Rappels de Charges",
-      language: "Langue",
-      languageDesc: "Définissez votre langue préférée",
-      save: "Enregistrer les Paramètres",
-      saved: "✓ Enregistré !",
-    },
     common: {
       all: "Tous",
       search: "Rechercher",
@@ -616,11 +583,13 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
     },
     header: {
       profile: "Perfil",
-      settings: "Configuración",
       logout: "Cerrar Sesión",
     },
     dashboard: {
       welcomeBack: "Bienvenido de nuevo",
+      goodMorning: "Buenos días",
+      goodAfternoon: "Buenas tardes",
+      goodEvening: "Buenas noches",
       admin: {
         totalBuildings: "Edificios Totales",
         totalApartments: "Apartamentos Totales",
@@ -641,7 +610,6 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         apartment: "Apartamento",
         reportIncident: "Reportar Incidente",
         subject: "Asunto",
-        priority: "Prioridad",
         description: "Descripción",
         submitTicket: "Enviar Ticket",
       },
@@ -775,18 +743,6 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       newPassword: "Nueva Contraseña",
       confirmPassword: "Confirmar Nueva Contraseña",
       updatePassword: "Actualizar Contraseña",
-    },
-    settings: {
-      notifications: "Notificaciones",
-      notificationsDesc: "Elija cómo desea ser notificado",
-      emailNotifs: "Notificaciones por Email",
-      smsNotifs: "Notificaciones por SMS",
-      ticketUpdates: "Actualizaciones de Tickets",
-      chargeReminders: "Recordatorios de Cargos",
-      language: "Idioma",
-      languageDesc: "Configure su idioma preferido",
-      save: "Guardar Configuración",
-      saved: "✓ ¡Guardado!",
     },
     common: {
       all: "Todos",

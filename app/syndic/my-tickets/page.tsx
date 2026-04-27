@@ -7,9 +7,20 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
 import { tickets as initialTickets } from "@/lib/mock-data"
-import type { Ticket, TicketPriority } from "@/lib/mock-data"
+import type { Ticket } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function MyTicketsPage() {
   const { t } = useI18n()
@@ -43,7 +54,6 @@ export default function MyTicketsPage() {
       buildingName: "Résidence Al Andalous",
       apartmentNumber: user.apartmentId?.split("-")[1] || "—",
       status: "Open",
-      priority: "Medium" as TicketPriority,
       createdAt: new Date().toISOString().split("T")[0],
       photo: photoPreview || undefined,
       submittedByAvatar: user.avatar,
@@ -52,36 +62,79 @@ export default function MyTicketsPage() {
     setTitle(""); setDescription(""); setPhotoPreview(null); setShowForm(false)
   }
 
+  const handleCloseForm = (open: boolean) => {
+    if (!open) {
+      setShowForm(false)
+      setTitle("")
+      setDescription("")
+      setPhotoPreview(null)
+    } else {
+      setShowForm(true)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <Button className="gap-2 cursor-pointer" onClick={() => setShowForm(!showForm)}>
-          <Plus className="h-4 w-4" />{t.myTickets.newTicket}
-        </Button>
-      </div>
-
-      {showForm && (
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-4 space-y-3">
-            <h3 className="text-sm font-semibold">{t.myTickets.newTicket}</h3>
-            <input type="text" placeholder={t.announcements.title} value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-3 py-2 text-sm rounded-sm border border-none bg-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary" />
-            <textarea placeholder={t.announcements.content} rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 text-sm rounded-sm border border-none bg-neutral-100 focus:outline-none focus:ring-1 focus:ring-primary resize-none" />
-            {photoPreview && (
-              <div className="relative w-24 h-24 rounded-sm overflow-hidden border border-black/10">
-                <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                <button onClick={() => { setPhotoPreview(null); if (fileRef.current) fileRef.current.value = "" }} className="absolute top-1 right-1 bg-black/60 rounded-full p-0.5 cursor-pointer"><X className="h-3 w-3 text-white" /></button>
+        <Dialog open={showForm} onOpenChange={handleCloseForm}>
+          <Button className="gap-2 cursor-pointer" onClick={() => setShowForm(true)}>
+            <Plus className="h-4 w-4" />{t.myTickets.newTicket}
+          </Button>
+          <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
+            <DialogHeader>
+              <DialogTitle>{t.myTickets.newTicket}</DialogTitle>
+              <DialogDescription>
+                {t.myTickets.reportIssue}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="t-title" className="text-xs">{t.announcements.title}</Label>
+                <Input 
+                  id="t-title" 
+                  placeholder="Elevator issue, Leakage, etc." 
+                  className="bg-neutral-100 border-none rounded-sm" 
+                  value={title} 
+                  onChange={(e) => setTitle(e.target.value)} 
+                />
               </div>
-            )}
-            <div className="flex items-center gap-2">
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-              <Button variant="outline" size="sm" className="gap-1.5 text-xs cursor-pointer" onClick={() => fileRef.current?.click()}><Camera className="h-3.5 w-3.5" />{t.myTickets.attachPhoto}</Button>
-              <div className="flex-1" />
-              <Button variant="outline" size="sm" className="text-xs cursor-pointer" onClick={() => { setShowForm(false); setTitle(""); setDescription(""); setPhotoPreview(null) }}>{t.myTickets.cancel}</Button>
-              <Button size="sm" className="text-xs cursor-pointer" onClick={handleSubmit}>{t.myTickets.submit}</Button>
+              <div className="grid gap-2">
+                <Label htmlFor="t-desc" className="text-xs">{t.announcements.content}</Label>
+                <Textarea 
+                  id="t-desc" 
+                  placeholder="Provide more details..." 
+                  className="bg-neutral-100 border-none rounded-sm min-h-[100px]" 
+                  value={description} 
+                  onChange={(e) => setDescription(e.target.value)} 
+                />
+              </div>
+              
+              <div className="grid gap-2">
+                <Label className="text-xs">{t.myTickets.attachPhoto}</Label>
+                <div className="flex items-center gap-3">
+                  {photoPreview ? (
+                    <div className="relative w-20 h-20 rounded-sm overflow-hidden border border-black/10">
+                      <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                      <button onClick={() => setPhotoPreview(null)} className="absolute top-1 right-1 bg-black/60 rounded-full p-0.5 cursor-pointer">
+                        <X className="h-3 w-3 text-white" />
+                      </button>
+                    </div>
+                  ) : (
+                    <Button variant="outline" className="w-20 h-20 border-dashed border-2 flex flex-col gap-1 cursor-pointer hover:bg-neutral-50" onClick={() => fileRef.current?.click()}>
+                      <Camera className="h-5 w-5 text-neutral-400" />
+                      <span className="text-[9px] text-neutral-400">Add Photo</span>
+                    </Button>
+                  )}
+                  <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                </div>
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
+            <DialogFooter>
+              <Button className="w-full cursor-pointer" onClick={handleSubmit}>{t.myTickets.submit}</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       {myTickets.length === 0 ? (
         <Card className="border-none bg-neutral-100">
@@ -97,8 +150,8 @@ export default function MyTicketsPage() {
             <Card key={ticket.id} className="border-none bg-neutral-100 transition-shadow">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className={cn("p-2 rounded-sm shrink-0", ticket.priority === "High" ? "bg-orange-50" : ticket.priority === "Medium" ? "bg-amber-50" : "bg-neutral-50")}>
-                    <TicketCheck className={cn("h-4 w-4", ticket.priority === "High" ? "text-orange-600" : ticket.priority === "Medium" ? "text-amber-500" : "text-neutral-500")} />
+                  <div className="p-2 rounded-sm shrink-0 bg-neutral-50">
+                    <TicketCheck className="h-4 w-4 text-neutral-500" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">

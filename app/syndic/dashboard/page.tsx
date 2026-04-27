@@ -16,7 +16,10 @@ import {
   Plus,
   Camera,
   Check,
+  X,
+  ImageIcon,
 } from "lucide-react"
+import { useRef } from "react"
 import {
   Card,
   CardContent,
@@ -138,7 +141,7 @@ function RevenueOverview({ timeframe, setTimeframe }: {
 // ========================
 // ADMIN DASHBOARD
 // ========================
-function AdminDashboard({ firstName }: { firstName: string }) {
+function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, greeting: string, dateStr: string }) {
   const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const unpaidCharges = charges.filter(c => c.status === "Unpaid" || c.status === "Partial")
@@ -155,10 +158,12 @@ function AdminDashboard({ firstName }: { firstName: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-1">
         <div>
-          <h2 className="text-xl font-bold text-black">{t.dashboard.welcomeBack}, {firstName}!</h2>
-          <p className="text-xs text-neutral-500">Here's what's happening in your properties today.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{greeting}, {firstName}!</h1>
+          <p className="text-xs text-neutral-500">
+            {dateStr.charAt(0).toUpperCase() + dateStr.slice(1)}
+          </p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -350,56 +355,84 @@ function AdminDashboard({ firstName }: { firstName: string }) {
 // ========================
 // OWNER DASHBOARD
 // ========================
-function OwnerDashboard({ firstName }: { firstName: string }) {
+function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, greeting: string, dateStr: string }) {
   const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const user = getCurrentUser()
   const myCharges = charges.filter(c => c.apartmentId === user?.apartmentId)
   const unpaidTotal = myCharges.filter(c => c.status === "Unpaid" || c.status === "Partial").reduce((sum, c) => sum + c.amount, 0)
   const paidTotal = myCharges.filter(c => c.status === "Paid").reduce((sum, c) => sum + c.amount, 0)
-  const [ticketForm, setTicketForm] = useState({ title: "", priority: "", description: "" })
+  const [ticketForm, setTicketForm] = useState({ title: "", description: "" })
   const [ticketSubmitted, setTicketSubmitted] = useState(false)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => setPhotoPreview(reader.result as string)
+      reader.readAsDataURL(file)
+    }
+  }
 
   const handleSubmitTicket = () => {
     if (!ticketForm.title || !ticketForm.description) return
     setTicketSubmitted(true)
-    setTicketForm({ title: "", priority: "", description: "" })
+    setTicketForm({ title: "", description: "" })
+    setPhotoPreview(null)
     setTimeout(() => setTicketSubmitted(false), 2000)
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-1">
         <div>
-          <h2 className="text-xl font-bold text-black">{t.dashboard.welcomeBack}, {firstName}!</h2>
-          <p className="text-xs text-neutral-500">{unpaidTotal > 0 ? "You have some pending charges" : "No pending charges"}.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{greeting}, {firstName}!</h1>
+          <p className="text-xs text-neutral-500">
+            {dateStr.charAt(0).toUpperCase() + dateStr.slice(1)}
+          </p>
         </div>
-        <Dialog>
+        <Dialog onOpenChange={(open) => { if (!open) { setPhotoPreview(null); setTicketForm({ title: "", description: "" }) } }}>
           <DialogTrigger asChild>
             <Button className="gap-2 cursor-pointer">
               <Plus className="h-4 w-4" />
-              {t.dashboard.owner.reportIncident}
+              {t.myTickets.newTicket}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
             <DialogHeader>
-              <DialogTitle>{t.dashboard.owner.reportIncident}</DialogTitle>
+              <DialogTitle>{t.myTickets.newTicket}</DialogTitle>
               <DialogDescription>
                 Describe the issue you're facing and we'll look into it.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2"><Label htmlFor="t-title" className="text-xs">{t.dashboard.owner.subject}</Label><Input id="t-title" placeholder="Elevator issue, Leakage, etc." className="bg-neutral-100 border-none rounded-sm" value={ticketForm.title} onChange={(e) => setTicketForm(p => ({ ...p, title: e.target.value }))} /></div>
-              <div className="grid gap-2"><Label htmlFor="t-priority" className="text-xs">{t.dashboard.owner.priority}</Label>
-                <Select value={ticketForm.priority} onValueChange={(v) => setTicketForm(p => ({ ...p, priority: v }))}>
-                  <SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder="Select priority" /></SelectTrigger>
-                  <SelectContent className="bg-white border-none shadow-lg"><SelectItem value="Low">Low</SelectItem><SelectItem value="Medium">Medium</SelectItem><SelectItem value="High">High</SelectItem></SelectContent>
-                </Select>
-              </div>
               <div className="grid gap-2"><Label htmlFor="t-desc" className="text-xs">{t.dashboard.owner.description}</Label><Textarea id="t-desc" placeholder="Provide more details..." className="bg-neutral-100 border-none rounded-sm min-h-[100px]" value={ticketForm.description} onChange={(e) => setTicketForm(p => ({ ...p, description: e.target.value }))} /></div>
+              
+              <div className="grid gap-2">
+                <Label className="text-xs">{t.myTickets.attachPhoto}</Label>
+                <div className="flex items-center gap-3">
+                  {photoPreview ? (
+                    <div className="relative w-20 h-20 rounded-sm overflow-hidden border border-black/10">
+                      <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                      <button onClick={() => setPhotoPreview(null)} className="absolute top-1 right-1 bg-black/60 rounded-full p-0.5 cursor-pointer">
+                        <X className="h-3 w-3 text-white" />
+                      </button>
+                    </div>
+                  ) : (
+                    <Button variant="outline" className="w-20 h-20 border-dashed border-2 flex flex-col gap-1 cursor-pointer hover:bg-neutral-50" onClick={() => fileRef.current?.click()}>
+                      <Camera className="h-5 w-5 text-neutral-400" />
+                      <span className="text-[9px] text-neutral-400">Add Photo</span>
+                    </Button>
+                  )}
+                  <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                </div>
+              </div>
             </div>
             <DialogFooter>
-              <Button className="w-full cursor-pointer" onClick={handleSubmitTicket}>{ticketSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.dashboard.owner.submitTicket}</Button>
+              <Button className="w-full cursor-pointer" onClick={handleSubmitTicket}>{ticketSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.myTickets.submit}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -477,34 +510,48 @@ function OwnerDashboard({ firstName }: { firstName: string }) {
 // ========================
 // TENANT DASHBOARD
 // ========================
-function TenantDashboard({ firstName }: { firstName: string }) {
+function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, greeting: string, dateStr: string }) {
   const { t } = useI18n()
   const [complaintForm, setComplaintForm] = useState({ title: "", description: "" })
   const [complaintSubmitted, setComplaintSubmitted] = useState(false)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => setPhotoPreview(reader.result as string)
+      reader.readAsDataURL(file)
+    }
+  }
 
   const handleSubmitComplaint = () => {
     if (!complaintForm.title || !complaintForm.description) return
     setComplaintSubmitted(true)
     setComplaintForm({ title: "", description: "" })
+    setPhotoPreview(null)
     setTimeout(() => setComplaintSubmitted(false), 2000)
   }
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-1">
         <div>
-          <h2 className="text-xl font-bold text-black">{t.dashboard.welcomeBack}, {firstName}!</h2>
-          <p className="text-xs text-neutral-500">Welcome to your dashboard.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{greeting}, {firstName}!</h1>
+          <p className="text-xs text-neutral-500">
+            {dateStr.charAt(0).toUpperCase() + dateStr.slice(1)}
+          </p>
         </div>
-        <Dialog>
+        <Dialog onOpenChange={(open) => { if (!open) { setPhotoPreview(null); setComplaintForm({ title: "", description: "" }) } }}>
           <DialogTrigger asChild>
             <Button className="gap-2 cursor-pointer">
               <Plus className="h-4 w-4" />
-              {t.dashboard.tenant.submitComplaint}
+              {t.myTickets.newTicket}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
             <DialogHeader>
-              <DialogTitle>{t.dashboard.tenant.submitComplaint}</DialogTitle>
+              <DialogTitle>{t.myTickets.newTicket}</DialogTitle>
               <DialogDescription>
                 We're here to help you with any issues in your apartment.
               </DialogDescription>
@@ -512,9 +559,29 @@ function TenantDashboard({ firstName }: { firstName: string }) {
             <div className="grid gap-4 py-4">
               <div className="grid gap-2"><Label htmlFor="tc-title" className="text-xs">{t.dashboard.tenant.subject}</Label><Input id="tc-title" placeholder="Noise complaint, Plumbing, etc." className="bg-neutral-100 border-none rounded-sm" value={complaintForm.title} onChange={(e) => setComplaintForm(p => ({ ...p, title: e.target.value }))} /></div>
               <div className="grid gap-2"><Label htmlFor="tc-desc" className="text-xs">{t.dashboard.tenant.details}</Label><Textarea id="tc-desc" placeholder="Describe the issue..." className="bg-neutral-100 border-none rounded-sm min-h-[100px]" value={complaintForm.description} onChange={(e) => setComplaintForm(p => ({ ...p, description: e.target.value }))} /></div>
+              
+              <div className="grid gap-2">
+                <Label className="text-xs">{t.myTickets.attachPhoto}</Label>
+                <div className="flex items-center gap-3">
+                  {photoPreview ? (
+                    <div className="relative w-20 h-20 rounded-sm overflow-hidden border border-black/10">
+                      <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                      <button onClick={() => setPhotoPreview(null)} className="absolute top-1 right-1 bg-black/60 rounded-full p-0.5 cursor-pointer">
+                        <X className="h-3 w-3 text-white" />
+                      </button>
+                    </div>
+                  ) : (
+                    <Button variant="outline" className="w-20 h-20 border-dashed border-2 flex flex-col gap-1 cursor-pointer hover:bg-neutral-50" onClick={() => fileRef.current?.click()}>
+                      <Camera className="h-5 w-5 text-neutral-400" />
+                      <span className="text-[9px] text-neutral-400">Add Photo</span>
+                    </Button>
+                  )}
+                  <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+                </div>
+              </div>
             </div>
             <DialogFooter>
-              <Button className="w-full cursor-pointer" onClick={handleSubmitComplaint}>{complaintSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.dashboard.tenant.submitTicket}</Button>
+              <Button className="w-full cursor-pointer" onClick={handleSubmitComplaint}>{complaintSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.myTickets.submit}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -557,33 +624,25 @@ function TenantDashboard({ firstName }: { firstName: string }) {
 // ========================
 // HELPERS
 // ========================
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return "Good morning"
-  if (hour < 18) return "Good afternoon"
-  return "Good evening"
-}
+
 
 // ========================
 // MAIN DASHBOARD PAGE
 // ========================
 export default function DashboardPage() {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const user = getCurrentUser()
   const firstName = user?.fullName.split(" ")[0] || "User"
+  const hour = new Date().getHours()
+
+  const greeting = hour < 12 ? t.dashboard.goodMorning : hour < 18 ? t.dashboard.goodAfternoon : t.dashboard.goodEvening
+  const dateStr = new Date().toLocaleDateString(language === "en" ? "en-US" : language === "fr" ? "fr-FR" : "es-ES", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight">{t.dashboard.welcomeBack}, {firstName}!</h1>
-        <p className="text-xs text-neutral-500">
-          {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-        </p>
-      </div>
-
-      {user?.role === "Admin" && <AdminDashboard firstName={firstName} />}
-      {user?.role === "Owner" && <OwnerDashboard firstName={firstName} />}
-      {user?.role === "Tenant" && <TenantDashboard firstName={firstName} />}
+      {user?.role === "Admin" && <AdminDashboard firstName={firstName} greeting={greeting} dateStr={dateStr} />}
+      {user?.role === "Owner" && <OwnerDashboard firstName={firstName} greeting={greeting} dateStr={dateStr} />}
+      {user?.role === "Tenant" && <TenantDashboard firstName={firstName} greeting={greeting} dateStr={dateStr} />}
     </div>
   )
 }

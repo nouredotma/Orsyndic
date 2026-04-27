@@ -73,7 +73,6 @@ export const charges: Charge[] = [
 // HELPDESK TICKETS
 // ========================
 export type TicketStatus = "Open" | "In Progress" | "Resolved"
-export type TicketPriority = "Low" | "Medium" | "High"
 
 export interface Ticket {
   id: string
@@ -84,18 +83,17 @@ export interface Ticket {
   buildingName: string
   apartmentNumber: string
   status: TicketStatus
-  priority: TicketPriority
   createdAt: string
   photo?: string
   submittedByAvatar?: string
 }
 
 export const tickets: Ticket[] = [
-  { id: "TKT-001", title: "Water leak in bathroom", description: "There is a persistent water leak coming from the ceiling in the bathroom. It has been getting worse over the past week.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "Open", priority: "High", createdAt: "2026-04-25", photo: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400", submittedByAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
-  { id: "TKT-002", title: "Broken elevator", description: "The main elevator in building A has been out of service for 3 days. Elderly residents are having difficulty accessing upper floors.", submittedBy: "Ahmed Benali", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", priority: "High", createdAt: "2026-04-22", submittedByAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
-  { id: "TKT-003", title: "Noisy neighbors", description: "Neighbors on the 3rd floor are consistently playing loud music past midnight. This has been ongoing for 2 weeks.", submittedBy: "Sara Idrissi", submittedByRole: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Open", priority: "Medium", createdAt: "2026-04-24", submittedByAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
-  { id: "TKT-004", title: "Parking space dispute", description: "Another resident has been parking in my designated spot (P-12) repeatedly.", submittedBy: "Fatima Zahra", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "202", status: "Resolved", priority: "Low", createdAt: "2026-04-15", submittedByAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
-  { id: "TKT-005", title: "Lobby lights not working", description: "Several light fixtures in the ground floor lobby are not functioning, making it very dark at night.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", priority: "Medium", createdAt: "2026-04-20", submittedByAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
+  { id: "TKT-001", title: "Water leak in bathroom", description: "There is a persistent water leak coming from the ceiling in the bathroom. It has been getting worse over the past week.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "Open", createdAt: "2026-04-25", photo: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400", submittedByAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
+  { id: "TKT-002", title: "Broken elevator", description: "The main elevator in building A has been out of service for 3 days. Elderly residents are having difficulty accessing upper floors.", submittedBy: "Ahmed Benali", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", createdAt: "2026-04-22", submittedByAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
+  { id: "TKT-003", title: "Noisy neighbors", description: "Neighbors on the 3rd floor are consistently playing loud music past midnight. This has been ongoing for 2 weeks.", submittedBy: "Sara Idrissi", submittedByRole: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Open", createdAt: "2026-04-24", submittedByAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
+  { id: "TKT-004", title: "Parking space dispute", description: "Another resident has been parking in my designated spot (P-12) repeatedly.", submittedBy: "Fatima Zahra", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "202", status: "Resolved", createdAt: "2026-04-15", submittedByAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
+  { id: "TKT-005", title: "Lobby lights not working", description: "Several light fixtures in the ground floor lobby are not functioning, making it very dark at night.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", createdAt: "2026-04-20", submittedByAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
 ]
 
 // ========================
