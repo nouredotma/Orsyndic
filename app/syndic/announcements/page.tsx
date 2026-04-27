@@ -5,6 +5,19 @@ import { Megaphone, Plus, AlertTriangle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import { announcements } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
@@ -12,7 +25,42 @@ export default function AnnouncementsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <Button className="gap-2 cursor-pointer"><Plus className="h-4 w-4" />New Announcement</Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="gap-2 cursor-pointer">
+              <Plus className="h-4 w-4" />
+              New Announcement
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
+            <DialogHeader>
+              <DialogTitle>Create Announcement</DialogTitle>
+              <DialogDescription>
+                Post a notice for all building residents.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="title" className="text-xs">Title</Label>
+                <Input id="title" placeholder="Water supply interruption" className="bg-neutral-100 border-none rounded-sm" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="content" className="text-xs">Content</Label>
+                <Textarea id="content" placeholder="Details about the announcement..." className="bg-neutral-100 border-none rounded-sm min-h-[100px]" />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-1">
+                  <Label htmlFor="urgent" className="text-sm font-medium">Mark as Urgent</Label>
+                  <span className="text-xs text-neutral-500">This will highlight the announcement in red.</span>
+                </div>
+                <Switch id="urgent" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="w-full cursor-pointer">Post Announcement</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="space-y-3">

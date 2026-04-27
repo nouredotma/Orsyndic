@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Users, Search, Plus, MoreVertical, Shield, User } from "lucide-react"
+import { Users, Search, Plus, MoreVertical, Shield, User, UserPlus } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -13,6 +13,23 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 import { managedUsers } from "@/lib/mock-data"
 import type { ManagedUser } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
@@ -37,10 +54,59 @@ export default function UsersPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <Button className="gap-2 cursor-pointer">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Add User</span>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="gap-2 cursor-pointer">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Add User</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
+            <DialogHeader>
+              <DialogTitle>Add New User</DialogTitle>
+              <DialogDescription>
+                Create a new account for an owner or tenant.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name" className="text-xs">Full Name</Label>
+                <Input id="name" placeholder="John Doe" className="bg-neutral-100 border-none rounded-sm" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="role" className="text-xs">Role</Label>
+                <Select>
+                  <SelectTrigger className="bg-neutral-100 border-none rounded-sm">
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-none shadow-lg">
+                    <SelectItem value="Owner">Owner</SelectItem>
+                    <SelectItem value="Tenant">Tenant</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="building" className="text-xs">Building</Label>
+                <Select>
+                  <SelectTrigger className="bg-neutral-100 border-none rounded-sm">
+                    <SelectValue placeholder="Select building" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-none shadow-lg">
+                    <SelectItem value="1">Résidence Al Andalous</SelectItem>
+                    <SelectItem value="2">Résidence Les Jardins</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="apt" className="text-xs">Apartment Number</Label>
+                <Input id="apt" placeholder="101" className="bg-neutral-100 border-none rounded-sm" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="w-full cursor-pointer">Create User</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Quick stats */}
@@ -88,7 +154,7 @@ export default function UsersPage() {
             placeholder="Search by name, username or phone..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 rounded-sm bg-neutral-50 border-black/10 text-sm"
+            className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm"
           />
         </div>
         <div className="flex rounded-sm bg-neutral-100 p-0.5 gap-0.5">

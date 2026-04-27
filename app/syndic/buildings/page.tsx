@@ -13,6 +13,17 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { buildings, apartments, charges } from "@/lib/mock-data"
 import type { Apartment } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
@@ -27,10 +38,39 @@ export default function BuildingsPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <Button className="gap-2 cursor-pointer">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Add Building</span>
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="gap-2 cursor-pointer">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Add Building</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
+            <DialogHeader>
+              <DialogTitle>Add New Building</DialogTitle>
+              <DialogDescription>
+                Register a new building in the system.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name" className="text-xs">Building Name</Label>
+                <Input id="name" placeholder="Résidence Al Andalous" className="bg-neutral-100 border-none rounded-sm" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="address" className="text-xs">Address</Label>
+                <Input id="address" placeholder="12 Rue Mohammed V, Casablanca" className="bg-neutral-100 border-none rounded-sm" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="floors" className="text-xs">Total Floors</Label>
+                <Input id="floors" type="number" placeholder="5" className="bg-neutral-100 border-none rounded-sm" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="w-full cursor-pointer">Register Building</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

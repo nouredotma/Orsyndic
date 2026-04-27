@@ -31,7 +31,7 @@ export default function HelpdeskPage() {
       <div className="flex items-center gap-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
-          <Input placeholder="Search tickets..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 rounded-sm bg-neutral-50 border-black/10 text-sm" />
+          <Input placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm" />
         </div>
         <div className="flex rounded-md bg-neutral-100 p-0.5 gap-0.5">
           {(["All", "Open", "In Progress", "Resolved"] as const).map((s) => (
