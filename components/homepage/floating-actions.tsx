@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { OrsRobotIcon } from "@/components/ui/ors-robot-icon"
@@ -16,6 +17,7 @@ import {
 
 export function FloatingActions() {
   const { t } = useLanguage()
+  const pathname = usePathname()
   const [aiModalOpen, setAiModalOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -26,6 +28,11 @@ export function FloatingActions() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  // Don't show floating actions on syndic dashboard pages
+  if (pathname?.startsWith("/syndic")) {
+    return null
+  }
 
   return (
     <TooltipProvider delayDuration={0}>

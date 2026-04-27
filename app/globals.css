@@ -241,3 +241,50 @@
 .font-goodly {
   font-family: 'Goodly-Bold', sans-serif;
 }
+
+/* ==========================================
+   SYNDIC DASHBOARD STYLES
+   ========================================== */
+
+/* hide IE/Edge injected reveal‑password eye and clear "×" */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+/* hide WebKit/Blink native reveal eye in Chrome/Safari */
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none;
+}
+
+/* remove any default browser styling on the field itself */
+input[type="password"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Dashboard-specific styles */
+.dashboard-layout {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .dashboard-layout {
+    flex-direction: row;
+  }
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
