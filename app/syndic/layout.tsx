@@ -294,9 +294,9 @@ function SyndicLayoutContent({ children }: { children: React.ReactNode }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-lg rounded-sm p-1.5">
                 {languages.map((lang) => (
-                  <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code as DashboardLanguage)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
+                  <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code as DashboardLanguage)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2 px-2.5 transition-colors">
                     <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
-                    <span className={cn("text-xs font-medium", currentLanguage.code === lang.code && "text-primary font-bold")}>{lang.name}</span>
+                    <span className={cn("text-xs font-medium", currentLanguage.code === lang.code ? "text-primary font-bold" : "text-black")}>{lang.name}</span>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

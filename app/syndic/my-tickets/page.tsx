@@ -10,6 +10,7 @@ import { tickets as initialTickets } from "@/lib/mock-data"
 import type { Ticket } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { ImageLightbox } from "@/components/image-lightbox"
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,17 @@ export default function MyTicketsPage() {
   const [description, setDescription] = useState("")
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  
+  // Lightbox state
+  const [lightbox, setLightbox] = useState<{ isOpen: boolean; images: string[]; index: number }>({
+    isOpen: false,
+    images: [],
+    index: 0
+  })
+
+  const openLightbox = (images: string[], index: number = 0) => {
+    setLightbox({ isOpen: true, images, index })
+  }
 
   const myTickets = localTickets.filter(t => t.submittedBy === user?.fullName)
 
@@ -159,9 +171,30 @@ export default function MyTicketsPage() {
                       <Badge variant={ticket.status === "Open" ? "info" : ticket.status === "In Progress" ? "warning" : "success"} className="text-[10px]">{ticket.status}</Badge>
                     </div>
                     <p className="text-xs text-neutral-500 mt-1 line-clamp-2">{ticket.description}</p>
-                    {ticket.photo && (
-                      <div className="mt-2 w-20 h-20 rounded-sm overflow-hidden border border-black/5">
-                        <img src={ticket.photo} alt="Attached" className="w-full h-full object-cover" />
+                    
+                    {/* Photos Preview */}
+                    {(ticket.photos?.length || ticket.photo) && (
+                      <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+                        {ticket.photos ? (
+                          ticket.photos.map((p, idx) => (
+                            <div 
+                              key={idx} 
+                              className="relative group w-16 h-16 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
+                              onClick={() => openLightbox(ticket.photos!, idx)}
+                            >
+                              <img src={p} alt={`Attached ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                            </div>
+                          ))
+                        ) : (
+                          <div 
+                            className="relative group w-16 h-16 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
+                            onClick={() => openLightbox([ticket.photo!], 0)}
+                          >
+                            <img src={ticket.photo} alt="Attached" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                          </div>
+                        )}
                       </div>
                     )}
                     <p className="text-[10px] text-neutral-400 mt-2">{ticket.createdAt} · {ticket.buildingName} · Apt {ticket.apartmentNumber}</p>
@@ -172,6 +205,13 @@ export default function MyTicketsPage() {
           ))}
         </div>
       )}
+
+      <ImageLightbox 
+        isOpen={lightbox.isOpen} 
+        images={lightbox.images} 
+        initialIndex={lightbox.index} 
+        onClose={() => setLightbox(prev => ({ ...prev, isOpen: false }))} 
+      />
     </div>
   )
 }

@@ -10,18 +10,30 @@ import { tickets as initialTickets } from "@/lib/mock-data"
 import type { TicketStatus, Ticket } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { ImageLightbox } from "@/components/image-lightbox"
 
 export default function HelpdeskPage() {
   const { t } = useI18n()
   const [localTickets, setLocalTickets] = useState<Ticket[]>(initialTickets)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState<"All" | TicketStatus>("All")
+  
+  // Lightbox state
+  const [lightbox, setLightbox] = useState<{ isOpen: boolean; images: string[]; index: number }>({
+    isOpen: false,
+    images: [],
+    index: 0
+  })
 
   const filtered = localTickets.filter((t) => {
     const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || t.submittedBy.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === "All" || t.status === filterStatus
     return matchesSearch && matchesStatus
   })
+
+  const openLightbox = (images: string[], index: number = 0) => {
+    setLightbox({ isOpen: true, images, index })
+  }
 
   const handleUpdateStatus = (ticketId: string, newStatus: TicketStatus) => {
     setLocalTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status: newStatus } : t))
@@ -66,6 +78,33 @@ export default function HelpdeskPage() {
                       <Badge variant={ticket.status === "Open" ? "info" : ticket.status === "In Progress" ? "warning" : "success"} className="text-[10px] font-normal">{ticket.status}</Badge>
                     </div>
                     <p className="text-xs text-neutral-500 mt-1 line-clamp-1">{ticket.description}</p>
+                    
+                    {/* Photos Preview */}
+                    {(ticket.photos?.length || ticket.photo) && (
+                      <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+                        {ticket.photos ? (
+                          ticket.photos.map((p, idx) => (
+                            <div 
+                              key={idx} 
+                              className="relative group w-16 h-16 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
+                              onClick={(e) => { e.stopPropagation(); openLightbox(ticket.photos!, idx) }}
+                            >
+                              <img src={p} alt={`Attached ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                            </div>
+                          ))
+                        ) : (
+                          <div 
+                            className="relative group w-16 h-16 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
+                            onClick={(e) => { e.stopPropagation(); openLightbox([ticket.photo!], 0) }}
+                          >
+                            <img src={ticket.photo} alt="Attached" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     <div className="flex items-center gap-3 mt-2 text-[10px] text-neutral-400">
                       <span>{t.helpdesk.by} <strong className="text-neutral-600">{ticket.submittedBy}</strong> ({ticket.submittedByRole})</span>
                       <span>{t.charges.apt} {ticket.apartmentNumber} · {ticket.buildingName}</span>
@@ -74,14 +113,21 @@ export default function HelpdeskPage() {
                   </div>
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  {ticket.status === "Open" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={() => handleUpdateStatus(ticket.id, "In Progress")}>Start</Button>}
-                  {ticket.status === "In Progress" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={() => handleUpdateStatus(ticket.id, "Resolved")}>Resolve</Button>}
+                  {ticket.status === "Open" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(ticket.id, "In Progress") }}>Start</Button>}
+                  {ticket.status === "In Progress" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(ticket.id, "Resolved") }}>Resolve</Button>}
                 </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      <ImageLightbox 
+        isOpen={lightbox.isOpen} 
+        images={lightbox.images} 
+        initialIndex={lightbox.index} 
+        onClose={() => setLightbox(prev => ({ ...prev, isOpen: false }))} 
+      />
     </div>
   )
 }

@@ -106,11 +106,26 @@ export default function UsersPage() {
             <td className="px-4 py-3 text-xs text-neutral-600">Apt {user.apartmentNumber}</td>
             <td className="px-4 py-3"><Badge variant={user.status === "Active" ? "success" : "secondary"} className="text-[10px] px-2.5 py-1 font-normal">{user.status}</Badge></td>
             <td className="px-4 py-3">{user.role !== "Admin" && (
-              <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 cursor-pointer"><MoreVertical className="h-3.5 w-3.5 text-neutral-400" /></Button></DropdownMenuTrigger>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 cursor-pointer hover:bg-primary group transition-colors">
+                    <MoreVertical className="h-3.5 w-3.5 text-neutral-400 group-hover:text-white transition-colors" />
+                  </Button>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-lg rounded-sm p-1">
-                  <DropdownMenuItem onClick={() => handleOpenEdit(user)} className="cursor-pointer text-xs gap-2 py-2 hover:bg-black/5 focus:bg-black/5 rounded-sm"><Pencil className="h-3.5 w-3.5" />Edit User</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleToggle(user.id)} className={cn("cursor-pointer text-xs gap-2 py-2 rounded-sm", user.status === "Active" ? "text-red-500 hover:bg-red-50 focus:bg-red-50 focus:text-red-500" : "text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50 focus:text-emerald-600")}>{user.status === "Active" ? <><Ban className="h-3.5 w-3.5" />Deactivate</> : <><CheckCircle2 className="h-3.5 w-3.5" />Activate</>}</DropdownMenuItem>
-                </DropdownMenuContent></DropdownMenu>
+                  <DropdownMenuItem onClick={() => handleOpenEdit(user)} className="cursor-pointer text-xs gap-2 py-2 hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm">
+                    <Pencil className="h-3.5 w-3.5" />
+                    Edit User
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleToggle(user.id)} className={cn("cursor-pointer text-xs gap-2 py-2 rounded-sm focus:text-black", user.status === "Active" ? "text-red-500 hover:bg-red-50 focus:bg-red-50" : "text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50")}>
+                    {user.status === "Active" ? (
+                      <><Ban className="h-3.5 w-3.5" />Deactivate</>
+                    ) : (
+                      <><CheckCircle2 className="h-3.5 w-3.5" />Activate</>
+                    )}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}</td>
           </tr>))}</tbody></table></div></CardContent></Card>
 

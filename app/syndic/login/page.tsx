@@ -141,11 +141,11 @@ export default function LoginPage() {
                 <span className="sr-only">Change language</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-neutral-100 border-none shadow-xl rounded-sm p-1.5">
+            <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-xl rounded-sm p-1.5">
               {languages.map((lang) => (
-                <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
+                <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2 px-2.5 transition-colors">
                   <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
-                  <span className={cn("text-xs font-semibold", currentLanguage.code === lang.code && "text-primary")}>{lang.name}</span>
+                  <span className={cn("text-xs font-semibold", currentLanguage.code === lang.code ? "text-primary font-bold" : "text-black")}>{lang.name}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>

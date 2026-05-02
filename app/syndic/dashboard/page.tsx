@@ -64,6 +64,7 @@ import {
 } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { ImageLightbox } from "@/components/image-lightbox"
 
 const iconMap: Record<string, any> = {
   CreditCard,
@@ -82,7 +83,7 @@ function RevenueOverview({ timeframe, setTimeframe }: {
 }) {
   const { t } = useI18n()
   return (
-    <Card className="border-none bg-neutral-100 lg:col-span-2">
+    <Card className="border-none bg-neutral-100 lg:col-span-2 h-full flex flex-col">
       <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
         <div>
           <CardTitle className="text-base">Revenue Overview</CardTitle>
@@ -98,8 +99,8 @@ function RevenueOverview({ timeframe, setTimeframe }: {
         </Tabs>
       </CardHeader>
       <CardContent className="p-4 pt-0">
-        <ChartContainer config={chartConfig} className="h-[250px] w-full">
-          <AreaChart data={revenueDataSets[timeframe]} margin={{ top: 20, left: -20, right: 10, bottom: 0 }}>
+        <ChartContainer config={chartConfig} className="h-[260px] w-full">
+          <AreaChart data={revenueDataSets[timeframe]} margin={{ top: 20, left: -12, right: 10, bottom: 0 }}>
             <defs>
               <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="var(--color-revenue)" stopOpacity={0.8} />
@@ -119,6 +120,7 @@ function RevenueOverview({ timeframe, setTimeframe }: {
               axisLine={false} 
               tickMargin={8}
               className="text-[10px]"
+              tickFormatter={(value) => `${value}`}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Area
@@ -145,9 +147,20 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
   const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const unpaidCharges = charges.filter(c => c.status === "Unpaid" || c.status === "Partial")
-  const openTickets = tickets.filter(t => t.status === "Open" || t.status === "In Progress")
+  const openTicketsCount = tickets.filter(t => t.status === "Open").length
   const [buildingForm, setBuildingForm] = useState({ name: "", address: "", floors: "" })
   const [buildingAdded, setBuildingAdded] = useState(false)
+  
+  // Lightbox state
+  const [lightbox, setLightbox] = useState<{ isOpen: boolean; images: string[]; index: number }>({
+    isOpen: false,
+    images: [],
+    index: 0
+  })
+
+  const openLightbox = (images: string[], index: number = 0) => {
+    setLightbox({ isOpen: true, images, index })
+  }
 
   const handleAddBuilding = () => {
     if (!buildingForm.name || !buildingForm.address || !buildingForm.floors) return
@@ -238,112 +251,151 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Latest Tickets */}
-        <Card className="border-none bg-neutral-100 lg:col-span-1">
+        <Card className="border-none bg-neutral-100 lg:col-span-1 h-full flex flex-col">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-base">{t.dashboard.admin.latestTickets}</CardTitle>
             <CardDescription className="text-xs">
-              {openTickets.length} open tickets
+              {openTicketsCount} open tickets
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4 pt-1 pb-2">
-            <div className="space-y-2">
-              {tickets.slice(0, 4).map((ticket) => (
-                <div key={ticket.id} className="flex items-start gap-3 py-1.5">
-                  <Avatar className="h-8 w-8 border border-black/5 shrink-0">
-                    <AvatarImage src={ticket.submittedByAvatar} alt={ticket.submittedBy} />
-                    <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">
-                      {ticket.submittedBy.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold leading-none truncate">{ticket.title}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <p className="text-[10px] text-neutral-500">{ticket.submittedBy}</p>
-                      <Badge variant={
-                        ticket.status === "Open" ? "info" :
-                        ticket.status === "In Progress" ? "warning" : "success"
-                      } className="text-[9px]">
-                        {ticket.status}
-                      </Badge>
+          <CardContent className="p-4 pt-1 pb-4 flex-1">
+            <div className="h-[260px] overflow-y-auto pr-1 hide-scrollbar">
+              <div className="space-y-2">
+                {tickets.map((ticket) => (
+                  <div key={ticket.id} className="flex items-start gap-3 py-1.5 border-b border-black/5 last:border-0">
+                    <Avatar className="h-8 w-8 border border-black/5 shrink-0">
+                      <AvatarImage src={ticket.submittedByAvatar} alt={ticket.submittedBy} />
+                      <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">
+                        {ticket.submittedBy.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold leading-none truncate">{ticket.title}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <p className="text-[10px] text-neutral-500">{ticket.submittedBy}</p>
+                        <Badge variant={
+                          ticket.status === "Open" ? "info" :
+                          ticket.status === "In Progress" ? "warning" : "success"
+                        } className="text-[9px]">
+                          {ticket.status}
+                        </Badge>
+                      </div>
+                      {/* Photos Preview */}
+                      {(ticket.photos?.length || ticket.photo) && (
+                        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5">
+                          {ticket.photos ? (
+                            ticket.photos.map((p, idx) => (
+                              <div 
+                                key={idx} 
+                                className="relative group w-10 h-10 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
+                                onClick={(e) => { e.stopPropagation(); openLightbox(ticket.photos!, idx) }}
+                              >
+                                <img src={p} alt={`Attached ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                              </div>
+                            ))
+                          ) : (
+                            <div 
+                              className="relative group w-10 h-10 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
+                              onClick={(e) => { e.stopPropagation(); openLightbox([ticket.photo!], 0) }}
+                            >
+                              <img src={ticket.photo} alt="Attached" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
+
+        <ImageLightbox 
+          isOpen={lightbox.isOpen} 
+          images={lightbox.images} 
+          initialIndex={lightbox.index} 
+          onClose={() => setLightbox(prev => ({ ...prev, isOpen: false }))} 
+        />
+        
         {/* Revenue Chart */}
         <RevenueOverview timeframe={timeframe} setTimeframe={setTimeframe} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Announcements */}
-        <Card className="border-none bg-neutral-100 lg:col-span-2">
+        <Card className="border-none bg-neutral-100 lg:col-span-2 h-full flex flex-col">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-base">Announcements Board</CardTitle>
             <CardDescription className="text-xs">
               Recent notices posted to all residents
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4 pt-1 pb-2">
-            <div className="space-y-2">
-              {announcements.map((ann) => (
-                <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
-                  <div className={cn(
-                    "p-1.5 rounded-full shrink-0",
-                    ann.urgent ? "bg-red-100 text-[#FF0000]" : "bg-blue-100 text-blue-600"
-                  )}>
-                    {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs font-semibold">{ann.title}</p>
-                      {ann.urgent && <Badge variant="orange" className="text-[9px]">Urgent</Badge>}
+          <CardContent className="p-4 pt-1 pb-4">
+            <div className="h-[240px] overflow-y-auto pr-1 hide-scrollbar">
+              <div className="space-y-2">
+                {announcements.map((ann) => (
+                  <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
+                    <div className={cn(
+                      "p-1.5 rounded-full shrink-0",
+                      ann.urgent ? "bg-red-100 text-[#FF0000]" : "bg-blue-100 text-blue-600"
+                    )}>
+                      {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
                     </div>
-                    <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
-                    <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-semibold">{ann.title}</p>
+                        {ann.urgent && <Badge variant="orange" className="text-[9px]">Urgent</Badge>}
+                      </div>
+                      <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
+                      <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Unpaid Charges */}
-        <Card className="border-none bg-black lg:col-span-1">
+        <Card className="border-none bg-black lg:col-span-1 h-full flex flex-col">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-base text-white">Unpaid Charges</CardTitle>
             <CardDescription className="text-xs text-neutral-400">
               {unpaidCharges.length} charges pending payment
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4 pt-1 pb-2">
-            <div className="space-y-2">
-              {unpaidCharges.map((charge) => (
-                <div key={charge.id} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <Avatar className="h-8 w-8 border border-white/10 shrink-0">
-                      <AvatarImage src={charge.ownerAvatar} alt={charge.ownerName} />
-                      <AvatarFallback className="bg-white/10 text-white text-[10px] font-bold">
-                        {charge.ownerName.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1 pr-2">
-                      <p className="text-xs font-semibold text-white truncate">{charge.ownerName}</p>
-                      <p className="text-[10px] text-neutral-400 truncate">Apt {charge.apartmentNumber} · {charge.buildingName}</p>
+          <CardContent className="p-4 pt-1 pb-4">
+            <div className="h-[240px] overflow-y-auto pr-1 hide-scrollbar">
+              <div className="space-y-2">
+                {unpaidCharges.map((charge) => (
+                  <div key={charge.id} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Avatar className="h-8 w-8 border border-white/10 shrink-0">
+                        <AvatarImage src={charge.ownerAvatar} alt={charge.ownerName} />
+                        <AvatarFallback className="bg-white/10 text-white text-[10px] font-bold">
+                          {charge.ownerName.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1 pr-2">
+                        <p className="text-xs font-semibold text-white truncate">{charge.ownerName}</p>
+                        <p className="text-[10px] text-neutral-400 truncate">Apt {charge.apartmentNumber} · {charge.buildingName}</p>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-xs font-bold text-white">{charge.amount} MAD</p>
+                      <Badge className={cn(
+                        "text-[9px] border-none text-white",
+                        charge.status === "Partial" ? "bg-amber-600" : "bg-[#FF0000]"
+                      )}>
+                        {charge.status}
+                      </Badge>
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-xs font-bold text-white">{charge.amount} MAD</p>
-                    <Badge className={cn(
-                      "text-[9px] border-none text-white",
-                      charge.status === "Partial" ? "bg-amber-600" : "bg-[#FF0000]"
-                    )}>
-                      {charge.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
