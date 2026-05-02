@@ -60,7 +60,10 @@ import {
   tickets,
   announcements,
   revenueDataSets,
-  chartConfig
+  chartConfig,
+  buildings,
+  managedUsers,
+  apartments
 } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
@@ -86,15 +89,15 @@ function RevenueOverview({ timeframe, setTimeframe }: {
     <Card className="border-none bg-neutral-100 lg:col-span-2 h-full flex flex-col">
       <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
         <div>
-          <CardTitle className="text-base">Revenue Overview</CardTitle>
-          <CardDescription className="text-xs">Revenue statistics for the selected period</CardDescription>
+          <CardTitle className="text-base">{t.dashboard.admin.revenueOverview}</CardTitle>
+          <CardDescription className="text-xs">{t.dashboard.admin.revenueDescription}</CardDescription>
         </div>
         <Tabs value={timeframe} onValueChange={(v) => setTimeframe(v as any)} className="w-auto">
           <TabsList className="h-8 bg-neutral-200 rounded-sm shadow-none">
-            <TabsTrigger value="day" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">Day</TabsTrigger>
-            <TabsTrigger value="month" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">Month</TabsTrigger>
-            <TabsTrigger value="year" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">Year</TabsTrigger>
-            <TabsTrigger value="all" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">All Time</TabsTrigger>
+            <TabsTrigger value="day" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">{t.dashboard.admin.day}</TabsTrigger>
+            <TabsTrigger value="month" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">{t.dashboard.admin.month}</TabsTrigger>
+            <TabsTrigger value="year" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">{t.dashboard.admin.year}</TabsTrigger>
+            <TabsTrigger value="all" className="h-6 text-[10px] px-2.5 rounded-sm shadow-none data-[state=active]:shadow-none">{t.dashboard.admin.allTime}</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
@@ -148,6 +151,9 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const unpaidCharges = charges.filter(c => c.status === "Unpaid" || c.status === "Partial")
   const openTicketsCount = tickets.filter(t => t.status === "Open").length
+  const totalBuildingsCount = buildings.length
+  const totalApartmentsCount = apartments.length
+  const activeUsersCount = managedUsers.filter(u => u.status === "Active").length
   const [buildingForm, setBuildingForm] = useState({ name: "", address: "", floors: "" })
   const [buildingAdded, setBuildingAdded] = useState(false)
   
@@ -208,11 +214,11 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
       {/* Stats Cards */}
       <div className="grid gap-2 grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
         {[
-          { ...adminStatsData[2], title: t.dashboard.admin.totalBuildings },
-          { ...adminStatsData[3], title: t.dashboard.admin.totalApartments },
-          { ...adminStatsData[4], title: t.dashboard.admin.activeUsers },
-          { ...adminStatsData[0], title: t.dashboard.admin.unpaidCharges },
-          { ...adminStatsData[1], title: t.dashboard.admin.latestTickets },
+          { ...adminStatsData[2], title: t.dashboard.admin.totalBuildings, value: totalBuildingsCount.toString() },
+          { ...adminStatsData[3], title: t.dashboard.admin.totalApartments, value: totalApartmentsCount.toString() },
+          { ...adminStatsData[4], title: t.dashboard.admin.activeUsers, value: activeUsersCount.toString() },
+          { ...adminStatsData[0], title: t.dashboard.admin.unpaidCharges, value: unpaidCharges.length.toString() },
+          { ...adminStatsData[1], title: t.dashboard.admin.latestTickets, value: openTicketsCount.toString() },
         ].map((stat) => {
           const Icon = iconMap[stat.iconName] || Activity
           return (
@@ -240,7 +246,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                     {stat.trendValue}
                   </span>
                   <span className="text-[10px] text-neutral-500 ml-0.5">
-                    vs last month
+                    {t.dashboard.admin.vsLastMonth}
                   </span>
                 </div>
               </CardContent>
@@ -255,7 +261,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-base">{t.dashboard.admin.latestTickets}</CardTitle>
             <CardDescription className="text-xs">
-              {openTicketsCount} open tickets
+              {openTicketsCount} {t.dashboard.admin.openTicketsLabel}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-1 pb-4 flex-1">
@@ -328,9 +334,9 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
         {/* Announcements */}
         <Card className="border-none bg-neutral-100 lg:col-span-2 h-full flex flex-col">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-base">Announcements Board</CardTitle>
+            <CardTitle className="text-base">{t.dashboard.admin.announcementsBoard}</CardTitle>
             <CardDescription className="text-xs">
-              Recent notices posted to all residents
+              {t.dashboard.admin.announcementsDescription}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-1 pb-4">
@@ -347,7 +353,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-xs font-semibold">{ann.title}</p>
-                        {ann.urgent && <Badge variant="orange" className="text-[9px]">Urgent</Badge>}
+                        {ann.urgent && <Badge variant="orange" className="text-[9px]">{t.announcements.urgent}</Badge>}
                       </div>
                       <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
                       <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
@@ -362,9 +368,9 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
         {/* Unpaid Charges */}
         <Card className="border-none bg-black lg:col-span-1 h-full flex flex-col">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-base text-white">Unpaid Charges</CardTitle>
+            <CardTitle className="text-base text-white">{t.dashboard.admin.unpaidChargesTitle}</CardTitle>
             <CardDescription className="text-xs text-neutral-400">
-              {unpaidCharges.length} charges pending payment
+              {unpaidCharges.length} {t.dashboard.admin.chargesPending}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-1 pb-4">
@@ -411,6 +417,8 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
   const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const user = getCurrentUser()
+  const building = buildings.find(b => b.id === user?.buildingId)
+  const apartment = apartments.find(a => a.id === user?.apartmentId)
   const myCharges = charges.filter(c => c.apartmentId === user?.apartmentId)
   const unpaidTotal = myCharges.filter(c => c.status === "Unpaid" || c.status === "Partial").reduce((sum, c) => sum + c.amount, 0)
   const paidTotal = myCharges.filter(c => c.status === "Paid").reduce((sum, c) => sum + c.amount, 0)
@@ -456,7 +464,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
             <DialogHeader>
               <DialogTitle>{t.myTickets.newTicket}</DialogTitle>
               <DialogDescription>
-                Describe the issue you're facing and we'll look into it.
+                {t.dashboard.owner.incidentDescription}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -516,8 +524,8 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
             <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">{t.dashboard.owner.apartment}</CardTitle>
           </CardHeader>
           <CardContent className="px-4 pb-3.5">
-            <div className="text-2xl font-bold">Apt {user?.apartmentId?.split("-")[1] || "—"}</div>
-            <p className="text-[10px] text-neutral-500 mt-0.5">Résidence Al Andalous</p>
+            <div className="text-2xl font-bold">Apt {apartment?.number || user?.apartmentId?.split("-")[1] || "—"}</div>
+            <p className="text-[10px] text-neutral-500 mt-0.5">{building?.name || "—"}</p>
           </CardContent>
         </Card>
       </div>
@@ -605,7 +613,7 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
             <DialogHeader>
               <DialogTitle>{t.myTickets.newTicket}</DialogTitle>
               <DialogDescription>
-                We're here to help you with any issues in your apartment.
+                {t.dashboard.tenant.complaintDescription}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">

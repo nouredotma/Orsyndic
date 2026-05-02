@@ -34,6 +34,18 @@ export interface DashboardTranslations {
       buildingName: string
       address: string
       totalFloors: string
+      revenueOverview: string
+      revenueDescription: string
+      announcementsBoard: string
+      announcementsDescription: string
+      unpaidChargesTitle: string
+      chargesPending: string
+      vsLastMonth: string
+      openTicketsLabel: string
+      day: string
+      month: string
+      year: string
+      allTime: string
     }
     owner: {
       outstanding: string
@@ -43,12 +55,14 @@ export interface DashboardTranslations {
       subject: string
       description: string
       submitTicket: string
+      incidentDescription: string
     }
     tenant: {
       submitComplaint: string
       subject: string
       details: string
       submitTicket: string
+      complaintDescription: string
     }
   }
   users: {
@@ -144,6 +158,9 @@ export interface DashboardTranslations {
     contracts: string
     other: string
     dragDrop: string
+    shareFile: string
+    selectCategory: string
+    filesCount: string
   }
   announcements: {
     newAnnouncement: string
@@ -225,6 +242,18 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         buildingName: "Building Name",
         address: "Address",
         totalFloors: "Total Floors",
+        revenueOverview: "Revenue Overview",
+        revenueDescription: "Revenue statistics for the selected period",
+        announcementsBoard: "Announcements Board",
+        announcementsDescription: "Recent notices posted to all residents",
+        unpaidChargesTitle: "Unpaid Charges",
+        chargesPending: "charges pending payment",
+        vsLastMonth: "vs last month",
+        openTicketsLabel: "open tickets",
+        day: "Day",
+        month: "Month",
+        year: "Year",
+        allTime: "All Time",
       },
       owner: {
         outstanding: "Outstanding",
@@ -234,12 +263,14 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         subject: "Subject",
         description: "Description",
         submitTicket: "Submit Ticket",
+        incidentDescription: "Describe the issue you're facing and we'll look into it.",
       },
       tenant: {
         submitComplaint: "Submit Complaint",
         subject: "Subject",
         details: "Details",
         submitTicket: "Submit Ticket",
+        complaintDescription: "We're here to help you with any issues in your apartment.",
       },
     },
     users: {
@@ -335,6 +366,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       contracts: "Contracts",
       other: "Other",
       dragDrop: "Click to browse or drag and drop",
+      shareFile: "Share a file with the building residents.",
+      selectCategory: "Select category",
+      filesCount: "files",
     },
     announcements: {
       newAnnouncement: "New Announcement",
@@ -414,6 +448,18 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         buildingName: "Nom de l'Immeuble",
         address: "Adresse",
         totalFloors: "Nombre d'Étages",
+        revenueOverview: "Aperçu des Revenus",
+        revenueDescription: "Statistiques des revenus pour la période sélectionnée",
+        announcementsBoard: "Tableau d'Annonces",
+        announcementsDescription: "Avis récents affichés pour tous les résidents",
+        unpaidChargesTitle: "Charges Impayées",
+        chargesPending: "charges en attente de paiement",
+        vsLastMonth: "par rapport au mois dernier",
+        openTicketsLabel: "tickets ouverts",
+        day: "Jour",
+        month: "Mois",
+        year: "Année",
+        allTime: "Tout",
       },
       owner: {
         outstanding: "Impayé",
@@ -423,12 +469,14 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         subject: "Sujet",
         description: "Description",
         submitTicket: "Soumettre le Ticket",
+        incidentDescription: "Décrivez le problème que vous rencontrez et nous l'examinerons.",
       },
       tenant: {
         submitComplaint: "Soumettre une Plainte",
         subject: "Sujet",
         details: "Détails",
         submitTicket: "Soumettre le Ticket",
+        complaintDescription: "Nous sommes là pour vous aider avec tout problème dans votre appartement.",
       },
     },
     users: {
@@ -524,6 +572,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       contracts: "Contrats",
       other: "Autre",
       dragDrop: "Cliquez pour parcourir ou glissez-déposez",
+      shareFile: "Partagez un fichier avec les résidents de l'immeuble.",
+      selectCategory: "Sélectionner la catégorie",
+      filesCount: "fichiers",
     },
     announcements: {
       newAnnouncement: "Nouvelle Annonce",
@@ -603,6 +654,18 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         buildingName: "Nombre del Edificio",
         address: "Dirección",
         totalFloors: "Número de Pisos",
+        revenueOverview: "Resumen de Ingresos",
+        revenueDescription: "Estadísticas de ingresos para el período seleccionado",
+        announcementsBoard: "Tablón de Anuncios",
+        announcementsDescription: "Avisos recientes publicados para todos los residentes",
+        unpaidChargesTitle: "Cargos Impagos",
+        chargesPending: "cargos pendientes de pago",
+        vsLastMonth: "vs mes anterior",
+        openTicketsLabel: "tickets abiertos",
+        day: "Día",
+        month: "Mes",
+        year: "Año",
+        allTime: "Todo",
       },
       owner: {
         outstanding: "Pendiente",
@@ -612,12 +675,14 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         subject: "Asunto",
         description: "Descripción",
         submitTicket: "Enviar Ticket",
+        incidentDescription: "Describe el problema que estás enfrentando y lo revisaremos.",
       },
       tenant: {
         submitComplaint: "Enviar Queja",
         subject: "Asunto",
         details: "Detalles",
         submitTicket: "Enviar Ticket",
+        complaintDescription: "Estamos aquí para ayudarte con cualquier problema en tu apartamento.",
       },
     },
     users: {
@@ -713,6 +778,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       contracts: "Contratos",
       other: "Otro",
       dragDrop: "Haga clic para explorar o arrastre y suelte",
+      shareFile: "Comparte un archivo con los residentes del edificio.",
+      selectCategory: "Seleccionar categoría",
+      filesCount: "archivos",
     },
     announcements: {
       newAnnouncement: "Nuevo Anuncio",

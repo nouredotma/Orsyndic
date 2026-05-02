@@ -113,7 +113,7 @@ export default function DocumentsPage() {
                     <FileText className="h-4 w-4 text-neutral-400 shrink-0" />
                     <div className="min-w-0"><p className="text-xs font-medium truncate">{doc.name}</p><p className="text-[10px] text-neutral-400">{doc.fileSize} · {doc.uploadedAt}</p></div>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-[10px] h-7 gap-1 cursor-pointer text-primary hover:text-primary" onClick={() => handleDownload(doc)}><Download className="h-3 w-3" />Download</Button>
+                  <Button variant="ghost" size="sm" className="text-[10px] h-7 gap-1 cursor-pointer text-primary hover:bg-primary hover:text-white" onClick={() => handleDownload(doc)}><Download className="h-3 w-3" />{t.documents.download}</Button>
                 </div>
               ))}
             </div>
