@@ -29,16 +29,30 @@ export default function ContactPage() {
                 {t.contactPage.heading}
               </h1>
               
-              <p className="text-xs md:text-base font-medium text-neutral-400 mb-8">
+              <p className="text-xs md:text-base font-medium text-neutral-400">
                 {t.contactPage.subheading}
               </p>
 
-              <div className="flex items-center gap-6 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="flex flex-col">
                   <span className="text-xs md:text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-1">{t.contactPage.emailUs}</span>
-                  <a href="mailto:contact@orsyndic.com" className="text-base md:text-lg font-medium text-black hover:underline decoration-2 underline-offset-4">
+                  <a href="mailto:contact@orsyndic.com" className="text-base md:text-sm font-medium text-black hover:underline decoration-2 underline-offset-4">
                     contact@orsyndic.com
                   </a>
+                </div>
+
+                <div className="flex flex-col">
+                  <span className="text-xs md:text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-1">{t.contactPage.callUs}</span>
+                  <a href={`tel:${t.contactPage.phoneNumber.replace(/\s/g, "")}`} className="text-base md:text-sm font-medium text-black hover:underline decoration-2 underline-offset-4">
+                    {t.contactPage.phoneNumber}
+                  </a>
+                </div>
+
+                <div className="flex flex-col">
+                  <span className="text-xs md:text-sm font-semibold text-neutral-400 uppercase tracking-wider mb-1">{t.contactPage.visitUs}</span>
+                  <span className="text-base md:text-sm font-medium text-black">
+                    {t.contactPage.address}
+                  </span>
                 </div>
               </div>
             </div>

@@ -207,9 +207,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm p-0 list-none">
               <li>
-                <span className="text-neutral-400 font-normal">
-                  <span>+212 6 60 71 50 95</span>
-                </span>
+                <a
+                  href={`tel:${t.footer.phoneNumber.replace(/\s/g, "")}`}
+                  className="text-neutral-400 hover:text-white transition font-normal"
+                >
+                  {t.footer.phoneNumber}
+                </a>
               </li>
               <li>
                 <a
@@ -221,7 +224,7 @@ export default function Footer() {
               </li>
               <li>
                 <span className="text-neutral-400 font-normal">
-                  <span>Marrakech, Morocco</span>
+                  <span>{t.footer.address}</span>
                 </span>
               </li>
             </ul>

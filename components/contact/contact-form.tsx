@@ -99,7 +99,7 @@ export default function ContactForm() {
       `*${t.contactPage.form.labels.subject}:* ${subject || "Not specified"}%0A%0A` +
       `*${t.contactPage.form.labels.message}:*%0A${message || "No details provided."}`
     
-    const whatsappUrl = `https://wa.me/212660715095?text=${text}`
+    const whatsappUrl = `https://wa.me/212704749027?text=${text}`
     window.open(whatsappUrl, "_blank")
   }
 

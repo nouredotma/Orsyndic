@@ -80,7 +80,7 @@ export function FloatingActions() {
         `}>
 
           <Link 
-            href="https://wa.me/212660715095" 
+            href="https://wa.me/212704749027" 
             target="_blank" 
             className="text-white border-2 border-[#25D366]/20 hover:border-[#25D366] bg-[#25D366] p-2.5 md:p-3 rounded-sm transition-all duration-300"
             aria-label="WhatsApp"

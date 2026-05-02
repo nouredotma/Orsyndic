@@ -191,6 +191,8 @@ export interface Translations {
     soon: string;
     rights: string;
     status: string;
+    phoneNumber: string;
+    address: string;
   };
   contactPage: {
     metadata: {
@@ -201,6 +203,10 @@ export interface Translations {
     heading: string;
     subheading: string;
     emailUs: string;
+    callUs: string;
+    visitUs: string;
+    phoneNumber: string;
+    address: string;
     form: {
       labels: {
         firstName: string;
@@ -539,6 +545,8 @@ export const translations: Record<Language, Translations> = {
       soon: "Soon",
       rights: "All rights reserved.",
       status: "All Systems Operational",
+      phoneNumber: "+212 704 749 027",
+      address: "Martil, Morocco",
     },
     contactPage: {
       metadata: {
@@ -549,6 +557,10 @@ export const translations: Record<Language, Translations> = {
       heading: "Ready to simplify your property management?",
       subheading: "Fill out the form and our team will get back to you within 24 hours to schedule a demo and discuss your needs.",
       emailUs: "Email us",
+      callUs: "Call us",
+      visitUs: "Visit us",
+      phoneNumber: "+212 704 749 027",
+      address: "Martil, Morocco",
       form: {
         labels: {
           firstName: "First Name",
@@ -563,7 +575,7 @@ export const translations: Record<Language, Translations> = {
           firstName: "John",
           lastName: "Doe",
           email: "john@example.com",
-          phone: "+1 234 567 890",
+          phone: "+212 600 000 000",
           company: "Acme Corp",
           subject: "Select a subject",
           message: "Tell us how we can help you...",
@@ -889,6 +901,8 @@ export const translations: Record<Language, Translations> = {
       soon: "Bientôt",
       rights: "Tous droits réservés.",
       status: "Tous les systèmes sont opérationnels",
+      phoneNumber: "+212 704 749 027",
+      address: "Martil, Maroc",
     },
     contactPage: {
       metadata: {
@@ -899,6 +913,10 @@ export const translations: Record<Language, Translations> = {
       heading: "Prêt à simplifier la gestion de votre copropriété ?",
       subheading: "Remplissez le formulaire et notre équipe vous recontactera sous 24 heures pour planifier une démo et discuter de vos besoins.",
       emailUs: "Écrivez-nous",
+      callUs: "Appelez-nous",
+      visitUs: "Visitez-nous",
+      phoneNumber: "+212 704 749 027",
+      address: "Martil, Maroc",
       form: {
         labels: {
           firstName: "Prénom",
@@ -913,7 +931,7 @@ export const translations: Record<Language, Translations> = {
           firstName: "Jean",
           lastName: "Dupont",
           email: "jean@exemple.com",
-          phone: "+33 1 23 45 67 89",
+          phone: "+212 600 000 000",
           company: "Acme Corp",
           subject: "Sélectionnez un sujet",
           message: "Dites-nous comment nous pouvons vous aider...",
@@ -1239,6 +1257,8 @@ export const translations: Record<Language, Translations> = {
       soon: "Próximamente",
       rights: "Todos los derechos reservados.",
       status: "Todos los sistemas operativos",
+      phoneNumber: "+212 704 749 027",
+      address: "Martil, Marruecos",
     },
     contactPage: {
       metadata: {
@@ -1249,6 +1269,10 @@ export const translations: Record<Language, Translations> = {
       heading: "¿Listo para simplificar la gestión de tu copropiedad?",
       subheading: "Completa el formulario y nuestro equipo se pondrá en contacto contigo en un plazo de 24 horas para programar una demostración y discutir tus necesidades.",
       emailUs: "Envíanos un correo",
+      callUs: "Llámanos",
+      visitUs: "Visítanos",
+      phoneNumber: "+212 704 749 027",
+      address: "Martil, Marruecos",
       form: {
         labels: {
           firstName: "Nombre",
@@ -1263,7 +1287,7 @@ export const translations: Record<Language, Translations> = {
           firstName: "Juan",
           lastName: "Pérez",
           email: "juan@ejemplo.com",
-          phone: "+34 912 34 56 78",
+          phone: "+212 600 000 000",
           company: "Acme Corp",
           subject: "Selecciona un asunto",
           message: "Cuéntanos cómo podemos ayudarte...",
