@@ -70,12 +70,12 @@ export default function DocumentsPage() {
           <Dialog open={isOpen} onOpenChange={(o) => { setIsOpen(o); if (!o) { setDocName(""); setDocCategory(""); setFileName("") } }}>
             <DialogTrigger asChild><Button className="gap-2 cursor-pointer"><Upload className="h-4 w-4" />{t.documents.upload}</Button></DialogTrigger>
             <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
-              <DialogHeader><DialogTitle>{t.documents.uploadDocument}</DialogTitle><DialogDescription>Share a file with the building residents.</DialogDescription></DialogHeader>
+              <DialogHeader><DialogTitle>{t.documents.uploadDocument}</DialogTitle><DialogDescription>{t.documents.shareFile}</DialogDescription></DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2"><Label className="text-xs">{t.documents.documentName}</Label><Input placeholder="March 2026 Minutes" className="bg-neutral-100 border-none rounded-sm" value={docName} onChange={(e) => setDocName(e.target.value)} /></div>
                 <div className="grid gap-2"><Label className="text-xs">{t.documents.category}</Label>
                   <Select value={docCategory} onValueChange={(v) => setDocCategory(v as DocCategory)}>
-                    <SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder="Select category" /></SelectTrigger>
+                    <SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder={t.documents.selectCategory} /></SelectTrigger>
                     <SelectContent className="bg-white border-none shadow-lg">
                       <SelectItem value="Assembly Minutes">{t.documents.assemblyMinutes}</SelectItem><SelectItem value="Regulations">{t.documents.regulations}</SelectItem>
                       <SelectItem value="Financial Reports">{t.documents.financialReports}</SelectItem><SelectItem value="Contracts">{t.documents.contracts}</SelectItem><SelectItem value="Other">{t.documents.other}</SelectItem>
@@ -102,7 +102,7 @@ export default function DocumentsPage() {
             <div className="flex items-center gap-2">
               <div className={cn("p-1.5 rounded-lg", categoryColors[category] || "bg-neutral-50 text-neutral-600")}><FolderOpen className="h-4 w-4" /></div>
               <CardTitle className="text-sm">{category}</CardTitle>
-              <Badge variant="secondary" className="text-[10px] ml-auto">{docs.length} files</Badge>
+              <Badge variant="secondary" className="text-[10px] ml-auto">{docs.length} {t.documents.filesCount}</Badge>
             </div>
           </CardHeader>
           <CardContent className="p-4 pt-1">
