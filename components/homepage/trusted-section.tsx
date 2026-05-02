@@ -7,20 +7,20 @@ export default function TrustedSection() {
   // 14 company/brand images with black filter
   // 14 company/brand images with their official links
   const trustedData = [
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
-    { logo: "/projects/cropped-tnt-real-estate-logo.jpg", url: "#" },
+    { logo: "/projects/1.jpg" },
+    { logo: "/projects/2.png" },
+    { logo: "/projects/3.png" },
+    { logo: "/projects/4.png" },
+    { logo: "/projects/5.png" },
+    { logo: "/projects/6.png" },
+    { logo: "/projects/7.png" },
+    { logo: "/projects/1.jpg" },
+    { logo: "/projects/2.png" },
+    { logo: "/projects/3.png" },
+    { logo: "/projects/4.png" },
+    { logo: "/projects/5.png" },
+    { logo: "/projects/6.png" },
+    { logo: "/projects/7.png" },
   ]
 
   return (
@@ -42,10 +42,7 @@ export default function TrustedSection() {
                   key={i}
                 >
                   {trustedData.slice(0, 7).map((item, idx) => (
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <div
                       key={idx}
                       className="group w-24 h-14 md:w-48 md:h-24 rounded-sm border-2 border-neutral-200 flex items-center justify-center bg-white transition-all hover:border-primary overflow-hidden"
                     >
@@ -54,7 +51,7 @@ export default function TrustedSection() {
                         alt={`Trusted branding ${idx}`}
                         className="w-full h-full object-contain"
                       />
-                    </a>
+                    </div>
                   ))}
                 </div>
               ))}
@@ -70,10 +67,7 @@ export default function TrustedSection() {
                   key={i}
                 >
                   {trustedData.slice(7, 14).map((item, idx) => (
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <div
                       key={idx}
                       className="group w-24 h-14 md:w-44 md:h-24 rounded-sm border-2 border-neutral-200 flex items-center justify-center bg-white transition-all hover:border-primary overflow-hidden"
                     >
@@ -82,7 +76,7 @@ export default function TrustedSection() {
                         alt={`Trusted branding reverse ${idx}`}
                         className="w-full h-full object-contain"
                       />
-                    </a>
+                    </div>
                   ))}
                 </div>
               ))}
