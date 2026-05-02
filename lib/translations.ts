@@ -19,7 +19,6 @@ export interface Translations {
     description: string;
     startProject: string;
     viewServices: string;
-    askAi: string;
     chatWhatsApp: string;
     sendEmail: string;
     stats: {
@@ -238,27 +237,6 @@ export interface Translations {
       footerAgreement: string;
     };
   };
-  ai: {
-    modalTitle: string;
-    modalDescription: string;
-    headerTitleDesktop: string;
-    headerTitleMobile: string;
-    welcomeTitle: string;
-    initialBotMessage: string;
-    suggestedQuestions: string[];
-    inputPlaceholder: string;
-    inputPlaceholderContinue: string;
-    disclaimer: string;
-    errors: {
-      failResponse: string;
-      failConnect: string;
-    };
-    recording: {
-      start: string;
-      stop: string;
-      notSupported: string;
-    };
-  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -281,7 +259,6 @@ export const translations: Record<Language, Translations> = {
       description: "Orsyndic centralizes your finances, automates your charges, and streamlines communication between managers, owners, and residents.",
       startProject: "Get a demo",
       viewServices: "Features",
-      askAi: "Ask Orsyndic AI",
       chatWhatsApp: "WhatsApp Support",
       sendEmail: "Email Us",
       stats: {
@@ -592,31 +569,6 @@ export const translations: Record<Language, Translations> = {
         footerAgreement: "By submitting this form, you agree to our privacy policy and terms of service.",
       },
     },
-    ai: {
-      modalTitle: "Orsyndic AI Assistant",
-      modalDescription: "Chat with Ors, the Orsyndic AI assistant, to learn about our services.",
-      headerTitleDesktop: "Orsyndic AI — Orsyndic",
-      headerTitleMobile: "Orsyndic AI",
-      welcomeTitle: "Hey! I'm Ors 👋 Ask me about Orsyndic",
-      initialBotMessage: "Hey! I'm Ors, the AI assistant for Orsyndic. I can tell you about our services, showcase our portfolio, or help you start a project. What would you like to know?",
-      suggestedQuestions: [
-        "What services do you offer?",
-        "Can I see your portfolio?",
-        "How can I start a project?",
-      ],
-      inputPlaceholder: "Ask me anything...",
-      inputPlaceholderContinue: "Continue the conversation...",
-      disclaimer: "Ors can make mistakes. Check important info.",
-      errors: {
-        failResponse: "I didn't get a reply — please try again.",
-        failConnect: "Sorry, I'm having trouble connecting right now. Please try again later.",
-      },
-      recording: {
-        start: "Start recording",
-        stop: "Stop recording",
-        notSupported: "Speech recognition is not supported in your browser.",
-      },
-    },
   },
   fr: {
     nav: {
@@ -637,7 +589,6 @@ export const translations: Record<Language, Translations> = {
       description: "Orsyndic centralizes vos finances, automatise vos charges et fluidifie la communication entre syndics, copropriétaires et résidents.",
       startProject: "Demander une démo",
       viewServices: "Fonctionnalités",
-      askAi: "Demander à l'IA Orsyndic",
       chatWhatsApp: "Support WhatsApp",
       sendEmail: "Envoyer un email",
       stats: {
@@ -948,31 +899,6 @@ export const translations: Record<Language, Translations> = {
         footerAgreement: "En soumettant ce formulaire, vous acceptez notre politique de confidentialité et nos conditions d'utilisation.",
       },
     },
-    ai: {
-      modalTitle: "Assistant IA Ors",
-      modalDescription: "Discutez avec Ors, l'assistant IA de Orsyndic, pour en savoir plus sur nos services.",
-      headerTitleDesktop: "Ors IA — Orsyndic",
-      headerTitleMobile: "Ors IA",
-      welcomeTitle: "Salut ! Je suis Ors 👋 Pose-moi une question sur Orsyndic",
-      initialBotMessage: "Salut ! Je suis Ors, l'assistant IA de Orsyndic. Je peux vous parler de nos services, vous montrer notre portfolio ou vous aider à démarrer un projet. Que aimeriez-vous savoir ?",
-      suggestedQuestions: [
-        "Quels services proposez-vous ?",
-        "Puis-je voir votre portfolio ?",
-        "Comment démarrer un projet ?",
-      ],
-      inputPlaceholder: "Posez-moi n'importe quoi...",
-      inputPlaceholderContinue: "Continuez la conversation...",
-      disclaimer: "Ors peut faire des erreurs. Vérifiez les infos importantes.",
-      errors: {
-        failResponse: "Je n'ai pas reçu de réponse — veuillez réessayer.",
-        failConnect: "Désolé, j'ai des difficultés à me connecter pour le moment. Veuillez réessayer plus tard.",
-      },
-      recording: {
-        start: "Démarrer l'enregistrement",
-        stop: "Arrêter l'enregistrement",
-        notSupported: "La reconnaissance vocale n'est pas prise en charge par votre navigateur.",
-      },
-    },
   },
   es: {
     nav: {
@@ -993,7 +919,6 @@ export const translations: Record<Language, Translations> = {
       description: "Nos asociamos con personas y equipos ambiciosos para crear sitios web impresionantes, plataformas potentes y estrategias de crecimiento inteligentes.",
       startProject: "Solicitar una demo",
       viewServices: "Ver Servicios",
-      askAi: "Preguntar a Orsyndic AI",
       chatWhatsApp: "Chat por WhatsApp",
       sendEmail: "Enviar un Email",
       stats: {
@@ -1302,31 +1227,6 @@ export const translations: Record<Language, Translations> = {
         submit: "Enviar Mensaje",
         whatsapp: "WhatsApp",
         footerAgreement: "Al enviar este formulario, aceptas nuestra política de privacidad y términos de servicio.",
-      },
-    },
-    ai: {
-      modalTitle: "Asistente de IA de Ors",
-      modalDescription: "Chatea con Ors, el asistente de IA de Orsyndic, para conocer nuestros servicios.",
-      headerTitleDesktop: "Ors IA — Orsyndic",
-      headerTitleMobile: "Ors IA",
-      welcomeTitle: "¡Hola! Soy Ors 👋 Pregúntame sobre Orsyndic",
-      initialBotMessage: "¡Hola! Soy Ors, el asistente de IA de Orsyndic. Puedo hablarte de nuestros servicios, mostrarte nuestro portafolio o ayudarte a iniciar un proyecto. ¿Qué te gustaría saber?",
-      suggestedQuestions: [
-        "¿Qué servicios ofrecen?",
-        "¿Puedo ver su portafolio?",
-        "¿Cómo puedo empezar un proyecto?",
-      ],
-      inputPlaceholder: "Pregúntame lo que quieras...",
-      inputPlaceholderContinue: "Continúa la conversación...",
-      disclaimer: "Ors puede cometer errores. Verifica la información importante.",
-      errors: {
-        failResponse: "No recibí respuesta, por favor inténtalo de nuevo.",
-        failConnect: "Lo siento, tengo problemas para conectarme en este momento. Por favor, inténtalo más tarde.",
-      },
-      recording: {
-        start: "Iniciar grabación",
-        stop: "Detener grabación",
-        notSupported: "El reconocimiento de voz no es compatible con tu navegador.",
       },
     },
   },

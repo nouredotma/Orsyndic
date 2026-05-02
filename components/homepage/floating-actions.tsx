@@ -3,22 +3,13 @@
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { OrsRobotIcon } from "@/components/ui/ors-robot-icon"
-import { AiAssistantModal } from "@/components/homepage/ai-assistant-modal"
 import { LanguageSwitcher } from "@/components/homepage/language-switcher"
-import { useLanguage } from "@/lib/language-context"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip"
 
 export function FloatingActions() {
-  const { t } = useLanguage()
   const pathname = usePathname()
-  const [aiModalOpen, setAiModalOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -37,39 +28,9 @@ export function FloatingActions() {
   return (
     <TooltipProvider delayDuration={0}>
       <div className="relative z-[100]">
-        {/* Bottom Left Controls — AI Assistant & Language */}
+        {/* Bottom Left Controls — Language Switcher */}
         <div className="fixed bottom-3 left-3 md:bottom-6 md:left-6 z-50 flex flex-col items-center gap-1 md:gap-1.5">
           <LanguageSwitcher variant="square" />
-          
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <motion.button
-                onClick={() => setAiModalOpen(true)}
-                className="group relative flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white rounded-sm transition-all duration-300 cursor-pointer overflow-hidden border border-neutral-100 shadow-sm"
-                whileTap={{ scale: 0.95 }}
-                whileHover={{ scale: 1.05 }}
-                aria-label={t.hero.askAi}
-              >
-                {/* Google Color Ring Effect */}
-                <div className="absolute inset-0 p-[2.5px] overflow-hidden rounded-[inherit] pointer-events-none">
-                  <div 
-                    className="absolute -inset-full animate-[spin_6s_linear_infinite]"
-                    style={{
-                      background: "conic-gradient(from 0deg, #4285F4 0deg, #4285F4 90deg, #EA4335 90deg, #EA4335 180deg, #FBBC05 180deg, #FBBC05 270deg, #34A853 270deg, #34A853 360deg)"
-                    }}
-                  />
-                  <div className="absolute inset-[2.5px] bg-white rounded-sm z-0" />
-                </div>
-
-                <div className="relative z-10">
-                  <OrsRobotIcon className="w-8 h-8 md:w-10 md:h-10" />
-                </div>
-              </motion.button>
-            </TooltipTrigger>
-            <TooltipContent side="top" sideOffset={1} className="z-[10002]">
-              {t.hero.askAi}
-            </TooltipContent>
-          </Tooltip>
         </div>
 
         {/* Contact Links — Fixed Bottom Right (Appears on scroll) */}
@@ -104,9 +65,6 @@ export function FloatingActions() {
             </svg>
           </Link>
         </div>
-
-        {/* AI Assistant Modal */}
-        <AiAssistantModal open={aiModalOpen} onOpenChange={setAiModalOpen} />
       </div>
     </TooltipProvider>
   )
