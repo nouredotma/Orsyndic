@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search, MoreVertical, Pencil, Trash2, MessageSquare, Eye, RotateCcw, ChevronRight, ArrowLeft, X } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -15,9 +15,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { HelpdeskPageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function HelpdeskPage() {
   const { t } = useI18n()
+  const [isLoading, setIsLoading] = useState(true)
   const [localTickets, setLocalTickets] = useState<Ticket[]>(initTickets)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState<"All" | TicketStatus>("All")
@@ -30,6 +32,13 @@ export default function HelpdeskPage() {
 
   // Image lightbox
   const [lightboxImg, setLightboxImg] = useState<string | null>(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <HelpdeskPageSkeleton />
 
   const filteredTickets = localTickets.filter((ticket) => {
     const matchesSearch = ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) || ticket.submittedBy.toLowerCase().includes(searchQuery.toLowerCase())

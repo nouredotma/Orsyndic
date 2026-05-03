@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Users, Search, Plus, MoreVertical, Shield, User, Pencil, Ban, CheckCircle2, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -19,9 +19,11 @@ import { managedUsers as initialUsers, buildings, apartments } from "@/lib/mock-
 import type { ManagedUser } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { UsersPageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function UsersPage() {
   const { t } = useI18n()
+  const [isLoading, setIsLoading] = useState(true)
   const [localUsers, setLocalUsers] = useState<ManagedUser[]>(initialUsers)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterRole, setFilterRole] = useState<"All" | "Owner" | "Tenant">("All")
@@ -35,6 +37,13 @@ export default function UsersPage() {
   const [pendingUser, setPendingUser] = useState<ManagedUser | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const ITEMS_PER_PAGE = 10
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <UsersPageSkeleton />
 
   const filteredUsers = localUsers.filter((u) => {
     const s = u.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (u.username?.toLowerCase().includes(searchQuery.toLowerCase())) || (u.phone?.includes(searchQuery))

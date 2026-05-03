@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { CreditCard, Search, Zap, Check, X, MoreVertical, Pencil, Trash2, ChevronLeft, ChevronRight, Filter } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -10,6 +10,7 @@ import { charges, apartments, buildings } from "@/lib/mock-data"
 import type { ChargeStatus, Charge } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { ChargesPageSkeleton } from "@/components/dashboard-skeletons"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
@@ -21,6 +22,7 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 
 export default function ChargesPage() {
   const { t } = useI18n()
+  const [isLoading, setIsLoading] = useState(true)
   const [localCharges, setLocalCharges] = useState<Charge[]>(charges)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState<"All" | ChargeStatus>("All")
@@ -42,12 +44,19 @@ export default function ChargesPage() {
   const [deleteChargeId, setDeleteChargeId] = useState<string | null>(null)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
   const filteredCharges = useMemo(() => localCharges.filter((c) => {
     const matchesSearch = c.ownerName.toLowerCase().includes(searchQuery.toLowerCase()) || c.apartmentNumber.includes(searchQuery)
     const matchesStatus = filterStatus === "All" || c.status === filterStatus
     const matchesBuilding = filterBuilding === "All" || c.buildingName === filterBuilding
     return matchesSearch && matchesStatus && matchesBuilding
   }), [localCharges, searchQuery, filterStatus, filterBuilding])
+
+  if (isLoading) return <ChargesPageSkeleton />
 
   const totalPages = Math.max(1, Math.ceil(filteredCharges.length / ITEMS_PER_PAGE))
   const paginatedCharges = filteredCharges.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)

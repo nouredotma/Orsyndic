@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Megaphone, Plus, AlertTriangle, MoreVertical, Pencil, Trash2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -18,11 +18,13 @@ import type { Announcement } from "@/lib/mock-data"
 import { getCurrentUser } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { AnnouncementsPageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function AnnouncementsPage() {
   const { t } = useI18n()
   const user = getCurrentUser()
   const isAdmin = user?.role === "Admin"
+  const [isLoading, setIsLoading] = useState(true)
   const [localAnnouncements, setLocalAnnouncements] = useState<Announcement[]>(initialAnnouncements)
   
   // Create state
@@ -84,6 +86,13 @@ export default function AnnouncementsPage() {
     setLocalAnnouncements(p => p.filter(a => a.id !== pendingDelete.id))
     setIsConfirmOpen(false); setPendingDelete(null)
   }
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <AnnouncementsPageSkeleton />
 
   return (
     <div className="flex flex-col gap-4">

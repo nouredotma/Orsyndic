@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FolderOpen, Upload, Download, FileText, File, MoreVertical, Pencil, Trash2, Search } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +16,7 @@ import type { Document } from "@/lib/mock-data"
 import { getCurrentUser } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { DocumentsPageSkeleton } from "@/components/dashboard-skeletons"
 
 const categoryColors: Record<string, string> = {
   "Assembly Minutes": "bg-blue-100 text-blue-600",
@@ -31,6 +32,7 @@ export default function DocumentsPage() {
   const { t } = useI18n()
   const user = getCurrentUser()
   const isAdmin = user?.role === "Admin"
+  const [isLoading, setIsLoading] = useState(true)
   const [localDocs, setLocalDocs] = useState<Document[]>(initialDocs)
   const [searchQuery, setSearchQuery] = useState("")
   
@@ -95,6 +97,13 @@ export default function DocumentsPage() {
     a.href = url; a.download = `${doc.name.replace(/\s+/g, "_")}.txt`; a.click()
     URL.revokeObjectURL(url)
   }
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <DocumentsPageSkeleton />
 
   const filteredDocs = localDocs.filter(d => 
     d.name.toLowerCase().includes(searchQuery.toLowerCase()) || 

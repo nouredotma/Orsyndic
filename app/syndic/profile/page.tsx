@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Eye, EyeOff, Camera, Check, Pencil } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -9,10 +9,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getCurrentUser } from "@/lib/auth"
 import { useI18n } from "@/lib/i18n-context"
+import { ProfilePageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function ProfilePage() {
   const { t } = useI18n()
   const user = getCurrentUser()
+  const [isLoading, setIsLoading] = useState(true)
   const [showOld, setShowOld] = useState(false)
   const [showNew, setShowNew] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
@@ -90,6 +92,13 @@ export default function ProfilePage() {
     if (role === "Owner") return t.common.owner
     return t.common.tenant
   }
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <ProfilePageSkeleton />
 
   return (
     <div className="flex flex-col gap-4 max-w-2xl">

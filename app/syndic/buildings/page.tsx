@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Building2, Plus, ChevronRight, DoorOpen, MapPin, ArrowLeft, Pencil, Trash2, MoreVertical, Search } from "lucide-react"
 import {
   Card,
@@ -46,9 +46,11 @@ import { buildings as initBuildings, apartments as initApartments, charges, mana
 import type { Apartment, Building } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
+import { BuildingsPageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function BuildingsPage() {
   const { t } = useI18n()
+  const [isLoading, setIsLoading] = useState(true)
   const [localBuildings, setLocalBuildings] = useState<Building[]>(initBuildings)
   const [localApartments, setLocalApartments] = useState<Apartment[]>(() => {
     const apts = [...initApartments];
@@ -98,6 +100,13 @@ export default function BuildingsPage() {
   const [confirmType, setConfirmType] = useState<"building">("building")
   const [itemToDelete, setItemToDelete] = useState<Building | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <BuildingsPageSkeleton />
 
   const selectedBuildingData = localBuildings.find(b => b.id === selectedBuilding)
   const buildingApartments = localApartments.filter(a => a.buildingId === selectedBuilding)

@@ -2,6 +2,7 @@
 
 import { jsPDF } from "jspdf"
 
+import { useState, useEffect } from "react"
 import { CreditCard, Download } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,12 +10,21 @@ import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
 import { charges } from "@/lib/mock-data"
 import { useI18n } from "@/lib/i18n-context"
+import { MyChargesPageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function MyChargesPage() {
   const { t, language } = useI18n()
   const user = getCurrentUser()
+  const [isLoading, setIsLoading] = useState(true)
   const myCharges = charges.filter(c => c.apartmentId === user?.apartmentId)
   const unpaidTotal = myCharges.filter(c => c.status !== "Paid").reduce((sum, c) => sum + c.amount, 0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <MyChargesPageSkeleton />
 
   const handleDownloadPDF = (charge: typeof charges[0]) => {
     const doc = new jsPDF()

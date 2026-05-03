@@ -68,6 +68,7 @@ import {
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { ImageLightbox } from "@/components/image-lightbox"
+import { DashboardPageSkeleton } from "@/components/dashboard-skeletons"
 
 const iconMap: Record<string, any> = {
   CreditCard,
@@ -702,7 +703,7 @@ export default function DashboardPage() {
   }, [])
 
   if (!mounted) {
-    return null // Or a loading skeleton
+    return <DashboardPageSkeleton />
   }
 
   const firstName = user?.fullName.split(" ")[0] || "User"

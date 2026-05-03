@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { TicketCheck, Plus, Camera, X, ImageIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,6 +11,7 @@ import type { Ticket } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { ImageLightbox } from "@/components/image-lightbox"
+import { MyTicketsPageSkeleton } from "@/components/dashboard-skeletons"
 import {
   Dialog,
   DialogContent,
@@ -26,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea"
 export default function MyTicketsPage() {
   const { t } = useI18n()
   const user = getCurrentUser()
+  const [isLoading, setIsLoading] = useState(true)
   const [localTickets, setLocalTickets] = useState<Ticket[]>(initialTickets)
   const [showForm, setShowForm] = useState(false)
   const [title, setTitle] = useState("")
@@ -45,6 +47,13 @@ export default function MyTicketsPage() {
   }
 
   const myTickets = localTickets.filter(t => t.submittedBy === user?.fullName)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) return <MyTicketsPageSkeleton />
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
