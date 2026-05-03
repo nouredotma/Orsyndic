@@ -134,7 +134,7 @@ export default function MyTicketsPage() {
                   ) : (
                     <Button variant="outline" className="w-20 h-20 border-dashed border-2 flex flex-col gap-1 cursor-pointer hover:bg-neutral-50" onClick={() => fileRef.current?.click()}>
                       <Camera className="h-5 w-5 text-neutral-400" />
-                      <span className="text-[9px] text-neutral-400">Add Photo</span>
+                      <span className="text-[9px] text-neutral-400">{t.common.addPhoto}</span>
                     </Button>
                   )}
                   <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
@@ -168,7 +168,7 @@ export default function MyTicketsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-sm font-semibold">{ticket.title}</p>
-                      <Badge variant={ticket.status === "Open" ? "info" : ticket.status === "In Progress" ? "warning" : "success"} className="text-[10px]">{ticket.status}</Badge>
+                      <Badge variant={ticket.status === "Open" ? "info" : ticket.status === "In Progress" ? "warning" : "success"} className="text-[10px]">{ticket.status === "Open" ? t.status.open : ticket.status === "In Progress" ? t.status.inProgress : t.status.resolved}</Badge>
                     </div>
                     <p className="text-xs text-neutral-500 mt-1 line-clamp-2">{ticket.description}</p>
                     

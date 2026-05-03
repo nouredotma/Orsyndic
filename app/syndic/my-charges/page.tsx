@@ -1,5 +1,7 @@
 "use client"
 
+import { jsPDF } from "jspdf"
+
 import { CreditCard, Download } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,39 +11,90 @@ import { charges } from "@/lib/mock-data"
 import { useI18n } from "@/lib/i18n-context"
 
 export default function MyChargesPage() {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const user = getCurrentUser()
   const myCharges = charges.filter(c => c.apartmentId === user?.apartmentId)
   const unpaidTotal = myCharges.filter(c => c.status !== "Paid").reduce((sum, c) => sum + c.amount, 0)
 
   const handleDownloadPDF = (charge: typeof charges[0]) => {
-    const receipt = `
-╔══════════════════════════════════════════╗
-║          ${t.sidebar.dashboard.toUpperCase()} PAYMENT RECEIPT         ║
-╠══════════════════════════════════════════╣
-║                                           ║
-║  Receipt ID:    ${charge.id.padEnd(24)}║
-║  Date:          ${(charge.paidDate || "N/A").padEnd(24)}║
-║  Owner:         ${charge.ownerName.padEnd(24)}║
-║  Apartment:     ${charge.apartmentNumber.padEnd(24)}║
-║  Building:      ${charge.buildingName.padEnd(24)}║
-║  Period:        ${(charge.month + " " + charge.year).padEnd(24)}║
-║  Amount:        ${(charge.amount + " MAD").padEnd(24)}║
-║  Status:        ${charge.status.padEnd(24)}║
-║  Validated:     ${"Yes".padEnd(24)}║
-║                                           ║
-╠══════════════════════════════════════════╣
-║  Thank you for your payment.              ║
-║  Orsyndic Property Management             ║
-╚══════════════════════════════════════════╝
-`.trim()
-    const blob = new Blob([receipt], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `receipt_${charge.apartmentNumber}_${charge.month}_${charge.year}.txt`
-    a.click()
-    URL.revokeObjectURL(url)
+    const doc = new jsPDF()
+    
+    // Header
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(22)
+    doc.setTextColor(30, 30, 30)
+    doc.text("ORSYNDIC", 105, 20, { align: "center" })
+    
+    doc.setFontSize(12)
+    doc.setTextColor(100, 100, 100)
+    doc.text(t.common.propertyManagement, 105, 27, { align: "center" })
+    
+    doc.setDrawColor(200, 200, 200)
+    doc.setLineWidth(0.5)
+    doc.line(20, 35, 190, 35)
+    
+    // Title
+    doc.setFontSize(16)
+    doc.setTextColor(0, 0, 0)
+    doc.text(t.common.paymentReceipt, 20, 50)
+    
+    // Content Table
+    doc.setFontSize(10)
+    let y = 65
+    const col1 = 20
+    const col2 = 70
+    const lineSpacing = 10
+    
+    const rows = [
+      [t.common.receiptId, charge.id],
+      [t.common.date, charge.paidDate || "N/A"],
+      [t.buildings.owner, charge.ownerName],
+      [t.buildings.apartmentNumber, charge.apartmentNumber],
+      [t.sidebar.buildings, charge.buildingName],
+      [t.common.period, `${charge.month} ${charge.year}`],
+    ]
+    
+    rows.forEach(([label, value]) => {
+      doc.setFont("helvetica", "bold")
+      doc.text(`${label}:`, col1, y)
+      doc.setFont("helvetica", "normal")
+      doc.text(String(value), col2, y)
+      doc.setDrawColor(240, 240, 240)
+      doc.line(col1, y + 2, 190, y + 2)
+      y += lineSpacing
+    })
+    
+    y += 10
+    
+    // Summary
+    doc.setFillColor(245, 245, 245)
+    doc.rect(20, y, 170, 30, "F")
+    
+    y += 10
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(12)
+    doc.text(t.charges.amount, 30, y + 5)
+    doc.setTextColor(0, 150, 0)
+    doc.text(`${charge.amount} MAD`, 180, y + 5, { align: "right" })
+    
+    y += 12
+    doc.setFontSize(10)
+    doc.setTextColor(0, 0, 0)
+    doc.text(t.charges.status, 30, y + 5)
+    doc.text(charge.status === "Paid" ? t.status.paid : charge.status === "Partial" ? t.status.partial : t.status.unpaid, 180, y + 5, { align: "right" })
+    
+    // Validation
+    y += 40
+    doc.setFont("helvetica", "italic")
+    doc.setFontSize(9)
+    doc.setTextColor(120, 120, 120)
+    doc.text(`${t.common.validated}: ${language === "fr" ? "Oui" : language === "es" ? "Sí" : "Yes"}`, 105, y, { align: "center" })
+    
+    // Footer
+    doc.setFont("helvetica", "normal")
+    doc.text(t.common.thankYou, 105, 280, { align: "center" })
+    
+    doc.save(`receipt_${charge.apartmentNumber}_${charge.month}_${charge.year}.pdf`)
   }
 
   return (
@@ -74,7 +127,7 @@ export default function MyChargesPage() {
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <p className="text-sm font-bold">{c.amount} MAD</p>
-                    <Badge variant={c.status === "Paid" ? "success" : c.status === "Partial" ? "warning" : "danger"} className="text-[10px]">{c.status}</Badge>
+                    <Badge variant={c.status === "Paid" ? "success" : c.status === "Partial" ? "warning" : "danger"} className="text-[10px]">{c.status === "Paid" ? t.status.paid : c.status === "Partial" ? t.status.partial : t.status.unpaid}</Badge>
                   </div>
                   {c.status === "Paid" && c.validatedByAdmin && (
                     <Button variant="ghost" size="sm" className="text-[10px] h-7 gap-1 cursor-pointer text-primary" onClick={() => handleDownloadPDF(c)}>

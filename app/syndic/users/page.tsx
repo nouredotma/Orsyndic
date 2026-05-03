@@ -1,16 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import { Users, Search, Plus, MoreVertical, Shield, User, Pencil, Ban, CheckCircle2 } from "lucide-react"
+import { Users, Search, Plus, MoreVertical, Shield, User, Pencil, Ban, CheckCircle2, Trash2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { managedUsers as initialUsers, buildings } from "@/lib/mock-data"
 import type { ManagedUser } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
@@ -26,6 +27,9 @@ export default function UsersPage() {
   const [editingUser, setEditingUser] = useState<ManagedUser | null>(null)
   const [newUser, setNewUser] = useState({ fullName: "", role: "" as "" | "Owner" | "Tenant", building: "", apartment: "", username: "", phone: "", password: "" })
   const [editForm, setEditForm] = useState({ fullName: "", building: "", apartment: "", username: "", phone: "" })
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [confirmType, setConfirmType] = useState<"toggle" | "delete">("toggle")
+  const [pendingUser, setPendingUser] = useState<ManagedUser | null>(null)
 
   const filteredUsers = localUsers.filter((u) => {
     const s = u.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (u.username?.toLowerCase().includes(searchQuery.toLowerCase())) || (u.phone?.includes(searchQuery))
@@ -46,7 +50,28 @@ export default function UsersPage() {
     setLocalUsers(prev => [u, ...prev]); resetNew(); setIsAddOpen(false)
   }
 
-  const handleToggle = (id: string) => setLocalUsers(p => p.map(u => u.id === id ? { ...u, status: u.status === "Active" ? "Inactive" : "Active" } : u))
+  const handleToggleConfirm = (user: ManagedUser) => {
+    setPendingUser(user)
+    setConfirmType("toggle")
+    setIsConfirmOpen(true)
+  }
+
+  const handleDeleteConfirm = (user: ManagedUser) => {
+    setPendingUser(user)
+    setConfirmType("delete")
+    setIsConfirmOpen(true)
+  }
+
+  const executeAction = () => {
+    if (!pendingUser) return
+    if (confirmType === "toggle") {
+      setLocalUsers(p => p.map(u => u.id === pendingUser.id ? { ...u, status: u.status === "Active" ? "Inactive" : "Active" } : u))
+    } else {
+      setLocalUsers(p => p.filter(u => u.id !== pendingUser.id))
+    }
+    setIsConfirmOpen(false)
+    setPendingUser(null)
+  }
 
   const handleOpenEdit = (user: ManagedUser) => {
     setEditingUser(user)
@@ -72,7 +97,7 @@ export default function UsersPage() {
             <div className="grid gap-4 py-4">
               <div className="grid gap-2"><Label className="text-xs">{t.users.fullName}</Label><Input placeholder="John Doe" className="bg-neutral-100 border-none rounded-sm" value={newUser.fullName} onChange={(e) => setNewUser(p => ({ ...p, fullName: e.target.value }))} /></div>
               <div className="grid gap-2"><Label className="text-xs">{t.users.role}</Label>
-                <Select value={newUser.role} onValueChange={(v) => setNewUser(p => ({ ...p, role: v as "Owner" | "Tenant" }))}><SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder={t.users.selectRole} /></SelectTrigger><SelectContent className="bg-white border-none shadow-lg"><SelectItem value="Owner">{t.users.owners.replace(/s$/i, "")}</SelectItem><SelectItem value="Tenant">{t.users.tenants.replace(/s$/i, "")}</SelectItem></SelectContent></Select>
+                <Select value={newUser.role} onValueChange={(v) => setNewUser(p => ({ ...p, role: v as "Owner" | "Tenant" }))}><SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder={t.users.selectRole} /></SelectTrigger><SelectContent className="bg-white border-none shadow-lg"><SelectItem value="Owner">{t.common.owner}</SelectItem><SelectItem value="Tenant">{t.common.tenant}</SelectItem></SelectContent></Select>
               </div>
               {newUser.role === "Owner" && <div className="grid gap-2"><Label className="text-xs">{t.users.username}</Label><Input placeholder="john.doe" className="bg-neutral-100 border-none rounded-sm" value={newUser.username} onChange={(e) => setNewUser(p => ({ ...p, username: e.target.value }))} /></div>}
               {newUser.role === "Tenant" && <div className="grid gap-2"><Label className="text-xs">{t.users.phone}</Label><Input placeholder="0661234567" className="bg-neutral-100 border-none rounded-sm" value={newUser.phone} onChange={(e) => setNewUser(p => ({ ...p, phone: e.target.value }))} /></div>}
@@ -103,10 +128,10 @@ export default function UsersPage() {
           <tr key={user.id} className="border-b border-black/5 last:border-0 transition-colors">
             <td className="px-4 py-3"><div className="flex items-center gap-2.5"><Avatar className="h-8 w-8 border border-black/5"><AvatarImage src={user.avatar} alt={user.fullName} /><AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{user.fullName.charAt(0)}</AvatarFallback></Avatar><span className="text-sm font-medium">{user.fullName}</span></div></td>
             <td className="px-4 py-3 text-xs text-neutral-600 font-mono">{user.role === "Owner" ? user.username : user.phone}</td>
-            <td className="px-4 py-3"><Badge variant={user.role === "Owner" ? "info" : user.role === "Admin" ? "admin" : "tenant"} className="text-[10px]">{user.role}</Badge></td>
+            <td className="px-4 py-3 text-xs text-neutral-600">{user.role === "Owner" ? t.common.owner : user.role === "Admin" ? "Admin" : t.common.tenant}</td>
             <td className="px-4 py-3 text-xs text-neutral-600">{user.buildingName}</td>
             <td className="px-4 py-3 text-xs text-neutral-600">Apt {user.apartmentNumber}</td>
-            <td className="px-4 py-3"><Badge variant={user.status === "Active" ? "success" : "secondary"} className="text-[10px] px-2.5 py-1 font-normal">{user.status}</Badge></td>
+            <td className="px-4 py-3"><Badge variant={user.status === "Active" ? "success" : "secondary"} className="text-[10px] px-2.5 py-1 font-normal">{user.status === "Active" ? t.status.active : t.status.inactive}</Badge></td>
             <td className="px-4 py-3">{user.role !== "Admin" && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -115,16 +140,21 @@ export default function UsersPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-lg rounded-sm p-1">
-                  <DropdownMenuItem onClick={() => handleOpenEdit(user)} className="cursor-pointer text-xs gap-2 py-2 hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm">
+                  <DropdownMenuItem onClick={() => handleOpenEdit(user)} className="cursor-pointer text-xs gap-2 py-2 hover:bg-primary/5 focus:bg-primary/5 focus:text-black rounded-sm">
                     <Pencil className="h-3.5 w-3.5" />
-                    Edit User
+                    {t.users.editUser}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleToggle(user.id)} className={cn("cursor-pointer text-xs gap-2 py-2 rounded-sm focus:text-black", user.status === "Active" ? "text-red-500 hover:bg-red-50 focus:bg-red-50" : "text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50")}>
+                  <DropdownMenuItem onClick={() => handleToggleConfirm(user)} className={cn("cursor-pointer text-xs gap-2 py-2 rounded-sm hover:bg-primary/5 focus:bg-primary/5 focus:text-black", user.status === "Active" ? "text-amber-600" : "text-emerald-600")}>
                     {user.status === "Active" ? (
-                      <><Ban className="h-3.5 w-3.5" />Deactivate</>
+                      <><Ban className="h-3.5 w-3.5" />{t.users.deactivate}</>
                     ) : (
-                      <><CheckCircle2 className="h-3.5 w-3.5" />Activate</>
+                      <><CheckCircle2 className="h-3.5 w-3.5" />{t.users.activate}</>
                     )}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-black/5" />
+                  <DropdownMenuItem onClick={() => handleDeleteConfirm(user)} className="cursor-pointer text-xs gap-2 py-2 text-red-500 hover:bg-primary/5 focus:bg-primary/5 focus:text-red-500 rounded-sm">
+                    <Trash2 className="h-3.5 w-3.5" />
+                    {t.common.delete}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -133,15 +163,15 @@ export default function UsersPage() {
 
       <Dialog open={isEditOpen} onOpenChange={(o) => { setIsEditOpen(o); if (!o) setEditingUser(null) }}>
         <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
-          <DialogHeader><DialogTitle>Edit User</DialogTitle><DialogDescription>Update {editingUser?.fullName}&apos;s account details.</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>{t.users.editUser}</DialogTitle><DialogDescription>{t.common.confirm} {editingUser?.fullName}&apos;s account details.</DialogDescription></DialogHeader>
           {editingUser && (<div className="grid gap-4 py-4">
-            <div className="grid gap-2"><Label className="text-xs">Full Name</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.fullName} onChange={(e) => setEditForm(p => ({ ...p, fullName: e.target.value }))} /></div>
-            {editingUser.role === "Owner" && <div className="grid gap-2"><Label className="text-xs">Username</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.username} onChange={(e) => setEditForm(p => ({ ...p, username: e.target.value }))} /></div>}
-            {editingUser.role === "Tenant" && <div className="grid gap-2"><Label className="text-xs">Phone Number</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.phone} onChange={(e) => setEditForm(p => ({ ...p, phone: e.target.value }))} /></div>}
-            <div className="grid gap-2"><Label className="text-xs">Building</Label>
+            <div className="grid gap-2"><Label className="text-xs">{t.users.fullName}</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.fullName} onChange={(e) => setEditForm(p => ({ ...p, fullName: e.target.value }))} /></div>
+            {editingUser.role === "Owner" && <div className="grid gap-2"><Label className="text-xs">{t.users.username}</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.username} onChange={(e) => setEditForm(p => ({ ...p, username: e.target.value }))} /></div>}
+            {editingUser.role === "Tenant" && <div className="grid gap-2"><Label className="text-xs">{t.users.phone}</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.phone} onChange={(e) => setEditForm(p => ({ ...p, phone: e.target.value }))} /></div>}
+            <div className="grid gap-2"><Label className="text-xs">{t.users.building}</Label>
               <Select value={editForm.building} onValueChange={(v) => setEditForm(p => ({ ...p, building: v }))}>
                 <SelectTrigger className="bg-neutral-100 border-none rounded-sm">
-                  <SelectValue placeholder="Select building" />
+                  <SelectValue placeholder={t.users.selectBuilding} />
                 </SelectTrigger>
                 <SelectContent className="bg-white border-none shadow-lg">
                   {buildings.map(b => (
@@ -150,11 +180,34 @@ export default function UsersPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2"><Label className="text-xs">Apartment Number</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.apartment} onChange={(e) => setEditForm(p => ({ ...p, apartment: e.target.value }))} /></div>
+            <div className="grid gap-2"><Label className="text-xs">{t.users.apartment}</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.apartment} onChange={(e) => setEditForm(p => ({ ...p, apartment: e.target.value }))} /></div>
           </div>)}
-          <DialogFooter><Button className="w-full cursor-pointer" onClick={handleSaveEdit}>Save Changes</Button></DialogFooter>
+          <DialogFooter><Button className="w-full cursor-pointer" onClick={handleSaveEdit}>{t.users.saveChanges}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        <AlertDialogContent className="bg-white border-none rounded-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {confirmType === "delete" ? t.users.deleteUser : pendingUser?.status === "Active" ? t.users.deactivate : t.users.activate}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {confirmType === "delete" 
+                ? t.users.confirmDelete 
+                : pendingUser?.status === "Active" 
+                  ? t.users.confirmDeactivate 
+                  : t.users.confirmActivate}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-none bg-neutral-100 hover:bg-neutral-200 rounded-sm text-xs cursor-pointer">{t.common.cancel}</AlertDialogCancel>
+            <AlertDialogAction onClick={executeAction} className={cn("border-none rounded-sm text-xs text-white cursor-pointer", confirmType === "delete" ? "bg-red-600 hover:bg-red-700" : "bg-primary hover:bg-primary/90")}>
+              {t.common.confirm}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

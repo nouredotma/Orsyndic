@@ -204,7 +204,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
               <div className="grid gap-2"><Label htmlFor="b-floors" className="text-xs">{t.dashboard.admin.totalFloors}</Label><Input id="b-floors" type="number" placeholder="5" className="bg-neutral-100 border-none rounded-sm" value={buildingForm.floors} onChange={(e) => setBuildingForm(p => ({ ...p, floors: e.target.value }))} /></div>
             </div>
             <DialogFooter>
-              <Button className="w-full cursor-pointer" onClick={handleAddBuilding}>{buildingAdded ? <><Check className="h-4 w-4 mr-1" />Added!</> : t.dashboard.admin.registerBuilding}</Button>
+              <Button className="w-full cursor-pointer" onClick={handleAddBuilding}>{buildingAdded ? <><Check className="h-4 w-4 mr-1" />{t.common.added}</> : t.dashboard.admin.registerBuilding}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -283,7 +283,8 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                           ticket.status === "Open" ? "info" :
                           ticket.status === "In Progress" ? "warning" : "success"
                         } className="text-[9px]">
-                          {ticket.status}
+                          {ticket.status === "Open" ? t.status.open : 
+                           ticket.status === "In Progress" ? t.status.inProgress : t.status.resolved}
                         </Badge>
                       </div>
                       {/* Photos Preview */}
@@ -336,7 +337,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-base">{t.dashboard.admin.announcementsBoard}</CardTitle>
             <CardDescription className="text-xs">
-              {t.dashboard.admin.announcementsDescription}
+              {t.common.recentUpdates}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-1 pb-4">
@@ -353,7 +354,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-xs font-semibold">{ann.title}</p>
-                        {ann.urgent && <Badge variant="orange" className="text-[9px]">{t.announcements.urgent}</Badge>}
+                        {ann.urgent && <Badge variant="orange" className="text-[9px]">{t.status.urgent}</Badge>}
                       </div>
                       <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
                       <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
@@ -396,7 +397,8 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                         "text-[9px] border-none text-white",
                         charge.status === "Partial" ? "bg-amber-600" : "bg-[#FF0000]"
                       )}>
-                        {charge.status}
+                        {charge.status === "Paid" ? t.status.paid :
+                         charge.status === "Unpaid" ? t.status.unpaid : t.status.partial}
                       </Badge>
                     </div>
                   </div>
@@ -484,7 +486,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                   ) : (
                     <Button variant="outline" className="w-20 h-20 border-dashed border-2 flex flex-col gap-1 cursor-pointer hover:bg-neutral-50" onClick={() => fileRef.current?.click()}>
                       <Camera className="h-5 w-5 text-neutral-400" />
-                      <span className="text-[9px] text-neutral-400">Add Photo</span>
+                      <span className="text-[9px] text-neutral-400">{t.common.addPhoto}</span>
                     </Button>
                   )}
                   <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
@@ -492,7 +494,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
               </div>
             </div>
             <DialogFooter>
-              <Button className="w-full cursor-pointer" onClick={handleSubmitTicket}>{ticketSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.myTickets.submit}</Button>
+              <Button className="w-full cursor-pointer" onClick={handleSubmitTicket}>{ticketSubmitted ? <><Check className="h-4 w-4 mr-1" />{t.common.added}</> : t.myTickets.submit}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -507,7 +509,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           </CardHeader>
           <CardContent className="px-4 pb-3.5">
             <div className="text-2xl font-bold text-[#FF0000]">{unpaidTotal} MAD</div>
-            <p className="text-[10px] text-neutral-500 mt-0.5">Unpaid charges</p>
+            <p className="text-[10px] text-neutral-500 mt-0.5">{t.common.unpaidCharges}</p>
           </CardContent>
         </Card>
         <Card className="border-none bg-neutral-100">
@@ -516,7 +518,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           </CardHeader>
           <CardContent className="px-4 pb-3.5">
             <div className="text-2xl font-bold text-[#00D100]">{paidTotal} MAD</div>
-            <p className="text-[10px] text-neutral-500 mt-0.5">This year</p>
+            <p className="text-[10px] text-neutral-500 mt-0.5">{t.common.thisYear}</p>
           </CardContent>
         </Card>
         <Card className="border-none bg-neutral-100">
@@ -537,11 +539,11 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
         <Card className="border-none bg-neutral-100 lg:col-span-1">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-base">{t.dashboard.admin.announcements}</CardTitle>
-            <CardDescription className="text-xs">Recent updates for residents</CardDescription>
+            <CardDescription className="text-xs">{t.common.recentUpdates}</CardDescription>
           </CardHeader>
           <CardContent className="p-4 pt-1 pb-2">
             <div className="space-y-2">
-              {announcements.slice(0, 3).map((ann) => (
+              {announcements.filter(ann => ann.audience === "Both" || ann.audience === "Owners").slice(0, 3).map((ann) => (
                 <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
                   <div className={cn(
                     "p-1.5 rounded-full shrink-0",
@@ -552,7 +554,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-xs font-semibold">{ann.title}</p>
-                      {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">Urgent</Badge>}
+                      {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
                     </div>
                     <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
                     <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
@@ -633,7 +635,7 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
                   ) : (
                     <Button variant="outline" className="w-20 h-20 border-dashed border-2 flex flex-col gap-1 cursor-pointer hover:bg-neutral-50" onClick={() => fileRef.current?.click()}>
                       <Camera className="h-5 w-5 text-neutral-400" />
-                      <span className="text-[9px] text-neutral-400">Add Photo</span>
+                      <span className="text-[9px] text-neutral-400">{t.common.addPhoto}</span>
                     </Button>
                   )}
                   <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
@@ -641,7 +643,7 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
               </div>
             </div>
             <DialogFooter>
-              <Button className="w-full cursor-pointer" onClick={handleSubmitComplaint}>{complaintSubmitted ? <><Check className="h-4 w-4 mr-1" />Submitted!</> : t.myTickets.submit}</Button>
+              <Button className="w-full cursor-pointer" onClick={handleSubmitComplaint}>{complaintSubmitted ? <><Check className="h-4 w-4 mr-1" />{t.common.submitted}</> : t.myTickets.submit}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -652,11 +654,11 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
       <Card className="border-none bg-neutral-100">
         <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base">{t.dashboard.admin.announcements}</CardTitle>
-          <CardDescription className="text-xs">Building notices and updates</CardDescription>
+          <CardDescription className="text-xs">{t.common.buildingNotices}</CardDescription>
         </CardHeader>
         <CardContent className="p-4 pt-1 pb-2">
           <div className="space-y-2">
-            {announcements.map((ann) => (
+            {announcements.filter(ann => ann.audience === "Both" || ann.audience === "Tenants").map((ann) => (
               <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
                 <div className={cn(
                   "p-1.5 rounded-full shrink-0",
@@ -667,7 +669,7 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-xs font-semibold">{ann.title}</p>
-                    {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">Urgent</Badge>}
+                    {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
                   </div>
                   <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
                   <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>

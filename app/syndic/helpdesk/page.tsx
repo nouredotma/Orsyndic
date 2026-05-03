@@ -75,7 +75,7 @@ export default function HelpdeskPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="text-sm font-semibold">{ticket.title}</p>
-                      <Badge variant={ticket.status === "Open" ? "info" : ticket.status === "In Progress" ? "warning" : "success"} className="text-[10px] font-normal">{ticket.status}</Badge>
+                      <Badge variant={ticket.status === "Open" ? "info" : ticket.status === "In Progress" ? "warning" : "success"} className="text-[10px] font-normal">{ticket.status === "Open" ? t.status.open : ticket.status === "In Progress" ? t.status.inProgress : t.status.resolved}</Badge>
                     </div>
                     <p className="text-xs text-neutral-500 mt-1 line-clamp-1">{ticket.description}</p>
                     
@@ -113,8 +113,8 @@ export default function HelpdeskPage() {
                   </div>
                 </div>
                 <div className="flex gap-1 shrink-0">
-                  {ticket.status === "Open" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(ticket.id, "In Progress") }}>Start</Button>}
-                  {ticket.status === "In Progress" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(ticket.id, "Resolved") }}>Resolve</Button>}
+                  {ticket.status === "Open" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(ticket.id, "In Progress") }}>{t.helpdesk.start}</Button>}
+                  {ticket.status === "In Progress" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(ticket.id, "Resolved") }}>{t.helpdesk.resolve}</Button>}
                 </div>
               </div>
             </CardContent>

@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/lib/i18n-context"
+import type { DashboardLanguage } from "@/lib/dashboard-translations"
 
 const languages = [
   { name: "English", code: "en", flag: "https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" },
@@ -28,9 +30,9 @@ const languages = [
 type LoginMode = "owner" | "tenant" | "admin"
 
 export default function LoginPage() {
+  const { t, language, setLanguage } = useI18n()
   const router = useRouter()
   const pathname = usePathname()
-  const [currentLanguage, setCurrentLanguage] = useState(languages[0])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -38,6 +40,8 @@ export default function LoginPage() {
   const [showResetModal, setShowResetModal] = useState(false)
   const [resetEmail, setResetEmail] = useState("")
   const [resetSent, setResetSent] = useState(false)
+
+  const currentLanguage = languages.find(l => l.code === language) || languages[0]
 
   const [formData, setFormData] = useState({
     email: "",
@@ -74,15 +78,15 @@ export default function LoginPage() {
 
     try {
       if (loginMode === "admin") {
-        if (!formData.email || !formData.password) throw new Error("Email and password are required")
+        if (!formData.email || !formData.password) throw new Error(t.profile.passwordRequired)
         const user = await loginWithEmail(formData.email, formData.password)
         router.push(getDashboardPath(user.role))
       } else if (loginMode === "owner") {
-        if (!formData.username || !formData.password) throw new Error("Username and password are required")
+        if (!formData.username || !formData.password) throw new Error(t.profile.passwordRequired)
         const user = await loginWithUsername(formData.username, formData.password)
         router.push(getDashboardPath(user.role))
       } else {
-        if (!formData.phone || !formData.password) throw new Error("Phone number and password are required")
+        if (!formData.phone || !formData.password) throw new Error(t.profile.passwordRequired)
         const user = await loginWithPhone(formData.phone, formData.password)
         router.push(getDashboardPath(user.role))
       }
@@ -102,7 +106,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
       <Link href="/" className="absolute top-6 left-6 z-50 flex items-center gap-2 text-sm font-medium text-black md:text-white/90 hover:opacity-80 transition-opacity">
-        <ChevronLeft className="h-4 w-4" />Go back
+        <ChevronLeft className="h-4 w-4" />{t.login.goBack}
       </Link>
 
       {/* Left Column */}
@@ -120,13 +124,13 @@ export default function LoginPage() {
         <div className="absolute bottom-[calc(15%+96px)] right-0 w-16 h-16 bg-white z-20" />
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="max-w-full text-center px-8">
-            <h1 className="text-3xl font-semibold text-white md:text-4xl">Management, Reimagined.</h1>
-            <p className="mt-1 text-sm md:text-base text-neutral-200 font-normal">The all-in-one platform for modern property syndics.</p>
+            <h1 className="text-3xl font-semibold text-white md:text-4xl">{t.login.managementReimagined}</h1>
+            <p className="mt-1 text-sm md:text-base text-neutral-200 font-normal">{t.login.allInOnePlatform}</p>
           </div>
         </div>
         <div className="absolute bottom-6 left-6 z-10 flex items-center">
           <Image src="/logo.png" alt="Orsyndic Logo" width={40} height={40} className="mr-1" />
-          <span className="text-sm font-medium text-white">by Noureddine</span>
+          <span className="text-sm font-medium text-white">{t.login.byNoureddine}</span>
         </div>
       </div>
 
@@ -143,7 +147,7 @@ export default function LoginPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-xl rounded-sm p-1.5">
               {languages.map((lang) => (
-                <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2 px-2.5 transition-colors">
+                <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code as DashboardLanguage)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2 px-2.5 transition-colors">
                   <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
                   <span className={cn("text-xs font-semibold", currentLanguage.code === lang.code ? "text-primary font-bold" : "text-black")}>{lang.name}</span>
                 </DropdownMenuItem>
@@ -154,19 +158,19 @@ export default function LoginPage() {
 
         <div className="w-full max-w-md space-y-6 py-4">
           <div className="space-y-2 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">{renderTitle("Welcome to Orsyndic 👋")}</h2>
-            <p className="text-neutral-500">Log in to your account to continue</p>
+            <h2 className="text-3xl font-bold tracking-tight">{renderTitle(t.login.welcome)}</h2>
+            <p className="text-neutral-500">{t.login.subtitle}</p>
           </div>
 
           {/* Login Mode Toggle — 3 tabs */}
           <div className="flex rounded-sm bg-neutral-100 p-1 gap-1">
             <button type="button" onClick={() => { setLoginMode("owner"); setError("") }}
               className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-sm text-xs font-medium transition-all cursor-pointer", loginMode === "owner" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
-              <User className="h-3.5 w-3.5" />Owner
+              <User className="h-3.5 w-3.5" />{t.common.owner}
             </button>
             <button type="button" onClick={() => { setLoginMode("tenant"); setError("") }}
               className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-sm text-xs font-medium transition-all cursor-pointer", loginMode === "tenant" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
-              <Phone className="h-3.5 w-3.5" />Tenant
+              <Phone className="h-3.5 w-3.5" />{t.common.tenant}
             </button>
             <button type="button" onClick={() => { setLoginMode("admin"); setError("") }}
               className={cn("flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-sm text-xs font-medium transition-all cursor-pointer", loginMode === "admin" ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>
@@ -184,18 +188,18 @@ export default function LoginPage() {
               </div>
             ) : loginMode === "owner" ? (
               <div className="space-y-1">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">{t.users.username}</Label>
                 <Input id="username" name="username" type="text" placeholder="e.g. ahmed.benali" autoComplete="username" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.username} onChange={handleChange} disabled={isLoading} />
               </div>
             ) : (
               <div className="space-y-1">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">{t.users.phone}</Label>
                 <Input id="phone" name="phone" type="tel" placeholder="e.g. 0661234567" autoComplete="tel" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.phone} onChange={handleChange} disabled={isLoading} />
               </div>
             )}
 
             <div className="space-y-1">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t.profile.currentPassword.replace(/current /i, "")}</Label>
               <div className="relative">
                 <Input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="••••••••" autoComplete="current-password" required value={formData.password} onChange={handleChange} disabled={isLoading} spellCheck="false" autoCorrect="off" className="pr-10 rounded-sm bg-neutral-100 border-transparent focus:bg-white" />
                 {formData.password && (
@@ -208,17 +212,17 @@ export default function LoginPage() {
             </div>
 
             <div className="flex justify-end">
-              <button type="button" onClick={() => setShowResetModal(true)} className="text-xs text-primary hover:underline underline-offset-4 font-medium cursor-pointer bg-transparent border-none p-0">Forgot password?</button>
+              <button type="button" onClick={() => setShowResetModal(true)} className="text-xs text-primary hover:underline underline-offset-4 font-medium cursor-pointer bg-transparent border-none p-0">{t.login.forgotPassword}</button>
             </div>
 
             <Button type="submit" className="w-full mt-2 rounded-sm cursor-pointer hover:bg-primary/90" disabled={isLoading}>
-              {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Logging in...</>) : ("Login")}
+              {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t.login.loggingIn}</>) : (t.login.login)}
             </Button>
           </form>
 
           {/* Demo credentials */}
           <div className="rounded-sm bg-neutral-50 border border-neutral-200 p-3 space-y-2">
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Demo Credentials</p>
+            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.login.demoCredentials}</p>
             {loginMode === "admin" ? (
               <div className="text-xs text-neutral-600 space-y-0.5">
                 <p><span className="font-medium text-neutral-800">Email:</span> admin@orsyndic.com</p>
@@ -226,12 +230,12 @@ export default function LoginPage() {
               </div>
             ) : loginMode === "owner" ? (
               <div className="text-xs text-neutral-600 space-y-0.5">
-                <p><span className="font-medium text-neutral-800">Username:</span> ahmed.benali</p>
+                <p><span className="font-medium text-neutral-800">{t.users.username}:</span> ahmed.benali</p>
                 <p><span className="font-medium text-neutral-800">Password:</span> password123</p>
               </div>
             ) : (
               <div className="text-xs text-neutral-600 space-y-0.5">
-                <p><span className="font-medium text-neutral-800">Phone:</span> 0661234567</p>
+                <p><span className="font-medium text-neutral-800">{t.users.phone}:</span> 0661234567</p>
                 <p><span className="font-medium text-neutral-800">Password:</span> password123</p>
               </div>
             )}
@@ -239,8 +243,8 @@ export default function LoginPage() {
 
           {loginMode === "admin" && (
             <div className="mt-2 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/syndic/register" className="font-medium text-primary underline underline-offset-4">Register</Link>
+              {t.login.noAccount}{" "}
+              <Link href="/syndic/register" className="font-medium text-primary underline underline-offset-4">{t.login.register}</Link>
             </div>
           )}
         </div>
@@ -255,14 +259,14 @@ export default function LoginPage() {
                 <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
                   <Mail className="h-6 w-6 text-emerald-600" />
                 </div>
-                <h3 className="text-lg font-bold">Reset link sent!</h3>
-                <p className="text-sm text-neutral-500">Check your inbox for the password reset link.</p>
+                <h3 className="text-lg font-bold">{t.login.resetLinkSent}</h3>
+                <p className="text-sm text-neutral-500">{t.login.resetLinkSentSubtitle}</p>
               </div>
             ) : (
               <>
                 <div className="space-y-1">
-                  <h3 className="text-lg font-bold">Reset your password</h3>
-                  <p className="text-sm text-neutral-500">Enter your email and we&apos;ll send you a reset link.</p>
+                  <h3 className="text-lg font-bold">{t.login.resetPassword}</h3>
+                  <p className="text-sm text-neutral-500">{t.login.resetSubtitle}</p>
                 </div>
                 <form onSubmit={handleResetPassword} className="space-y-3">
                   <div className="space-y-1">
@@ -270,8 +274,8 @@ export default function LoginPage() {
                     <Input id="reset-email" type="email" placeholder="name@example.com" required value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" />
                   </div>
                   <div className="flex gap-2">
-                    <Button type="button" variant="outline" className="flex-1 rounded-sm cursor-pointer" onClick={() => { setShowResetModal(false); setResetEmail(""); setResetSent(false) }}>Cancel</Button>
-                    <Button type="submit" className="flex-1 rounded-sm cursor-pointer">Send reset link</Button>
+                    <Button type="button" variant="outline" className="flex-1 rounded-sm cursor-pointer" onClick={() => { setShowResetModal(false); setResetEmail(""); setResetSent(false) }}>{t.common.cancel}</Button>
+                    <Button type="submit" className="flex-1 rounded-sm cursor-pointer">{t.login.sendResetLink}</Button>
                   </div>
                 </form>
               </>

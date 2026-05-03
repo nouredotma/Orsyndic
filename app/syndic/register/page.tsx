@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
+import { useI18n } from "@/lib/i18n-context"
+import type { DashboardLanguage } from "@/lib/dashboard-translations"
 
 const languages = [
   { name: "English", code: "en", flag: "https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" },
@@ -26,13 +28,15 @@ const languages = [
 ]
 
 export default function RegisterPage() {
+  const { t, language, setLanguage } = useI18n()
   const router = useRouter()
   const pathname = usePathname()
-  const [currentLanguage, setCurrentLanguage] = useState(languages[1])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({ fullName: "", email: "", password: "", companyName: "" })
+
+  const currentLanguage = languages.find(l => l.code === language) || languages[0]
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -61,8 +65,8 @@ export default function RegisterPage() {
     setIsLoading(true)
     setError("")
     try {
-      if (!formData.fullName || !formData.email || !formData.password || !formData.companyName) throw new Error("All fields are required")
-      if (formData.password.length < 6) throw new Error("Password must be at least 6 characters")
+      if (!formData.fullName || !formData.email || !formData.password || !formData.companyName) throw new Error(t.profile.passwordRequired)
+      if (formData.password.length < 6) throw new Error(t.profile.passwordTooShort)
       await registerUser(formData.fullName, formData.email, formData.password, formData.companyName)
       router.push("/syndic/dashboard")
     } catch (err) {
@@ -89,13 +93,13 @@ export default function RegisterPage() {
         <div className="absolute bottom-[calc(15%+96px)] right-0 w-16 h-16 bg-white z-20" />
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="max-w-full text-center px-8">
-            <h1 className="text-3xl font-semibold text-white md:text-4xl">Management, Reimagined.</h1>
-            <p className="mt-1 text-sm md:text-base text-neutral-200 font-normal">The all-in-one platform for modern property syndics.</p>
+            <h1 className="text-3xl font-semibold text-white md:text-4xl">{t.login.managementReimagined}</h1>
+            <p className="mt-1 text-sm md:text-base text-neutral-200 font-normal">{t.login.allInOnePlatform}</p>
           </div>
         </div>
         <div className="absolute bottom-6 left-6 z-10 flex items-center">
           <Image src="/logo.png" alt="Orsyndic Logo" width={40} height={40} className="mr-1" />
-          <span className="text-sm font-medium text-white">by Noureddine</span>
+          <span className="text-sm font-medium text-white">{t.login.byNoureddine}</span>
         </div>
       </div>
 
@@ -111,7 +115,7 @@ export default function RegisterPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 bg-neutral-100 border-none shadow-xl rounded-sm p-1.5">
               {languages.map((lang) => (
-                <DropdownMenuItem key={lang.code} onClick={() => setCurrentLanguage(lang)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
+                <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code as DashboardLanguage)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
                   <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
                   <span className={cn("text-xs font-semibold", currentLanguage.code === lang.code && "text-primary")}>{lang.name}</span>
                 </DropdownMenuItem>
@@ -122,15 +126,15 @@ export default function RegisterPage() {
 
         <div className="w-full max-w-md space-y-6 py-4">
           <div className="space-y-2 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">{renderTitle("Create your Orsyndic account")}</h2>
-            <p className="text-neutral-500">Register as an administrator to access your dashboard</p>
+            <h2 className="text-3xl font-bold tracking-tight">{renderTitle(t.register.title)}</h2>
+            <p className="text-neutral-500">{t.register.subtitle}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-2">
             {error && <div className="rounded-sm bg-destructive/15 p-3 text-sm text-destructive">{error}</div>}
 
             <div className="space-y-1">
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="fullName">{t.users.fullName}</Label>
               <Input id="fullName" name="fullName" type="text" placeholder="John Doe" autoComplete="name" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.fullName} onChange={handleChange} disabled={isLoading} />
             </div>
 
@@ -140,7 +144,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t.profile.currentPassword.replace(/current /i, "")}</Label>
               <div className="relative">
                 <Input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="••••••••" autoComplete="new-password" required value={formData.password} onChange={handleChange} disabled={isLoading} spellCheck="false" autoCorrect="off" className="pr-10 rounded-sm bg-neutral-100 border-transparent focus:bg-white" />
                 {formData.password && (
@@ -153,18 +157,18 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="companyName">Company Name</Label>
+              <Label htmlFor="companyName">{t.dashboard.admin.registerBuilding.replace(/register /i, "")}</Label>
               <Input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.companyName} onChange={handleChange} disabled={isLoading} />
             </div>
 
             <Button type="submit" className="w-full mt-2 rounded-sm cursor-pointer hover:bg-primary/90" disabled={isLoading}>
-              {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creating account...</>) : ("Create Account")}
+              {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t.register.registering}</>) : (t.register.register)}
             </Button>
           </form>
 
           <div className="mt-2 text-center text-sm">
-            Already have an account?{" "}
-            <Link href="/syndic/login" className="font-medium text-primary underline underline-offset-4">Login</Link>
+            {t.register.haveAccount}{" "}
+            <Link href="/syndic/login" className="font-medium text-primary underline underline-offset-4">{t.register.login}</Link>
           </div>
         </div>
       </div>

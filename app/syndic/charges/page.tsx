@@ -132,7 +132,7 @@ export default function ChargesPage() {
 
       <div className="flex items-center gap-2">
         <div className="relative flex-1 max-w-sm"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" /><Input placeholder={t.users.search} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm" /></div>
-        <div className="flex rounded-sm bg-neutral-100 p-0.5 gap-0.5">{(["All", "Paid", "Unpaid", "Partial"] as const).map((s) => (<button key={s} onClick={() => setFilterStatus(s)} className={cn("px-3 py-1.5 rounded text-xs font-medium transition-all cursor-pointer", filterStatus === s ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>{s === "All" ? t.common.all : s === "Paid" ? t.charges.paid : s === "Unpaid" ? t.charges.unpaid : "Partial"}</button>))}</div>
+        <div className="flex rounded-sm bg-neutral-100 p-0.5 gap-0.5">{(["All", "Paid", "Unpaid", "Partial"] as const).map((s) => (<button key={s} onClick={() => setFilterStatus(s)} className={cn("px-3 py-1.5 rounded text-xs font-medium transition-all cursor-pointer", filterStatus === s ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>{s === "All" ? t.common.all : s === "Paid" ? t.charges.paid : s === "Unpaid" ? t.charges.unpaid : t.status.partial}</button>))}</div>
       </div>
 
       <Card className="border-none bg-neutral-100">
@@ -157,7 +157,7 @@ export default function ChargesPage() {
                     <td className="px-4 py-3 text-xs text-neutral-600">{c.apartmentNumber}</td>
                     <td className="px-4 py-3 text-xs text-neutral-600">{c.month} {c.year}</td>
                     <td className="px-4 py-3 text-xs font-bold">{c.amount} MAD</td>
-                    <td className="px-4 py-3"><Badge variant={c.status === "Paid" ? "success" : c.status === "Partial" ? "warning" : "danger"} className="text-[10px]">{c.status}</Badge></td>
+                    <td className="px-4 py-3"><Badge variant={c.status === "Paid" ? "success" : c.status === "Partial" ? "warning" : "danger"} className="text-[10px]">{c.status === "Paid" ? t.status.paid : c.status === "Partial" ? t.status.partial : t.status.unpaid}</Badge></td>
                     <td className="px-4 py-3">{c.validatedByAdmin ? <Check className="h-4 w-4 text-emerald-500" /> : <X className="h-4 w-4 text-neutral-300" />}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">

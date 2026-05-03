@@ -43,22 +43,22 @@ export default function ProfilePage() {
   const handleUpdatePassword = () => {
     setPasswordMsg(null)
     if (!oldPassword || !newPassword || !confirmPassword) {
-      setPasswordMsg({ type: "error", text: "All password fields are required." })
+      setPasswordMsg({ type: "error", text: t.profile.passwordRequired })
       return
     }
     if (oldPassword !== "password123") {
-      setPasswordMsg({ type: "error", text: "Current password is incorrect." })
+      setPasswordMsg({ type: "error", text: t.profile.currentPasswordIncorrect })
       return
     }
     if (newPassword.length < 6) {
-      setPasswordMsg({ type: "error", text: "New password must be at least 6 characters." })
+      setPasswordMsg({ type: "error", text: t.profile.passwordTooShort })
       return
     }
     if (newPassword !== confirmPassword) {
-      setPasswordMsg({ type: "error", text: "New passwords do not match." })
+      setPasswordMsg({ type: "error", text: t.profile.passwordsDoNotMatch })
       return
     }
-    setPasswordMsg({ type: "success", text: "Password updated successfully!" })
+    setPasswordMsg({ type: "success", text: t.profile.passwordUpdated })
     setOldPassword(""); setNewPassword(""); setConfirmPassword("")
     setTimeout(() => setPasswordMsg(null), 3000)
   }
@@ -86,8 +86,8 @@ export default function ProfilePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {user?.email && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">Email</p><p className="text-sm">{user.email}</p></div>)}
-            {user?.username && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">Username</p><p className="text-sm font-mono">{user.username}</p></div>)}
-            <div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">Role</p><p className="text-sm">{user?.role}</p></div>
+            {user?.username && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.users.username}</p><p className="text-sm font-mono">{user.username}</p></div>)}
+            <div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.users.role}</p><p className="text-sm">{user?.role === "Admin" ? "Admin" : user?.role === "Owner" ? t.common.owner : t.common.tenant}</p></div>
           </div>
         </CardContent>
       </Card>
@@ -95,7 +95,7 @@ export default function ProfilePage() {
       <Card className="border-none bg-neutral-100">
         <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base">{t.profile.changePassword}</CardTitle>
-          <CardDescription className="text-xs">Update your password to keep your account secure</CardDescription>
+          <CardDescription className="text-xs">{t.profile.securityDescription}</CardDescription>
         </CardHeader>
         <CardContent className="p-4 pt-2 space-y-3">
           {passwordMsg && (

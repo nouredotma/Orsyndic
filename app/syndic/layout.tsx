@@ -25,6 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface SidebarItem {
   title: string
+  translationKey: string
   icon: React.ElementType
   path: string
   description: string
@@ -32,27 +33,27 @@ interface SidebarItem {
 
 // Admin pages
 const adminSidebarItems: SidebarItem[] = [
-  { title: "Dashboard", icon: Home, path: "/syndic/dashboard", description: "Overview, unpaid charges, tickets, announcements" },
-  { title: "Buildings", icon: Building2, path: "/syndic/buildings", description: "Buildings, floors, and apartments" },
-  { title: "Users", icon: Users, path: "/syndic/users", description: "Manage Owner and Tenant accounts" },
-  { title: "Charges", icon: CreditCard, path: "/syndic/charges", description: "Generate and track monthly charges" },
-  { title: "Helpdesk", icon: TicketCheck, path: "/syndic/helpdesk", description: "View and manage all tickets" },
-  { title: "Documents", icon: FolderOpen, path: "/syndic/documents", description: "Upload and organize files" },
-  { title: "Announcements", icon: Megaphone, path: "/syndic/announcements", description: "Post notices for all users" },
+  { title: "Dashboard", translationKey: "dashboard", icon: Home, path: "/syndic/dashboard", description: "Overview, unpaid charges, tickets, announcements" },
+  { title: "Buildings", translationKey: "buildings", icon: Building2, path: "/syndic/buildings", description: "Buildings, floors, and apartments" },
+  { title: "Users", translationKey: "users", icon: Users, path: "/syndic/users", description: "Manage Owner and Tenant accounts" },
+  { title: "Charges", translationKey: "charges", icon: CreditCard, path: "/syndic/charges", description: "Generate and track monthly charges" },
+  { title: "Helpdesk", translationKey: "helpDesk", icon: TicketCheck, path: "/syndic/helpdesk", description: "View and manage all tickets" },
+  { title: "Documents", translationKey: "documents", icon: FolderOpen, path: "/syndic/documents", description: "Upload and organize files" },
+  { title: "Announcements", translationKey: "announcements", icon: Megaphone, path: "/syndic/announcements", description: "Post notices for all users" },
 ]
 
 // Owner pages
 const ownerSidebarItems: SidebarItem[] = [
-  { title: "Dashboard", icon: Home, path: "/syndic/dashboard", description: "Balance and announcements" },
-  { title: "My Charges", icon: CreditCard, path: "/syndic/my-charges", description: "Charge history and receipts" },
-  { title: "Documents", icon: FolderOpen, path: "/syndic/documents", description: "Download shared files" },
-  { title: "My Tickets", icon: TicketCheck, path: "/syndic/my-tickets", description: "Submit and track incidents" },
+  { title: "Dashboard", translationKey: "dashboard", icon: Home, path: "/syndic/dashboard", description: "Balance and announcements" },
+  { title: "My Charges", translationKey: "myCharges", icon: CreditCard, path: "/syndic/my-charges", description: "Charge history and receipts" },
+  { title: "Documents", translationKey: "documents", icon: FolderOpen, path: "/syndic/documents", description: "Download shared files" },
+  { title: "My Tickets", translationKey: "myTickets", icon: TicketCheck, path: "/syndic/my-tickets", description: "Submit and track incidents" },
 ]
 
 // Tenant pages
 const tenantSidebarItems: SidebarItem[] = [
-  { title: "Dashboard", icon: Home, path: "/syndic/dashboard", description: "Announcements" },
-  { title: "My Tickets", icon: TicketCheck, path: "/syndic/my-tickets", description: "Submit and track complaints" },
+  { title: "Dashboard", translationKey: "dashboard", icon: Home, path: "/syndic/dashboard", description: "Announcements" },
+  { title: "My Tickets", translationKey: "myTickets", icon: TicketCheck, path: "/syndic/my-tickets", description: "Submit and track complaints" },
 ]
 
 const getSidebarItems = (role: UserRole): SidebarItem[] => {
@@ -80,11 +81,8 @@ const SidebarNavItem = ({ item, pathname, collapsed, isMobileSidebar }: { item: 
   const { t } = useI18n()
   const isActive = pathname === item.path
   
-  // Use translated title from sidebar map
-  const key = item.path.split("/").pop() || "dashboard"
-  // CamelCase key for myCharges and myTickets
-  const camelKey = key.includes("-") ? key.replace(/-([a-z])/g, (g) => g[1].toUpperCase()) : key
-  const title = t.sidebar[camelKey as keyof typeof t.sidebar] || item.title
+  // Use explicit translation key if available, otherwise fallback to path logic
+  const title = t.sidebar[item.translationKey as keyof typeof t.sidebar] || item.title
 
   return (
     <Link href={item.path} className="block">
@@ -121,7 +119,7 @@ const UserProfileSection = ({ collapsed, userData, handleLogout, isMobileSidebar
             {(!collapsed || isMobileSidebar) && (
               <div className="flex flex-col items-start overflow-hidden text-left">
                 <span className="text-sm font-semibold truncate w-full text-white">{userData.fullName}</span>
-                <span className="text-xs text-white/50 truncate w-full">{userData.role}</span>
+                <span className="text-xs text-white/50 truncate w-full">{userData.role === "Admin" ? "Admin" : userData.role === "Owner" ? t.common.owner : t.common.tenant}</span>
               </div>
             )}
           </Button>
