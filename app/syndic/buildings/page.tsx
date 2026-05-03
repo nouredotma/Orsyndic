@@ -423,7 +423,7 @@ export default function BuildingsPage() {
                                     key={apt.id}
                                     onClick={() => setSelectedApartment(apt)}
                                     className={cn("p-3 rounded-sm border cursor-pointer transition-all duration-200 relative group min-h-[5rem]", 
-                                      isOccupied ? "bg-primary/5 border-primary/20 hover:border-primary/40 hover:bg-primary/10" : "bg-neutral-100 border-neutral-200 hover:border-neutral-300 hover:shadow-sm"
+                                      isOccupied ? "bg-primary/5 border-primary/20 hover:border-primary/40 hover:bg-primary/10" : "bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-sm"
                                     )}
                                   >
                                     <div className="flex justify-between items-start mb-1.5">
