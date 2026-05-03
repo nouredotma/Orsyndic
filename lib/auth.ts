@@ -36,7 +36,7 @@ const mockUsers: (User & { password: string; email?: string; username?: string; 
     role: "Owner",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
     buildingId: "building-1",
-    apartmentId: "apt-101",
+    apartmentId: "apt-1",
   },
   {
     id: "user-owner-2",
@@ -46,7 +46,7 @@ const mockUsers: (User & { password: string; email?: string; username?: string; 
     role: "Owner",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
     buildingId: "building-1",
-    apartmentId: "apt-202",
+    apartmentId: "apt-6",
   },
   {
     id: "user-tenant-1",
@@ -56,7 +56,7 @@ const mockUsers: (User & { password: string; email?: string; username?: string; 
     role: "Tenant",
     avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop",
     buildingId: "building-1",
-    apartmentId: "apt-101",
+    apartmentId: "apt-1",
   },
   {
     id: "user-tenant-2",
@@ -66,7 +66,7 @@ const mockUsers: (User & { password: string; email?: string; username?: string; 
     role: "Tenant",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
     buildingId: "building-2",
-    apartmentId: "apt-301",
+    apartmentId: "apt-b2-1",
   },
 ]
 

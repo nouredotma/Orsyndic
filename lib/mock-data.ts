@@ -74,6 +74,13 @@ export const charges: Charge[] = [
 // ========================
 export type TicketStatus = "Open" | "In Progress" | "Resolved"
 
+export interface TicketNote {
+  id: string
+  text: string
+  createdAt: string
+  author: string
+}
+
 export interface Ticket {
   id: string
   title: string
@@ -87,6 +94,7 @@ export interface Ticket {
   photo?: string
   photos?: string[]
   submittedByAvatar?: string
+  notes?: TicketNote[]
 }
 
 export const tickets: Ticket[] = [
@@ -181,9 +189,11 @@ export const adminStatsData: AdminStatCard[] = [
 export interface ManagedUser {
   id: string
   fullName: string
+  email: string
   username?: string
   phone?: string
   role: "Owner" | "Tenant" | "Admin"
+  buildingId: string
   buildingName: string
   apartmentNumber: string
   status: "Active" | "Inactive"
@@ -192,14 +202,14 @@ export interface ManagedUser {
 }
 
 export const managedUsers: ManagedUser[] = [
-  { id: "user-owner-1", fullName: "Ahmed Benali", username: "ahmed.benali", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "Active", createdAt: "2025-06-15", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
-  { id: "user-owner-2", fullName: "Fatima Zahra", username: "fatima.zahra", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "202", status: "Active", createdAt: "2025-07-20", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
-  { id: "user-owner-3", fullName: "Youssef Alami", username: "youssef.alami", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "102", status: "Active", createdAt: "2025-08-10", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" },
-  { id: "user-owner-4", fullName: "Rachid Tazi", username: "rachid.tazi", role: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "201", status: "Active", createdAt: "2025-09-05", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" },
-  { id: "user-owner-5", fullName: "Hassan Bennani", username: "hassan.b", role: "Owner", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Active", createdAt: "2025-10-01", avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop" },
-  { id: "user-tenant-1", fullName: "Karim Moussaoui", phone: "0661234567", role: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "Active", createdAt: "2025-11-15", avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
-  { id: "user-tenant-2", fullName: "Sara Idrissi", phone: "0677654321", role: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Active", createdAt: "2025-12-01", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
-  { id: "user-owner-6", fullName: "Amina Chraibi", username: "amina.c", role: "Owner", buildingName: "Résidence Les Jardins", apartmentNumber: "302", status: "Inactive", createdAt: "2025-06-20", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop" },
+  { id: "user-owner-1", fullName: "Ahmed Benali", email: "ahmed.benali@example.com", username: "ahmed.benali", role: "Owner", buildingId: "building-1", buildingName: "Résidence Al Andalous", apartmentNumber: "1", status: "Active", createdAt: "2025-06-15", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
+  { id: "user-owner-2", fullName: "Fatima Zahra", email: "fatima.zahra@example.com", username: "fatima.zahra", role: "Owner", buildingId: "building-1", buildingName: "Résidence Al Andalous", apartmentNumber: "6", status: "Active", createdAt: "2025-07-20", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
+  { id: "user-owner-3", fullName: "Youssef Alami", email: "youssef.alami@example.com", username: "youssef.alami", role: "Owner", buildingId: "building-1", buildingName: "Résidence Al Andalous", apartmentNumber: "2", status: "Active", createdAt: "2025-08-10", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" },
+  { id: "user-owner-4", fullName: "Rachid Tazi", email: "rachid.tazi@example.com", username: "rachid.tazi", role: "Owner", buildingId: "building-1", buildingName: "Résidence Al Andalous", apartmentNumber: "5", status: "Active", createdAt: "2025-09-05", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" },
+  { id: "user-owner-5", fullName: "Hassan Bennani", email: "hassan.b@example.com", username: "hassan.b", role: "Owner", buildingId: "building-2", buildingName: "Résidence Les Jardins", apartmentNumber: "1", status: "Active", createdAt: "2025-10-01", avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop" },
+  { id: "user-tenant-1", fullName: "Karim Moussaoui", email: "karim.moussaoui@example.com", phone: "0661234567", role: "Tenant", buildingId: "building-1", buildingName: "Résidence Al Andalous", apartmentNumber: "1", status: "Active", createdAt: "2025-11-15", avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
+  { id: "user-tenant-2", fullName: "Sara Idrissi", email: "sara.idrissi@example.com", phone: "0677654321", role: "Tenant", buildingId: "building-2", buildingName: "Résidence Les Jardins", apartmentNumber: "1", status: "Active", createdAt: "2025-12-01", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
+  { id: "user-owner-6", fullName: "Amina Chraibi", email: "amina.c@example.com", username: "amina.c", role: "Owner", buildingId: "building-2", buildingName: "Résidence Les Jardins", apartmentNumber: "2", status: "Inactive", createdAt: "2025-06-20", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop" },
 ]
 
 // ========================

@@ -388,7 +388,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                       </Avatar>
                       <div className="min-w-0 flex-1 pr-2">
                         <p className="text-xs font-semibold text-white truncate">{charge.ownerName}</p>
-                        <p className="text-[10px] text-neutral-400 truncate">Apt {charge.apartmentNumber} · {charge.buildingName}</p>
+                        <p className="text-[10px] text-neutral-400 truncate">{t.charges.apt} {charge.apartmentNumber} · {charge.buildingName}</p>
                       </div>
                     </div>
                     <div className="text-right shrink-0">
@@ -526,7 +526,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
             <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">{t.dashboard.owner.apartment}</CardTitle>
           </CardHeader>
           <CardContent className="px-4 pb-3.5">
-            <div className="text-2xl font-bold">Apt {apartment?.number || user?.apartmentId?.split("-")[1] || "—"}</div>
+            <div className="text-2xl font-bold">{t.charges.apt} {apartment?.number || user?.apartmentId?.split("-")[1] || "—"}</div>
             <p className="text-[10px] text-neutral-500 mt-0.5">{building?.name || "—"}</p>
           </CardContent>
         </Card>

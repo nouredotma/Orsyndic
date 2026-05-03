@@ -197,7 +197,21 @@ export default function MyTicketsPage() {
                         )}
                       </div>
                     )}
-                    <p className="text-[10px] text-neutral-400 mt-2">{ticket.createdAt} · {ticket.buildingName} · Apt {ticket.apartmentNumber}</p>
+
+                    {/* Notes from Syndic */}
+                    {ticket.notes && ticket.notes.length > 0 && (
+                      <div className="mt-3 space-y-2 border-t border-black/5 pt-3">
+                        <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.helpdesk.notes}</p>
+                        {ticket.notes.map(note => (
+                          <div key={note.id} className="p-2 rounded-sm bg-white/50 border border-black/5">
+                            <p className="text-xs text-neutral-700">{note.text}</p>
+                            <p className="text-[9px] text-neutral-400 mt-1">{note.author} · {note.createdAt}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <p className="text-[10px] text-neutral-400 mt-3">{ticket.createdAt} · {ticket.buildingName} · {t.charges.apt} {ticket.apartmentNumber}</p>
                   </div>
                 </div>
               </CardContent>

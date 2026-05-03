@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Eye, EyeOff, Camera, Check } from "lucide-react"
+import { Eye, EyeOff, Camera, Check, Pencil } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -20,6 +20,13 @@ export default function ProfilePage() {
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [passwordMsg, setPasswordMsg] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  
+  // Editable profile state
+  const [isEditingProfile, setIsEditingProfile] = useState(false)
+  const [editFullName, setEditFullName] = useState(user?.fullName || "")
+  const [editPhone, setEditPhone] = useState(user?.phone || "")
+  const [editEmail, setEditEmail] = useState(user?.email || "")
+  const [profileSaved, setProfileSaved] = useState(false)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -63,11 +70,46 @@ export default function ProfilePage() {
     setTimeout(() => setPasswordMsg(null), 3000)
   }
 
+  const handleSaveProfile = () => {
+    // Save to localStorage
+    const stored = localStorage.getItem("user")
+    if (stored) {
+      const userData = JSON.parse(stored)
+      userData.fullName = editFullName
+      userData.phone = editPhone
+      userData.email = editEmail
+      localStorage.setItem("user", JSON.stringify(userData))
+    }
+    setIsEditingProfile(false)
+    setProfileSaved(true)
+    setTimeout(() => setProfileSaved(false), 3000)
+  }
+
+  const getRoleLabel = (role: string) => {
+    if (role === "Admin") return t.common.admin
+    if (role === "Owner") return t.common.owner
+    return t.common.tenant
+  }
+
   return (
     <div className="flex flex-col gap-4 max-w-2xl">
       <Card className="border-none bg-neutral-100">
-        <CardHeader className="p-4 pb-2"><CardTitle className="text-base">{t.profile.accountInfo}</CardTitle></CardHeader>
+        <CardHeader className="p-4 pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base">{t.profile.accountInfo}</CardTitle>
+            {!isEditingProfile && (
+              <Button variant="outline" size="sm" className="text-xs gap-1.5 cursor-pointer border-none bg-white hover:bg-primary/5" onClick={() => setIsEditingProfile(true)}>
+                <Pencil className="h-3 w-3" />{t.profile.editProfile}
+              </Button>
+            )}
+          </div>
+        </CardHeader>
         <CardContent className="p-4 pt-2 space-y-3">
+          {profileSaved && (
+            <div className="rounded-sm p-3 text-sm bg-emerald-50 text-emerald-700">
+              <Check className="h-4 w-4 inline mr-1.5" />{t.profile.passwordUpdated.replace("Password", "Profile")}
+            </div>
+          )}
           <div className="flex items-center gap-4 pb-3 border-b border-black/5">
             <div className="relative group">
               <Avatar className="h-16 w-16 border border-black/5">
@@ -80,15 +122,38 @@ export default function ProfilePage() {
               </label>
             </div>
             <div>
-              <p className="text-sm font-bold">{user?.fullName || "User"}</p>
-              <p className="text-xs text-neutral-500">{user?.role}</p>
+              <p className="text-sm font-bold">{editFullName || user?.fullName || "User"}</p>
+              <p className="text-xs text-neutral-500">{user?.role ? getRoleLabel(user.role) : ""}</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {user?.email && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">Email</p><p className="text-sm">{user.email}</p></div>)}
-            {user?.username && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.users.username}</p><p className="text-sm font-mono">{user.username}</p></div>)}
-            <div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.users.role}</p><p className="text-sm">{user?.role === "Admin" ? "Admin" : user?.role === "Owner" ? t.common.owner : t.common.tenant}</p></div>
-          </div>
+          
+          {isEditingProfile ? (
+            <div className="space-y-3">
+              <div className="grid gap-1.5">
+                <Label className="text-xs">{t.profile.fullName}</Label>
+                <Input className="bg-white border-black/10 rounded-sm" value={editFullName} onChange={(e) => setEditFullName(e.target.value)} />
+              </div>
+              <div className="grid gap-1.5">
+                <Label className="text-xs">{t.profile.email}</Label>
+                <Input type="email" className="bg-white border-black/10 rounded-sm" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} />
+              </div>
+              <div className="grid gap-1.5">
+                <Label className="text-xs">{t.profile.phone}</Label>
+                <Input className="bg-white border-black/10 rounded-sm" value={editPhone} onChange={(e) => setEditPhone(e.target.value)} />
+              </div>
+              <div className="flex gap-2 pt-1">
+                <Button className="flex-1 cursor-pointer" onClick={handleSaveProfile}>{t.common.save}</Button>
+                <Button variant="outline" className="flex-1 cursor-pointer border-none bg-white hover:bg-neutral-200" onClick={() => { setIsEditingProfile(false); setEditFullName(user?.fullName || ""); setEditPhone(user?.phone || ""); setEditEmail(user?.email || "") }}>{t.common.cancel}</Button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {(editEmail || user?.email) && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.profile.email}</p><p className="text-sm">{editEmail || user?.email}</p></div>)}
+              {user?.username && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.users.username}</p><p className="text-sm font-mono">{user.username}</p></div>)}
+              {(editPhone || user?.phone) && (<div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.profile.phone}</p><p className="text-sm">{editPhone || user?.phone}</p></div>)}
+              <div><p className="text-[10px] font-medium text-neutral-500 uppercase mb-0.5">{t.users.role}</p><p className="text-sm">{user?.role ? getRoleLabel(user.role) : ""}</p></div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { FolderOpen, Upload, Download, FileText, File, MoreVertical, Pencil, Trash2 } from "lucide-react"
+import { FolderOpen, Upload, Download, FileText, File, MoreVertical, Pencil, Trash2, Search } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -32,6 +32,7 @@ export default function DocumentsPage() {
   const user = getCurrentUser()
   const isAdmin = user?.role === "Admin"
   const [localDocs, setLocalDocs] = useState<Document[]>(initialDocs)
+  const [searchQuery, setSearchQuery] = useState("")
   
   // Create state
   const [isOpen, setIsOpen] = useState(false)
@@ -95,7 +96,12 @@ export default function DocumentsPage() {
     URL.revokeObjectURL(url)
   }
 
-  const grouped = localDocs.reduce((acc, doc) => {
+  const filteredDocs = localDocs.filter(d => 
+    d.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    d.category.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  const grouped = filteredDocs.reduce((acc, doc) => {
     if (!acc[doc.category]) acc[doc.category] = []
     acc[doc.category].push(doc)
     return acc
@@ -132,6 +138,16 @@ export default function DocumentsPage() {
             </DialogContent>
           </Dialog>
         )}
+      </div>
+
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+        <Input 
+          placeholder={t.documents.searchDocuments} 
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)} 
+          className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm" 
+        />
       </div>
 
       {Object.entries(grouped).map(([category, docs]) => (

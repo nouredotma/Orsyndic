@@ -92,6 +92,10 @@ export interface DashboardTranslations {
     confirmDeactivate: string
     confirmActivate: string
     confirmDelete: string
+    selectApartments: string
+    selectApartment: string
+    noAvailableApartments: string
+    editAccountDetails: string
   }
   buildings: {
     addBuilding: string
@@ -100,6 +104,7 @@ export interface DashboardTranslations {
     buildingName: string
     address: string
     totalFloors: string
+    aptsPerFloor: string
     apartmentNumber: string
     floor: string
     tantiemes: string
@@ -110,6 +115,7 @@ export interface DashboardTranslations {
     apts: string
     floorsRegistered: string
     noTenant: string
+    empty: string
     selectBuildingToView: string
     viewAll: string
     noHistoryFound: string
@@ -124,6 +130,7 @@ export interface DashboardTranslations {
     editApartment: string
     deleteApartment: string
     confirmDeleteApartment: string
+    searchBuildings: string
   }
   charges: {
     total: string
@@ -147,6 +154,13 @@ export interface DashboardTranslations {
     apt: string
     period: string
     validated: string
+    editCharge: string
+    deleteCharge: string
+    confirmDeleteCharge: string
+    totalCollected: string
+    totalOutstanding: string
+    selectMonth: string
+    selectBuilding: string
   }
   helpdesk: {
     open: string
@@ -156,6 +170,14 @@ export interface DashboardTranslations {
     resolve: string
     search: string
     by: string
+    reopen: string
+    deleteTicket: string
+    confirmDeleteTicket: string
+    ticketDetails: string
+    addNote: string
+    notes: string
+    notePlaceholder: string
+    priority: string
   }
   documents: {
     upload: string
@@ -176,6 +198,7 @@ export interface DashboardTranslations {
     editDocument: string
     deleteDocument: string
     confirmDelete: string
+    searchDocuments: string
   }
   announcements: {
     newAnnouncement: string
@@ -217,6 +240,10 @@ export interface DashboardTranslations {
     passwordsDoNotMatch: string
     passwordUpdated: string
     securityDescription: string
+    email: string
+    editProfile: string
+    fullName: string
+    phone: string
   }
   login: {
     welcome: string
@@ -266,6 +293,7 @@ export interface DashboardTranslations {
     info: string
     owner: string
     tenant: string
+    admin: string
     paidOn: string
     floorsAptsRegistered: string
     postedOn: string
@@ -278,6 +306,9 @@ export interface DashboardTranslations {
     thankYou: string
     propertyManagement: string
     submitted: string
+    viewAll: string
+    floors: string
+    apartmentsRegistered: string
   }
   status: {
     open: string
@@ -385,6 +416,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmDeactivate: "Are you sure you want to deactivate this user?",
       confirmActivate: "Are you sure you want to activate this user?",
       confirmDelete: "Are you sure you want to permanently delete this user? This action cannot be undone.",
+      selectApartments: "Select Apartments",
+      selectApartment: "Select Apartment",
+      noAvailableApartments: "No available apartments",
+      editAccountDetails: "Update account details.",
     },
     buildings: {
       addBuilding: "Add Building",
@@ -393,6 +428,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       buildingName: "Building Name",
       address: "Address",
       totalFloors: "Total Floors",
+      aptsPerFloor: "Apts per Floor",
       apartmentNumber: "Apartment Number",
       floor: "Floor",
       tantiemes: "Tantièmes (m²)",
@@ -403,6 +439,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       apts: "Apts",
       floorsRegistered: "floors · apartments registered",
       noTenant: "No tenant",
+      empty: "Vacant",
       selectBuildingToView: "Select a building to view apartments",
       viewAll: "View All",
       noHistoryFound: "No payment history found.",
@@ -417,6 +454,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       editApartment: "Edit Apartment",
       deleteApartment: "Delete Apartment",
       confirmDeleteApartment: "Are you sure you want to delete this apartment?",
+      searchBuildings: "Search buildings...",
     },
     charges: {
       total: "Total",
@@ -440,6 +478,13 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       apt: "Apt",
       period: "Period",
       validated: "Validated",
+      editCharge: "Edit Charge",
+      deleteCharge: "Delete Charge",
+      confirmDeleteCharge: "Are you sure you want to delete this charge?",
+      totalCollected: "Total Collected",
+      totalOutstanding: "Total Outstanding",
+      selectMonth: "Select Month",
+      selectBuilding: "Select Building",
     },
     helpdesk: {
       open: "Open",
@@ -449,6 +494,14 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       resolve: "Resolve",
       search: "Search...",
       by: "By",
+      reopen: "Reopen",
+      deleteTicket: "Delete Ticket",
+      confirmDeleteTicket: "Are you sure you want to delete this ticket?",
+      ticketDetails: "Ticket Details",
+      addNote: "Add Note",
+      notes: "Notes",
+      notePlaceholder: "Write a note or update...",
+      priority: "Priority",
     },
     documents: {
       upload: "Upload File",
@@ -469,6 +522,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       editDocument: "Edit Document",
       deleteDocument: "Delete Document",
       confirmDelete: "Are you sure you want to delete this document?",
+      searchDocuments: "Search documents...",
     },
     announcements: {
       newAnnouncement: "New Announcement",
@@ -510,6 +564,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       passwordsDoNotMatch: "New passwords do not match.",
       passwordUpdated: "Password updated successfully!",
       securityDescription: "Update your password to keep your account secure",
+      email: "Email",
+      editProfile: "Edit Profile",
+      fullName: "Full Name",
+      phone: "Phone Number",
     },
     login: {
       welcome: "Welcome to Orsyndic 👋",
@@ -559,6 +617,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       info: "Info",
       owner: "Owner",
       tenant: "Tenant",
+      admin: "Administrator",
       paidOn: "Paid on",
       floorsAptsRegistered: "floors · apartments registered",
       postedOn: "Posted on",
@@ -571,6 +630,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       thankYou: "Thank you for your payment.",
       propertyManagement: "Orsyndic Property Management",
       submitted: "Submitted!",
+      viewAll: "View All",
+      floors: "floors",
+      apartmentsRegistered: "apartments registered",
     },
     status: {
       open: "Open",
@@ -676,6 +738,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmDeactivate: "Êtes-vous sûr de vouloir désactiver cet utilisateur ?",
       confirmActivate: "Êtes-vous sûr de vouloir activer cet utilisateur ?",
       confirmDelete: "Êtes-vous sûr de vouloir supprimer définitivement cet utilisateur ? Cette action est irréversible.",
+      selectApartments: "Sélectionner les Appartements",
+      selectApartment: "Sélectionner l'Appartement",
+      noAvailableApartments: "Aucun appartement disponible",
+      editAccountDetails: "Mettre à jour les détails du compte.",
     },
     buildings: {
       addBuilding: "Ajouter un Immeuble",
@@ -684,6 +750,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       buildingName: "Nom de l'Immeuble",
       address: "Adresse",
       totalFloors: "Nombre d'Étages",
+      aptsPerFloor: "Appts par étage",
       apartmentNumber: "Numéro d'Appartement",
       floor: "Étage",
       tantiemes: "Tantièmes (m²)",
@@ -694,6 +761,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       apts: "Appts",
       floorsRegistered: "étages · appartements enregistrés",
       noTenant: "Pas de locataire",
+      empty: "Vacant",
       selectBuildingToView: "Sélectionnez un immeuble pour voir les appartements",
       viewAll: "Voir Tout",
       noHistoryFound: "Aucun historique de paiement trouvé.",
@@ -708,6 +776,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       editApartment: "Modifier l'Appartement",
       deleteApartment: "Supprimer l'Appartement",
       confirmDeleteApartment: "Êtes-vous sûr de vouloir supprimer cet appartement ?",
+      searchBuildings: "Rechercher des immeubles...",
     },
     charges: {
       total: "Total",
@@ -731,6 +800,13 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       apt: "Appt",
       period: "Période",
       validated: "Validé",
+      editCharge: "Modifier la Charge",
+      deleteCharge: "Supprimer la Charge",
+      confirmDeleteCharge: "Êtes-vous sûr de vouloir supprimer cette charge ?",
+      totalCollected: "Total Collecté",
+      totalOutstanding: "Total Impayé",
+      selectMonth: "Sélectionner le Mois",
+      selectBuilding: "Sélectionner l'Immeuble",
     },
     helpdesk: {
       open: "Ouvert",
@@ -740,6 +816,14 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       resolve: "Résoudre",
       search: "Rechercher...",
       by: "Par",
+      reopen: "Rouvrir",
+      deleteTicket: "Supprimer le Ticket",
+      confirmDeleteTicket: "Êtes-vous sûr de vouloir supprimer ce ticket ?",
+      ticketDetails: "Détails du Ticket",
+      addNote: "Ajouter une Note",
+      notes: "Notes",
+      notePlaceholder: "Écrire une note ou mise à jour...",
+      priority: "Priorité",
     },
     documents: {
       upload: "Importer un Fichier",
@@ -760,6 +844,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       editDocument: "Modifier le Document",
       deleteDocument: "Supprimer le Document",
       confirmDelete: "Êtes-vous sûr de vouloir supprimer ce document ?",
+      searchDocuments: "Rechercher des documents...",
     },
     announcements: {
       newAnnouncement: "Nouvelle Annonce",
@@ -801,6 +886,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       passwordsDoNotMatch: "Les nouveaux mots de passe ne correspondent pas.",
       passwordUpdated: "Mot de passe mis à jour avec succès !",
       securityDescription: "Mettez à jour votre mot de passe pour sécuriser votre compte",
+      email: "Email",
+      editProfile: "Modifier le Profil",
+      fullName: "Nom Complet",
+      phone: "Numéro de Téléphone",
     },
     login: {
       welcome: "Bienvenue sur Orsyndic 👋",
@@ -850,6 +939,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       info: "Infos",
       owner: "Propriétaire",
       tenant: "Locataire",
+      admin: "Administrateur",
       paidOn: "Payé le",
       floorsAptsRegistered: "étages · appartements enregistrés",
       postedOn: "Publié le",
@@ -862,6 +952,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       thankYou: "Merci pour votre paiement.",
       propertyManagement: "Gestion Immobilière Orsyndic",
       submitted: "Envoyé !",
+      viewAll: "Voir Tout",
+      floors: "étages",
+      apartmentsRegistered: "appartements enregistrés",
     },
     status: {
       open: "Ouvert",
@@ -967,6 +1060,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmDeactivate: "¿Está seguro de que desea desactivar a este usuario?",
       confirmActivate: "¿Está seguro de que desea activar a este usuario?",
       confirmDelete: "¿Está seguro de que desea eliminar permanentemente a este usuario? Esta acción no se puede deshacer.",
+      selectApartments: "Seleccionar Apartamentos",
+      selectApartment: "Seleccionar Apartamento",
+      noAvailableApartments: "No hay apartamentos disponibles",
+      editAccountDetails: "Actualizar detalles de la cuenta.",
     },
     buildings: {
       addBuilding: "Agregar Edificio",
@@ -975,6 +1072,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       buildingName: "Nombre del Edificio",
       address: "Dirección",
       totalFloors: "Número de Pisos",
+      aptsPerFloor: "Aptos por piso",
       apartmentNumber: "Número de Apartamento",
       floor: "Piso",
       tantiemes: "Tantièmes (m²)",
@@ -985,6 +1083,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       apts: "Aptos",
       floorsRegistered: "pisos · apartamentos registrados",
       noTenant: "Sin inquilino",
+      empty: "Vacante",
       selectBuildingToView: "Seleccione un edificio para ver los apartamentos",
       viewAll: "Ver Todo",
       noHistoryFound: "No se encontró historial de pagos.",
@@ -999,6 +1098,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       editApartment: "Editar Apartamento",
       deleteApartment: "Eliminar Apartamento",
       confirmDeleteApartment: "¿Está seguro de que desea eliminar este apartamento?",
+      searchBuildings: "Buscar edificios...",
     },
     charges: {
       total: "Total",
@@ -1022,6 +1122,13 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       apt: "Apt",
       period: "Período",
       validated: "Validado",
+      editCharge: "Editar Cargo",
+      deleteCharge: "Eliminar Cargo",
+      confirmDeleteCharge: "¿Está seguro de que desea eliminar este cargo?",
+      totalCollected: "Total Recaudado",
+      totalOutstanding: "Total Pendiente",
+      selectMonth: "Seleccionar Mes",
+      selectBuilding: "Seleccionar Edificio",
     },
     helpdesk: {
       open: "Abierto",
@@ -1031,6 +1138,14 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       resolve: "Resolver",
       search: "Buscar...",
       by: "Por",
+      reopen: "Reabrir",
+      deleteTicket: "Eliminar Ticket",
+      confirmDeleteTicket: "¿Está seguro de que desea eliminar este ticket?",
+      ticketDetails: "Detalles del Ticket",
+      addNote: "Agregar Nota",
+      notes: "Notas",
+      notePlaceholder: "Escribir una nota o actualización...",
+      priority: "Prioridad",
     },
     documents: {
       upload: "Subir Archivo",
@@ -1051,6 +1166,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       editDocument: "Editar Documento",
       deleteDocument: "Eliminar Documento",
       confirmDelete: "¿Está seguro de que desea eliminar este documento?",
+      searchDocuments: "Buscar documentos...",
     },
     announcements: {
       newAnnouncement: "Nuevo Anuncio",
@@ -1092,6 +1208,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       passwordsDoNotMatch: "Las nuevas contraseñas no coinciden.",
       passwordUpdated: "¡Contraseña actualizada con éxito!",
       securityDescription: "Actualice su contraseña para mantener su cuenta segura",
+      email: "Correo Electrónico",
+      editProfile: "Editar Perfil",
+      fullName: "Nombre Completo",
+      phone: "Número de Teléfono",
     },
     login: {
       welcome: "Bienvenido a Orsyndic 👋",
@@ -1141,6 +1261,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       info: "Información",
       owner: "Propietario",
       tenant: "Inquilino",
+      admin: "Administrador",
       paidOn: "Pagado el",
       floorsAptsRegistered: "pisos · apartamentos registrados",
       postedOn: "Publicado el",
@@ -1153,6 +1274,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       thankYou: "Gracias por su pago.",
       propertyManagement: "Gestión de Propiedades Orsyndic",
       submitted: "¡Enviado!",
+      viewAll: "Ver Todo",
+      floors: "pisos",
+      apartmentsRegistered: "apartamentos registrados",
     },
     status: {
       open: "Abierto",

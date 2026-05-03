@@ -37,9 +37,7 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loginMode, setLoginMode] = useState<LoginMode>("owner")
-  const [showResetModal, setShowResetModal] = useState(false)
-  const [resetEmail, setResetEmail] = useState("")
-  const [resetSent, setResetSent] = useState(false)
+
 
   const currentLanguage = languages.find(l => l.code === language) || languages[0]
 
@@ -97,11 +95,7 @@ export default function LoginPage() {
     }
   }
 
-  const handleResetPassword = (e: React.FormEvent) => {
-    e.preventDefault()
-    setResetSent(true)
-    setTimeout(() => { setShowResetModal(false); setResetSent(false); setResetEmail("") }, 2500)
-  }
+
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row relative">
@@ -211,9 +205,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <button type="button" onClick={() => setShowResetModal(true)} className="text-xs text-primary hover:underline underline-offset-4 font-medium cursor-pointer bg-transparent border-none p-0">{t.login.forgotPassword}</button>
-            </div>
+
 
             <Button type="submit" className="w-full mt-2 rounded-sm cursor-pointer hover:bg-primary/90" disabled={isLoading}>
               {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t.login.loggingIn}</>) : (t.login.login)}
@@ -250,39 +242,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Password Reset Modal */}
-      {showResetModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-sm shadow-2xl w-full max-w-sm mx-4 p-6 space-y-4 animate-in fade-in zoom-in-95 duration-200">
-            {resetSent ? (
-              <div className="text-center space-y-2 py-4">
-                <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
-                  <Mail className="h-6 w-6 text-emerald-600" />
-                </div>
-                <h3 className="text-lg font-bold">{t.login.resetLinkSent}</h3>
-                <p className="text-sm text-neutral-500">{t.login.resetLinkSentSubtitle}</p>
-              </div>
-            ) : (
-              <>
-                <div className="space-y-1">
-                  <h3 className="text-lg font-bold">{t.login.resetPassword}</h3>
-                  <p className="text-sm text-neutral-500">{t.login.resetSubtitle}</p>
-                </div>
-                <form onSubmit={handleResetPassword} className="space-y-3">
-                  <div className="space-y-1">
-                    <Label htmlFor="reset-email">Email</Label>
-                    <Input id="reset-email" type="email" placeholder="name@example.com" required value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button type="button" variant="outline" className="flex-1 rounded-sm cursor-pointer" onClick={() => { setShowResetModal(false); setResetEmail(""); setResetSent(false) }}>{t.common.cancel}</Button>
-                    <Button type="submit" className="flex-1 rounded-sm cursor-pointer">{t.login.sendResetLink}</Button>
-                  </div>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+
     </div>
   )
 }

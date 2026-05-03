@@ -28,8 +28,8 @@ export default function UsersPage() {
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<ManagedUser | null>(null)
-  const [newUser, setNewUser] = useState({ fullName: "", role: "" as "" | "Owner" | "Tenant", building: "", apartment: "", apartments: [] as string[], username: "", phone: "", password: "" })
-  const [editForm, setEditForm] = useState({ fullName: "", building: "", apartment: "", apartments: [] as string[], username: "", phone: "" })
+  const [newUser, setNewUser] = useState({ fullName: "", email: "", role: "" as "" | "Owner" | "Tenant", building: "", apartment: "", apartments: [] as string[], username: "", phone: "", password: "" })
+  const [editForm, setEditForm] = useState({ fullName: "", email: "", building: "", apartment: "", apartments: [] as string[], username: "", phone: "" })
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [confirmType, setConfirmType] = useState<"toggle" | "delete">("toggle")
   const [pendingUser, setPendingUser] = useState<ManagedUser | null>(null)
@@ -42,15 +42,15 @@ export default function UsersPage() {
   const activeCount = localUsers.filter(u => u.status === "Active").length
   const ownersCount = localUsers.filter(u => u.role === "Owner").length
   const tenantsCount = localUsers.filter(u => u.role === "Tenant").length
-  const resetNew = () => setNewUser({ fullName: "", role: "", building: "", apartment: "", apartments: [], username: "", phone: "", password: "" })
+  const resetNew = () => setNewUser({ fullName: "", email: "", role: "", building: "", apartment: "", apartments: [], username: "", phone: "", password: "" })
 
   const handleCreate = () => {
-    if (!newUser.fullName || !newUser.role || !newUser.building) return
+    if (!newUser.fullName || !newUser.email || !newUser.role || !newUser.building) return
     if (newUser.role === "Owner" && (!newUser.username || !newUser.password || newUser.apartments.length === 0)) return
     if (newUser.role === "Tenant" && (!newUser.phone || !newUser.password || !newUser.apartment)) return
     const bd = buildings.find(b => b.id === newUser.building)
     const aptNumber = newUser.role === "Owner" ? newUser.apartments.join(", ") : newUser.apartment
-    const u: ManagedUser = { id: `user-${Date.now()}`, fullName: newUser.fullName, username: newUser.role === "Owner" ? newUser.username : undefined, phone: newUser.role === "Tenant" ? newUser.phone : undefined, role: newUser.role, buildingName: bd?.name || "", apartmentNumber: aptNumber, status: "Active", createdAt: new Date().toISOString().split("T")[0] }
+    const u: ManagedUser = { id: `user-${Date.now()}`, fullName: newUser.fullName, email: newUser.email, username: newUser.role === "Owner" ? newUser.username : undefined, phone: newUser.role === "Tenant" ? newUser.phone : undefined, role: newUser.role, buildingId: newUser.building, buildingName: bd?.name || "", apartmentNumber: aptNumber, status: "Active", createdAt: new Date().toISOString().split("T")[0] }
     setLocalUsers(prev => [u, ...prev]); resetNew(); setIsAddOpen(false)
   }
 
@@ -80,7 +80,7 @@ export default function UsersPage() {
   const handleOpenEdit = (user: ManagedUser) => {
     setEditingUser(user)
     const building = buildings.find(b => b.name === user.buildingName)
-    setEditForm({ fullName: user.fullName, building: building?.id || "", apartment: user.role === "Tenant" ? user.apartmentNumber : "", apartments: user.role === "Owner" ? user.apartmentNumber.split(",").map(s => s.trim()).filter(Boolean) : [], username: user.username || "", phone: user.phone || "" })
+    setEditForm({ fullName: user.fullName, email: user.email || "", building: building?.id || "", apartment: user.role === "Tenant" ? user.apartmentNumber : "", apartments: user.role === "Owner" ? user.apartmentNumber.split(",").map(s => s.trim()).filter(Boolean) : [], username: user.username || "", phone: user.phone || "" })
     setIsEditOpen(true)
   }
 
@@ -88,7 +88,7 @@ export default function UsersPage() {
     if (!editingUser || !editForm.fullName) return
     const bd = buildings.find(b => b.id === editForm.building)
     const aptNumber = editingUser.role === "Owner" ? editForm.apartments.join(", ") : editForm.apartment
-    setLocalUsers(p => p.map(u => u.id === editingUser.id ? { ...u, fullName: editForm.fullName, buildingName: bd?.name || u.buildingName, apartmentNumber: aptNumber || u.apartmentNumber, username: u.role === "Owner" ? (editForm.username || u.username) : u.username, phone: u.role === "Tenant" ? (editForm.phone || u.phone) : u.phone } : u))
+    setLocalUsers(p => p.map(u => u.id === editingUser.id ? { ...u, fullName: editForm.fullName, email: editForm.email || u.email, buildingId: editForm.building || u.buildingId, buildingName: bd?.name || u.buildingName, apartmentNumber: aptNumber || u.apartmentNumber, username: u.role === "Owner" ? (editForm.username || u.username) : u.username, phone: u.role === "Tenant" ? (editForm.phone || u.phone) : u.phone } : u))
     setIsEditOpen(false); setEditingUser(null)
   }
 
@@ -130,6 +130,7 @@ export default function UsersPage() {
             <DialogHeader><DialogTitle>{t.users.addUser}</DialogTitle><DialogDescription>{t.users.createUser}</DialogDescription></DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2"><Label className="text-xs">{t.users.fullName}</Label><Input placeholder="John Doe" className="bg-neutral-100 border-none rounded-sm" value={newUser.fullName} onChange={(e) => setNewUser(p => ({ ...p, fullName: e.target.value }))} /></div>
+              <div className="grid gap-2"><Label className="text-xs">Email</Label><Input type="email" placeholder="john@example.com" className="bg-neutral-100 border-none rounded-sm" value={newUser.email} onChange={(e) => setNewUser(p => ({ ...p, email: e.target.value }))} /></div>
               <div className="grid gap-2"><Label className="text-xs">{t.users.role}</Label>
                 <Select value={newUser.role} onValueChange={(v) => setNewUser(p => ({ ...p, role: v as "Owner" | "Tenant" }))}><SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder={t.users.selectRole} /></SelectTrigger><SelectContent className="bg-white border-none shadow-lg"><SelectItem value="Owner">{t.common.owner}</SelectItem><SelectItem value="Tenant">{t.common.tenant}</SelectItem></SelectContent></Select>
               </div>
@@ -144,7 +145,7 @@ export default function UsersPage() {
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button disabled={!newUser.building} variant="outline" className="w-full justify-start bg-neutral-100 border-none rounded-sm text-left font-normal text-sm h-9 px-3 hover:bg-neutral-200">
-                          {newUser.apartments.length > 0 ? newUser.apartments.map(a => `Apt ${a}`).join(", ") : <span className="text-neutral-500">Select Apartments</span>}
+                          {newUser.apartments.length > 0 ? newUser.apartments.map(a => `${t.charges.apt} ${a}`).join(", ") : <span className="text-neutral-500">{t.users.selectApartments}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-full p-2 bg-white border-none shadow-lg rounded-sm min-w-[200px]" align="start">
@@ -162,22 +163,22 @@ export default function UsersPage() {
                                     }))
                                   }}
                                 />
-                                <Label htmlFor={`new-apt-${num}`} className="flex-1 cursor-pointer text-sm font-normal">Apt {num}</Label>
+                                <Label htmlFor={`new-apt-${num}`} className="flex-1 cursor-pointer text-sm font-normal">{t.charges.apt} {num}</Label>
                               </div>
                             ))}
-                            {availableAptsForNew.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">No available apartments</div>}
+                            {availableAptsForNew.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">{t.users.noAvailableApartments}</div>}
                           </div>
                         </ScrollArea>
                       </PopoverContent>
                     </Popover>
                  ) : (
                     <Select disabled={!newUser.building} value={newUser.apartment} onValueChange={(v) => setNewUser(p => ({ ...p, apartment: v }))}>
-                        <SelectTrigger className="bg-neutral-100 border-none rounded-sm h-9"><SelectValue placeholder="Select Apartment" /></SelectTrigger>
+                        <SelectTrigger className="bg-neutral-100 border-none rounded-sm h-9"><SelectValue placeholder={t.users.selectApartment} /></SelectTrigger>
                         <SelectContent className="bg-white border-none shadow-lg">
                           {availableAptsForNew.map(num => (
-                              <SelectItem key={num} value={num}>Apt {num}</SelectItem>
+                              <SelectItem key={num} value={num}>{t.charges.apt} {num}</SelectItem>
                           ))}
-                          {availableAptsForNew.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">No available apartments</div>}
+                          {availableAptsForNew.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">{t.users.noAvailableApartments}</div>}
                         </SelectContent>
                     </Select>
                  )}
@@ -204,9 +205,9 @@ export default function UsersPage() {
           <tr key={user.id} className="border-b border-black/5 last:border-0 transition-colors">
             <td className="px-4 py-3"><div className="flex items-center gap-2.5"><Avatar className="h-8 w-8 border border-black/5"><AvatarImage src={user.avatar} alt={user.fullName} /><AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{user.fullName.charAt(0)}</AvatarFallback></Avatar><span className="text-sm font-medium">{user.fullName}</span></div></td>
             <td className="px-4 py-3 text-xs text-neutral-600 font-mono">{user.role === "Owner" ? user.username : user.phone}</td>
-            <td className="px-4 py-3 text-xs text-neutral-600">{user.role === "Owner" ? t.common.owner : user.role === "Admin" ? "Admin" : t.common.tenant}</td>
+            <td className="px-4 py-3 text-xs text-neutral-600">{user.role === "Owner" ? t.common.owner : user.role === "Admin" ? t.common.admin : t.common.tenant}</td>
             <td className="px-4 py-3 text-xs text-neutral-600">{user.buildingName}</td>
-            <td className="px-4 py-3 text-xs text-neutral-600">Apt {user.apartmentNumber}</td>
+            <td className="px-4 py-3 text-xs text-neutral-600">{t.charges.apt} {user.apartmentNumber}</td>
             <td className="px-4 py-3"><Badge variant={user.status === "Active" ? "success" : "secondary"} className="text-[10px] px-2.5 py-1 font-normal">{user.status === "Active" ? t.status.active : t.status.inactive}</Badge></td>
             <td className="px-4 py-3">{user.role !== "Admin" && (
               <DropdownMenu>
@@ -239,9 +240,10 @@ export default function UsersPage() {
 
       <Dialog open={isEditOpen} onOpenChange={(o) => { setIsEditOpen(o); if (!o) setEditingUser(null) }}>
         <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
-          <DialogHeader><DialogTitle>{t.users.editUser}</DialogTitle><DialogDescription>{t.common.confirm} {editingUser?.fullName}&apos;s account details.</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>{t.users.editUser}</DialogTitle><DialogDescription>{t.users.editAccountDetails}</DialogDescription></DialogHeader>
           {editingUser && (<div className="grid gap-4 py-4">
             <div className="grid gap-2"><Label className="text-xs">{t.users.fullName}</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.fullName} onChange={(e) => setEditForm(p => ({ ...p, fullName: e.target.value }))} /></div>
+            <div className="grid gap-2"><Label className="text-xs">Email</Label><Input type="email" className="bg-neutral-100 border-none rounded-sm" value={editForm.email} onChange={(e) => setEditForm(p => ({ ...p, email: e.target.value }))} /></div>
             {editingUser.role === "Owner" && <div className="grid gap-2"><Label className="text-xs">{t.users.username}</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.username} onChange={(e) => setEditForm(p => ({ ...p, username: e.target.value }))} /></div>}
             {editingUser.role === "Tenant" && <div className="grid gap-2"><Label className="text-xs">{t.users.phone}</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.phone} onChange={(e) => setEditForm(p => ({ ...p, phone: e.target.value }))} /></div>}
             <div className="grid gap-2"><Label className="text-xs">{t.users.building}</Label>
@@ -261,7 +263,7 @@ export default function UsersPage() {
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button disabled={!editForm.building} variant="outline" className="w-full justify-start bg-neutral-100 border-none rounded-sm text-left font-normal text-sm h-9 px-3 hover:bg-neutral-200">
-                          {editForm.apartments.length > 0 ? editForm.apartments.map(a => `Apt ${a}`).join(", ") : <span className="text-neutral-500">Select Apartments</span>}
+                          {editForm.apartments.length > 0 ? editForm.apartments.map(a => `${t.charges.apt} ${a}`).join(", ") : <span className="text-neutral-500">{t.users.selectApartments}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-full p-2 bg-white border-none shadow-lg rounded-sm min-w-[200px]" align="start">
@@ -279,22 +281,22 @@ export default function UsersPage() {
                                     }))
                                   }}
                                 />
-                                <Label htmlFor={`edit-apt-${num}`} className="flex-1 cursor-pointer text-sm font-normal">Apt {num}</Label>
+                                <Label htmlFor={`edit-apt-${num}`} className="flex-1 cursor-pointer text-sm font-normal">{t.charges.apt} {num}</Label>
                               </div>
                             ))}
-                            {availableAptsForEdit.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">No available apartments</div>}
+                            {availableAptsForEdit.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">{t.users.noAvailableApartments}</div>}
                           </div>
                         </ScrollArea>
                       </PopoverContent>
                     </Popover>
                  ) : (
                     <Select disabled={!editForm.building} value={editForm.apartment} onValueChange={(v) => setEditForm(p => ({ ...p, apartment: v }))}>
-                        <SelectTrigger className="bg-neutral-100 border-none rounded-sm h-9"><SelectValue placeholder="Select Apartment" /></SelectTrigger>
+                        <SelectTrigger className="bg-neutral-100 border-none rounded-sm h-9"><SelectValue placeholder={t.users.selectApartment} /></SelectTrigger>
                         <SelectContent className="bg-white border-none shadow-lg">
                           {availableAptsForEdit.map(num => (
-                              <SelectItem key={num} value={num}>Apt {num}</SelectItem>
+                              <SelectItem key={num} value={num}>{t.charges.apt} {num}</SelectItem>
                           ))}
-                          {availableAptsForEdit.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">No available apartments</div>}
+                          {availableAptsForEdit.length === 0 && <div className="text-xs text-neutral-500 p-2 text-center">{t.users.noAvailableApartments}</div>}
                         </SelectContent>
                     </Select>
                  )}

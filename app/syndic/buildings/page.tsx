@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Building2, Plus, ChevronRight, DoorOpen, MapPin, ArrowLeft, Pencil, Trash2, MoreVertical } from "lucide-react"
+import { useState, useMemo } from "react"
+import { Building2, Plus, ChevronRight, DoorOpen, MapPin, ArrowLeft, Pencil, Trash2, MoreVertical, Search } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -97,14 +97,15 @@ export default function BuildingsPage() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmType, setConfirmType] = useState<"building">("building")
   const [itemToDelete, setItemToDelete] = useState<Building | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const selectedBuildingData = localBuildings.find(b => b.id === selectedBuilding)
   const buildingApartments = localApartments.filter(a => a.buildingId === selectedBuilding)
 
   const handleAddBuilding = () => {
     if (!newBuilding.name || !newBuilding.address || !newBuilding.floors || !newBuilding.aptsPerFloor) return
-    const floors = parseInt(newBuilding.floors) || 1
-    const aptsPerFloor = parseInt(newBuilding.aptsPerFloor) || 1
+    const floors = Math.max(1, parseInt(newBuilding.floors) || 1)
+    const aptsPerFloor = Math.max(1, parseInt(newBuilding.aptsPerFloor) || 1)
     const bId = `building-${Date.now()}`
     
     const b: Building = { id: bId, name: newBuilding.name, address: newBuilding.address, floors: floors, aptsPerFloor: aptsPerFloor }
@@ -135,7 +136,42 @@ export default function BuildingsPage() {
 
   const handleEditBuilding = () => {
     if (!editingBuilding) return
-    setLocalBuildings(prev => prev.map(b => b.id === editingBuilding.id ? editingBuilding : b))
+    const oldBuilding = localBuildings.find(b => b.id === editingBuilding.id)
+    const floorsChanged = oldBuilding && (oldBuilding.floors !== editingBuilding.floors || oldBuilding.aptsPerFloor !== editingBuilding.aptsPerFloor)
+    
+    // Enforce min 1
+    const safeBuilding = { ...editingBuilding, floors: Math.max(1, editingBuilding.floors), aptsPerFloor: Math.max(1, editingBuilding.aptsPerFloor) }
+    
+    setLocalBuildings(prev => prev.map(b => b.id === safeBuilding.id ? safeBuilding : b))
+    
+    // Regenerate apartments if structure changed
+    if (floorsChanged) {
+      const existingApts = localApartments.filter(a => a.buildingId === safeBuilding.id)
+      const newApts: Apartment[] = []
+      let aptNumberCounter = 1
+      for (let f = 1; f <= safeBuilding.floors; f++) {
+        for (let a = 1; a <= safeBuilding.aptsPerFloor; a++) {
+          const numberStr = aptNumberCounter.toString()
+          const existing = existingApts.find(apt => apt.number === numberStr)
+          if (existing) {
+            newApts.push({ ...existing, floor: f })
+          } else {
+            newApts.push({
+              id: `apt-${safeBuilding.id}-${f}-${a}-${Date.now()}`,
+              buildingId: safeBuilding.id,
+              floor: f,
+              number: numberStr,
+              tantiemes: 100,
+              ownerId: "",
+              ownerName: ""
+            })
+          }
+          aptNumberCounter++
+        }
+      }
+      setLocalApartments(prev => [...prev.filter(a => a.buildingId !== safeBuilding.id), ...newApts])
+    }
+    
     setIsEditBuildingOpen(false)
     setEditingBuilding(null)
   }
@@ -191,7 +227,7 @@ export default function BuildingsPage() {
               <div className="grid gap-2"><Label className="text-xs">{t.buildings.address}</Label><Input placeholder="12 Rue Mohammed V, Casablanca" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.address} onChange={(e) => setNewBuilding(p => ({ ...p, address: e.target.value }))} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2"><Label className="text-xs">{t.buildings.totalFloors}</Label><Input type="number" placeholder="5" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.floors} onChange={(e) => setNewBuilding(p => ({ ...p, floors: e.target.value }))} /></div>
-                <div className="grid gap-2"><Label className="text-xs">Apts per Floor</Label><Input type="number" placeholder="4" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.aptsPerFloor} onChange={(e) => setNewBuilding(p => ({ ...p, aptsPerFloor: e.target.value }))} /></div>
+                <div className="grid gap-2"><Label className="text-xs">{t.buildings.aptsPerFloor}</Label><Input type="number" min="1" placeholder="4" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.aptsPerFloor} onChange={(e) => setNewBuilding(p => ({ ...p, aptsPerFloor: e.target.value }))} /></div>
               </div>
             </div>
             <DialogFooter><Button className="w-full cursor-pointer" onClick={handleAddBuilding}>{t.buildings.registerBuilding}</Button></DialogFooter>
@@ -205,7 +241,16 @@ export default function BuildingsPage() {
           <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider px-1">
             {t.sidebar.buildings} ({localBuildings.length})
           </p>
-          {localBuildings.map((building) => {
+          <div className="relative mt-2 mb-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
+            <Input
+              placeholder={t.buildings.searchBuildings}
+              className="pl-9 h-8 text-xs bg-white border-none rounded-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          {localBuildings.filter(b => b.name.toLowerCase().includes(searchQuery.toLowerCase()) || b.address.toLowerCase().includes(searchQuery.toLowerCase())).map((building) => {
             const aptCount = localApartments.filter(a => a.buildingId === building.id).length
             return (
               <Card
@@ -338,7 +383,7 @@ export default function BuildingsPage() {
                                   </div>
                                 </>
                               ) : (
-                                <p className="text-xs text-neutral-400 italic py-2">{t.buildings.selectOwner} (Empty)</p>
+                                <p className="text-xs text-neutral-400 italic py-2">{t.buildings.empty}</p>
                               )}
                             </div>
 
@@ -354,7 +399,7 @@ export default function BuildingsPage() {
                                   </div>
                                 </>
                               ) : (
-                                <p className="text-xs text-neutral-400 italic py-2">No Tenant</p>
+                                <p className="text-xs text-neutral-400 italic py-2">{t.buildings.noTenant}</p>
                               )}
                             </div>
                           </div>
@@ -400,7 +445,7 @@ export default function BuildingsPage() {
                     <div className="flex justify-between items-center">
                        <div>
                          <CardTitle className="text-base">{selectedBuildingData.name}</CardTitle>
-                         <CardDescription className="text-xs">{selectedBuildingData.floors} {t.common.floorsAptsRegistered.split('·')[0].trim()} · {buildingApartments.length} {t.common.floorsAptsRegistered.split('·')[1].trim()}</CardDescription>
+                         <CardDescription className="text-xs">{selectedBuildingData.floors} {t.common.floors} · {buildingApartments.length} {t.common.apartmentsRegistered}</CardDescription>
                        </div>
                     </div>
                   </CardHeader>
@@ -434,10 +479,10 @@ export default function BuildingsPage() {
                                       {isOccupied ? (
                                         <div className="text-[10px] font-medium text-neutral-700 truncate leading-tight">{apt.ownerName}</div>
                                       ) : (
-                                        <div className="text-[10px] text-neutral-400 italic">Empty</div>
+                                        <div className="text-[10px] text-neutral-400 italic">{t.buildings.empty}</div>
                                       )}
                                       {apt.tenantName && (
-                                        <div className="text-[9px] text-neutral-500 truncate mt-0.5 leading-tight">{apt.tenantName} (T)</div>
+                                        <div className="text-[9px] text-neutral-500 truncate mt-0.5 leading-tight">{apt.tenantName} ({t.common.tenant})</div>
                                       )}
                                     </div>
                                   </div>
@@ -497,7 +542,7 @@ export default function BuildingsPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label className="text-xs">Apts per Floor</Label>
+                <Label className="text-xs">{t.buildings.aptsPerFloor}</Label>
                 <Input 
                   type="number" 
                   className="bg-neutral-100 border-none rounded-sm" 
@@ -513,7 +558,7 @@ export default function BuildingsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Apartment Dialog */}
+      {/* Edit Apartment Dialog - Enhanced with owner/tenant reassignment */}
       <Dialog open={isEditAptOpen} onOpenChange={(o) => { setIsEditAptOpen(o); if (!o) setEditingApt(null) }}>
         <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
           <DialogHeader>
