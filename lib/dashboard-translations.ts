@@ -96,6 +96,9 @@ export interface DashboardTranslations {
     selectApartment: string
     noAvailableApartments: string
     editAccountDetails: string
+    page: string
+    of: string
+    perPage: string
   }
   buildings: {
     addBuilding: string
@@ -161,6 +164,12 @@ export interface DashboardTranslations {
     totalOutstanding: string
     selectMonth: string
     selectBuilding: string
+    filterByBuilding: string
+    allBuildings: string
+    page: string
+    of: string
+    perPage: string
+    noChargesFound: string
   }
   helpdesk: {
     open: string
@@ -178,6 +187,7 @@ export interface DashboardTranslations {
     notes: string
     notePlaceholder: string
     priority: string
+    photos: string
   }
   documents: {
     upload: string
@@ -271,6 +281,7 @@ export interface DashboardTranslations {
     registering: string
     haveAccount: string
     login: string
+    companyName: string
   }
   common: {
     all: string
@@ -309,6 +320,11 @@ export interface DashboardTranslations {
     viewAll: string
     floors: string
     apartmentsRegistered: string
+    profileSaved: string
+    required: string
+    fieldRequired: string
+    page: string
+    of: string
   }
   status: {
     open: string
@@ -420,6 +436,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       selectApartment: "Select Apartment",
       noAvailableApartments: "No available apartments",
       editAccountDetails: "Update account details.",
+      page: "Page",
+      of: "of",
+      perPage: "per page",
     },
     buildings: {
       addBuilding: "Add Building",
@@ -485,6 +504,12 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       totalOutstanding: "Total Outstanding",
       selectMonth: "Select Month",
       selectBuilding: "Select Building",
+      filterByBuilding: "Filter by Building",
+      allBuildings: "All Buildings",
+      page: "Page",
+      of: "of",
+      perPage: "per page",
+      noChargesFound: "No charges found.",
     },
     helpdesk: {
       open: "Open",
@@ -502,6 +527,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       notes: "Notes",
       notePlaceholder: "Write a note or update...",
       priority: "Priority",
+      photos: "Photos",
     },
     documents: {
       upload: "Upload File",
@@ -595,6 +621,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       registering: "Registering...",
       haveAccount: "Already have an account?",
       login: "Login",
+      companyName: "Company Name",
     },
     common: {
       all: "All",
@@ -633,6 +660,11 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       viewAll: "View All",
       floors: "floors",
       apartmentsRegistered: "apartments registered",
+      profileSaved: "Profile saved successfully!",
+      required: "Required",
+      fieldRequired: "This field is required.",
+      page: "Page",
+      of: "of",
     },
     status: {
       open: "Open",
@@ -742,6 +774,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       selectApartment: "Sélectionner l'Appartement",
       noAvailableApartments: "Aucun appartement disponible",
       editAccountDetails: "Mettre à jour les détails du compte.",
+      page: "Page",
+      of: "sur",
+      perPage: "par page",
     },
     buildings: {
       addBuilding: "Ajouter un Immeuble",
@@ -807,6 +842,12 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       totalOutstanding: "Total Impayé",
       selectMonth: "Sélectionner le Mois",
       selectBuilding: "Sélectionner l'Immeuble",
+      filterByBuilding: "Filtrer par Immeuble",
+      allBuildings: "Tous les Immeubles",
+      page: "Page",
+      of: "sur",
+      perPage: "par page",
+      noChargesFound: "Aucune charge trouvée.",
     },
     helpdesk: {
       open: "Ouvert",
@@ -824,6 +865,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       notes: "Notes",
       notePlaceholder: "Écrire une note ou mise à jour...",
       priority: "Priorité",
+      photos: "Photos",
     },
     documents: {
       upload: "Importer un Fichier",
@@ -917,6 +959,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       registering: "Inscription en cours...",
       haveAccount: "Vous avez déjà un compte ?",
       login: "Connexion",
+      companyName: "Nom de l'Entreprise",
     },
     common: {
       all: "Tous",
@@ -955,6 +998,11 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       viewAll: "Voir Tout",
       floors: "étages",
       apartmentsRegistered: "appartements enregistrés",
+      profileSaved: "Profil enregistré avec succès !",
+      required: "Requis",
+      fieldRequired: "Ce champ est obligatoire.",
+      page: "Page",
+      of: "sur",
     },
     status: {
       open: "Ouvert",
@@ -1064,6 +1112,9 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       selectApartment: "Seleccionar Apartamento",
       noAvailableApartments: "No hay apartamentos disponibles",
       editAccountDetails: "Actualizar detalles de la cuenta.",
+      page: "Página",
+      of: "de",
+      perPage: "por página",
     },
     buildings: {
       addBuilding: "Agregar Edificio",
@@ -1129,6 +1180,12 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       totalOutstanding: "Total Pendiente",
       selectMonth: "Seleccionar Mes",
       selectBuilding: "Seleccionar Edificio",
+      filterByBuilding: "Filtrar por Edificio",
+      allBuildings: "Todos los Edificios",
+      page: "Página",
+      of: "de",
+      perPage: "por página",
+      noChargesFound: "No se encontraron cargos.",
     },
     helpdesk: {
       open: "Abierto",
@@ -1146,6 +1203,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       notes: "Notas",
       notePlaceholder: "Escribir una nota o actualización...",
       priority: "Prioridad",
+      photos: "Fotos",
     },
     documents: {
       upload: "Subir Archivo",
@@ -1239,6 +1297,7 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       registering: "Registrando...",
       haveAccount: "¿Ya tiene una cuenta?",
       login: "Iniciar Sesión",
+      companyName: "Nombre de la Empresa",
     },
     common: {
       all: "Todos",
@@ -1277,6 +1336,11 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       viewAll: "Ver Todo",
       floors: "pisos",
       apartmentsRegistered: "apartamentos registrados",
+      profileSaved: "¡Perfil guardado con éxito!",
+      required: "Requerido",
+      fieldRequired: "Este campo es obligatorio.",
+      page: "Página",
+      of: "de",
     },
     status: {
       open: "Abierto",

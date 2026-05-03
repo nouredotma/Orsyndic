@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Users, Search, Plus, MoreVertical, Shield, User, Pencil, Ban, CheckCircle2, Trash2 } from "lucide-react"
+import { Users, Search, Plus, MoreVertical, Shield, User, Pencil, Ban, CheckCircle2, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -33,11 +33,16 @@ export default function UsersPage() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [confirmType, setConfirmType] = useState<"toggle" | "delete">("toggle")
   const [pendingUser, setPendingUser] = useState<ManagedUser | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const ITEMS_PER_PAGE = 10
 
   const filteredUsers = localUsers.filter((u) => {
     const s = u.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (u.username?.toLowerCase().includes(searchQuery.toLowerCase())) || (u.phone?.includes(searchQuery))
     return s && (filterRole === "All" || u.role === filterRole)
   })
+
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / ITEMS_PER_PAGE))
+  const paginatedUsers = filteredUsers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   const activeCount = localUsers.filter(u => u.status === "Active").length
   const ownersCount = localUsers.filter(u => u.role === "Owner").length
@@ -196,12 +201,12 @@ export default function UsersPage() {
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="relative flex-1 max-w-sm"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" /><Input placeholder={t.users.search} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm" /></div>
-        <div className="flex rounded-sm bg-neutral-100 p-0.5 gap-0.5">{(["All", "Owner", "Tenant"] as const).map((r) => (<button key={r} onClick={() => setFilterRole(r)} className={cn("px-3 py-1.5 rounded text-xs font-medium transition-all cursor-pointer", filterRole === r ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>{r === "All" ? t.common.all : r === "Owner" ? t.users.owners : t.users.tenants}</button>))}</div>
+        <div className="relative flex-1 max-w-sm"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" /><Input placeholder={t.users.search} value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1) }} className="pl-9 rounded-sm bg-neutral-100 border-none shadow-none text-sm" /></div>
+        <div className="flex rounded-sm bg-neutral-100 p-0.5 gap-0.5">{(["All", "Owner", "Tenant"] as const).map((r) => (<button key={r} onClick={() => { setFilterRole(r); setCurrentPage(1) }} className={cn("px-3 py-1.5 rounded text-xs font-medium transition-all cursor-pointer", filterRole === r ? "bg-white text-black shadow-sm" : "text-neutral-500 hover:text-neutral-700")}>{r === "All" ? t.common.all : r === "Owner" ? t.users.owners : t.users.tenants}</button>))}</div>
       </div>
 
       <Card className="border-none bg-neutral-100"><CardContent className="p-0"><div className="overflow-x-auto"><table className="w-full"><thead><tr className="border-b border-black/5"><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.userHeader}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.usernamePhoneHeader}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.role}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.building}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.apartment}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.status}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3"></th></tr></thead>
-        <tbody>{filteredUsers.map((user) => (
+        <tbody>{paginatedUsers.map((user) => (
           <tr key={user.id} className="border-b border-black/5 last:border-0 transition-colors">
             <td className="px-4 py-3"><div className="flex items-center gap-2.5"><Avatar className="h-8 w-8 border border-black/5"><AvatarImage src={user.avatar} alt={user.fullName} /><AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{user.fullName.charAt(0)}</AvatarFallback></Avatar><span className="text-sm font-medium">{user.fullName}</span></div></td>
             <td className="px-4 py-3 text-xs text-neutral-600 font-mono">{user.role === "Owner" ? user.username : user.phone}</td>
@@ -236,7 +241,25 @@ export default function UsersPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}</td>
-          </tr>))}</tbody></table></div></CardContent></Card>
+          </tr>))}</tbody></table></div>
+          {filteredUsers.length > ITEMS_PER_PAGE && (
+            <div className="flex items-center justify-between px-4 py-3 border-t border-black/5">
+              <p className="text-xs text-neutral-500">{t.users.page} {currentPage} {t.users.of} {totalPages}</p>
+              <div className="flex items-center gap-1">
+                <Button variant="outline" size="icon" className="h-7 w-7 border-none bg-white hover:bg-neutral-200 cursor-pointer disabled:opacity-40" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}><ChevronLeft className="h-3.5 w-3.5" /></Button>
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+                  let page: number
+                  if (totalPages <= 5) page = i + 1
+                  else if (currentPage <= 3) page = i + 1
+                  else if (currentPage >= totalPages - 2) page = totalPages - 4 + i
+                  else page = currentPage - 2 + i
+                  return (<button key={page} onClick={() => setCurrentPage(page)} className={cn("h-7 w-7 rounded-sm text-xs font-medium transition-all cursor-pointer", currentPage === page ? "bg-primary text-white" : "hover:bg-neutral-200 text-neutral-600")}>{page}</button>)
+                })}
+                <Button variant="outline" size="icon" className="h-7 w-7 border-none bg-white hover:bg-neutral-200 cursor-pointer disabled:opacity-40" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}><ChevronRight className="h-3.5 w-3.5" /></Button>
+              </div>
+            </div>
+          )}
+        </CardContent></Card>
 
       <Dialog open={isEditOpen} onOpenChange={(o) => { setIsEditOpen(o); if (!o) setEditingUser(null) }}>
         <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">

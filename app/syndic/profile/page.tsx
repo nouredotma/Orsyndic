@@ -107,7 +107,7 @@ export default function ProfilePage() {
         <CardContent className="p-4 pt-2 space-y-3">
           {profileSaved && (
             <div className="rounded-sm p-3 text-sm bg-emerald-50 text-emerald-700">
-              <Check className="h-4 w-4 inline mr-1.5" />{t.profile.passwordUpdated.replace("Password", "Profile")}
+              <Check className="h-4 w-4 inline mr-1.5" />{t.common.profileSaved}
             </div>
           )}
           <div className="flex items-center gap-4 pb-3 border-b border-black/5">

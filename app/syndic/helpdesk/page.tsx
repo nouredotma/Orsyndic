@@ -132,7 +132,7 @@ export default function HelpdeskPage() {
                 {/* Photos */}
                 {selectedTicket.photos && selectedTicket.photos.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Photos</h4>
+                    <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.helpdesk.photos}</h4>
                     <div className="grid grid-cols-3 gap-2">
                       {selectedTicket.photos.map((photo, i) => (
                         <img

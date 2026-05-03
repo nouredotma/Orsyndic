@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
-import { tickets as initialTickets } from "@/lib/mock-data"
+import { tickets as initialTickets, buildings } from "@/lib/mock-data"
 import type { Ticket } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
@@ -57,13 +57,14 @@ export default function MyTicketsPage() {
 
   const handleSubmit = () => {
     if (!title || !description || !user) return
+    const userBuilding = buildings.find(b => b.id === user.buildingId)
     const ticket: Ticket = {
       id: `TKT-${Date.now()}`,
       title,
       description,
       submittedBy: user.fullName,
       submittedByRole: user.role as "Owner" | "Tenant",
-      buildingName: "Résidence Al Andalous",
+      buildingName: userBuilding?.name || "—",
       apartmentNumber: user.apartmentId?.split("-")[1] || "—",
       status: "Open",
       createdAt: new Date().toISOString().split("T")[0],

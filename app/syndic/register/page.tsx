@@ -157,7 +157,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="companyName">{t.dashboard.admin.registerBuilding.replace(/register /i, "")}</Label>
+              <Label htmlFor="companyName">{t.register.companyName}</Label>
               <Input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.companyName} onChange={handleChange} disabled={isLoading} />
             </div>
 
