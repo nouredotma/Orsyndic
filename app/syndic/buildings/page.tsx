@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,13 +50,43 @@ import { useI18n } from "@/lib/i18n-context"
 export default function BuildingsPage() {
   const { t } = useI18n()
   const [localBuildings, setLocalBuildings] = useState<Building[]>(initBuildings)
-  const [localApartments, setLocalApartments] = useState<Apartment[]>(initApartments)
+  const [localApartments, setLocalApartments] = useState<Apartment[]>(() => {
+    const apts = [...initApartments];
+    initBuildings.forEach(b => {
+      let aptNumberCounter = 1;
+      for (let f = 1; f <= b.floors; f++) {
+        for (let a = 1; a <= b.aptsPerFloor; a++) {
+          const numberStr = aptNumberCounter.toString();
+          const exists = apts.some(apt => apt.buildingId === b.id && apt.number === numberStr);
+          if (!exists) {
+            apts.push({
+              id: `apt-${b.id}-${f}-${a}`,
+              buildingId: b.id,
+              floor: f,
+              number: numberStr,
+              tantiemes: 100,
+              ownerId: "",
+              ownerName: ""
+            });
+          }
+          aptNumberCounter++;
+        }
+      }
+    });
+    return apts;
+  });
   const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null)
   const [selectedApartment, setSelectedApartment] = useState<Apartment | null>(null)
   const [isAddBuildingOpen, setIsAddBuildingOpen] = useState(false)
-  const [isAddAptOpen, setIsAddAptOpen] = useState(false)
-  const [newBuilding, setNewBuilding] = useState({ name: "", address: "", floors: "" })
-  const [newApt, setNewApt] = useState({ floor: "", number: "", tantiemes: "", ownerId: "" })
+  const [newBuilding, setNewBuilding] = useState({ name: "", address: "", floors: "", aptsPerFloor: "" })
+  
+  const getGridColsClass = (count: number) => {
+    if (count === 1) return "grid-cols-1";
+    if (count === 2) return "grid-cols-2";
+    if (count === 3) return "grid-cols-2 sm:grid-cols-3";
+    if (count === 4) return "grid-cols-2 sm:grid-cols-4";
+    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5";
+  };
   
   // Edit & Delete State
   const [editingBuilding, setEditingBuilding] = useState<Building | null>(null)
@@ -64,34 +95,42 @@ export default function BuildingsPage() {
   const [isEditAptOpen, setIsEditAptOpen] = useState(false)
   
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [confirmType, setConfirmType] = useState<"building" | "apartment">("building")
-  const [itemToDelete, setItemToDelete] = useState<Building | Apartment | null>(null)
+  const [confirmType, setConfirmType] = useState<"building">("building")
+  const [itemToDelete, setItemToDelete] = useState<Building | null>(null)
 
   const selectedBuildingData = localBuildings.find(b => b.id === selectedBuilding)
   const buildingApartments = localApartments.filter(a => a.buildingId === selectedBuilding)
 
   const handleAddBuilding = () => {
-    if (!newBuilding.name || !newBuilding.address || !newBuilding.floors) return
-    const b: Building = { id: `building-${Date.now()}`, name: newBuilding.name, address: newBuilding.address, floors: parseInt(newBuilding.floors) || 1, totalApartments: 0 }
-    setLocalBuildings(prev => [...prev, b])
-    setNewBuilding({ name: "", address: "", floors: "" })
-    setIsAddBuildingOpen(false)
-  }
-
-  const handleAddApartment = () => {
-    if (!selectedBuilding || !newApt.floor || !newApt.number || !newApt.tantiemes || !newApt.ownerId) return
+    if (!newBuilding.name || !newBuilding.address || !newBuilding.floors || !newBuilding.aptsPerFloor) return
+    const floors = parseInt(newBuilding.floors) || 1
+    const aptsPerFloor = parseInt(newBuilding.aptsPerFloor) || 1
+    const bId = `building-${Date.now()}`
     
-    const floorNum = parseInt(newApt.floor)
-    if (selectedBuildingData && floorNum > selectedBuildingData.floors) {
-      alert(t.buildings.floorValidationError)
-      return
+    const b: Building = { id: bId, name: newBuilding.name, address: newBuilding.address, floors: floors, aptsPerFloor: aptsPerFloor }
+    
+    // Auto-generate apartments
+    const generatedApts: Apartment[] = []
+    let aptNumberCounter = 1;
+    for (let f = 1; f <= floors; f++) {
+      for (let a = 1; a <= aptsPerFloor; a++) {
+        generatedApts.push({
+          id: `apt-${bId}-${f}-${a}`,
+          buildingId: bId,
+          floor: f,
+          number: aptNumberCounter.toString(),
+          tantiemes: 100,
+          ownerId: "",
+          ownerName: "",
+        })
+        aptNumberCounter++;
+      }
     }
 
-    const owner = managedUsers.find(u => u.id === newApt.ownerId)
-    const apt: Apartment = { id: `apt-${Date.now()}`, buildingId: selectedBuilding, floor: floorNum || 0, number: newApt.number, tantiemes: parseInt(newApt.tantiemes) || 100, ownerId: newApt.ownerId, ownerName: owner?.fullName || "Unknown" }
-    setLocalApartments(prev => [...prev, apt])
-    setNewApt({ floor: "", number: "", tantiemes: "", ownerId: "" })
-    setIsAddAptOpen(false)
+    setLocalBuildings(prev => [...prev, b])
+    setLocalApartments(prev => [...prev, ...generatedApts])
+    setNewBuilding({ name: "", address: "", floors: "", aptsPerFloor: "" })
+    setIsAddBuildingOpen(false)
   }
 
   const handleEditBuilding = () => {
@@ -103,33 +142,30 @@ export default function BuildingsPage() {
 
   const handleEditApartment = () => {
     if (!editingApt) return
-    const owner = managedUsers.find(u => u.id === editingApt.ownerId)
-    const updatedApt = { ...editingApt, ownerName: owner?.fullName || editingApt.ownerName }
-    setLocalApartments(prev => prev.map(a => a.id === updatedApt.id ? updatedApt : a))
+    setLocalApartments(prev => prev.map(a => a.id === editingApt.id ? editingApt : a))
+    
+    // Also update the currently viewed apartment so details reflect immediately
+    if (selectedApartment?.id === editingApt.id) {
+      setSelectedApartment(editingApt)
+    }
+
     setIsEditAptOpen(false)
     setEditingApt(null)
   }
 
-  const handleDeleteConfirm = (item: Building | Apartment, type: "building" | "apartment") => {
+  const handleDeleteConfirm = (item: Building) => {
     setItemToDelete(item)
-    setConfirmType(type)
+    setConfirmType("building")
     setConfirmOpen(true)
   }
 
   const executeDelete = () => {
     if (!itemToDelete) return
-    if (confirmType === "building") {
-      setLocalBuildings(prev => prev.filter(b => b.id !== itemToDelete.id))
-      setLocalApartments(prev => prev.filter(a => a.buildingId !== itemToDelete.id))
-      if (selectedBuilding === itemToDelete.id) {
-        setSelectedBuilding(null)
-        setSelectedApartment(null)
-      }
-    } else {
-      setLocalApartments(prev => prev.filter(a => a.id !== itemToDelete.id))
-      if (selectedApartment?.id === itemToDelete.id) {
-        setSelectedApartment(null)
-      }
+    setLocalBuildings(prev => prev.filter(b => b.id !== itemToDelete.id))
+    setLocalApartments(prev => prev.filter(a => a.buildingId !== itemToDelete.id))
+    if (selectedBuilding === itemToDelete.id) {
+      setSelectedBuilding(null)
+      setSelectedApartment(null)
     }
     setConfirmOpen(false)
     setItemToDelete(null)
@@ -153,7 +189,10 @@ export default function BuildingsPage() {
             <div className="grid gap-4 py-4">
               <div className="grid gap-2"><Label className="text-xs">{t.buildings.buildingName}</Label><Input placeholder="Résidence Al Andalous" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.name} onChange={(e) => setNewBuilding(p => ({ ...p, name: e.target.value }))} /></div>
               <div className="grid gap-2"><Label className="text-xs">{t.buildings.address}</Label><Input placeholder="12 Rue Mohammed V, Casablanca" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.address} onChange={(e) => setNewBuilding(p => ({ ...p, address: e.target.value }))} /></div>
-              <div className="grid gap-2"><Label className="text-xs">{t.buildings.totalFloors}</Label><Input type="number" placeholder="5" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.floors} onChange={(e) => setNewBuilding(p => ({ ...p, floors: e.target.value }))} /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-2"><Label className="text-xs">{t.buildings.totalFloors}</Label><Input type="number" placeholder="5" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.floors} onChange={(e) => setNewBuilding(p => ({ ...p, floors: e.target.value }))} /></div>
+                <div className="grid gap-2"><Label className="text-xs">Apts per Floor</Label><Input type="number" placeholder="4" className="bg-neutral-100 border-none rounded-sm" value={newBuilding.aptsPerFloor} onChange={(e) => setNewBuilding(p => ({ ...p, aptsPerFloor: e.target.value }))} /></div>
+              </div>
             </div>
             <DialogFooter><Button className="w-full cursor-pointer" onClick={handleAddBuilding}>{t.buildings.registerBuilding}</Button></DialogFooter>
           </DialogContent>
@@ -209,7 +248,7 @@ export default function BuildingsPage() {
                       <DropdownMenuSeparator className="bg-black/5" />
                       <DropdownMenuItem 
                         className="cursor-pointer text-xs gap-2 py-2 text-red-600 hover:bg-primary/5 focus:bg-primary/5 focus:text-red-600 rounded-sm"
-                        onClick={(e) => { e.stopPropagation(); handleDeleteConfirm(building, "building") }}
+                        onClick={(e) => { e.stopPropagation(); handleDeleteConfirm(building) }}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         {t.common.delete}
@@ -229,39 +268,33 @@ export default function BuildingsPage() {
               {selectedApartment ? (
                 <>
                   <CardHeader className="p-4 pb-2 border-b border-black/5">
-                    <div className="flex items-center gap-3">
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-8 w-8 rounded-full hover:bg-black/5 cursor-pointer"
-                        onClick={() => setSelectedApartment(null)}
-                      >
-                        <ArrowLeft className="h-4 w-4" />
-                      </Button>
-                      <div>
-                        <CardTitle className="text-base">{t.buildings.residentDetails}</CardTitle>
-                        <CardDescription className="text-xs">
-                          {selectedBuildingData.name} · {t.buildings.apartmentNumber} {selectedApartment.number}
-                        </CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8 rounded-full hover:bg-black/5 cursor-pointer"
+                          onClick={() => setSelectedApartment(null)}
+                        >
+                          <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                        <div>
+                          <CardTitle className="text-base">{t.buildings.residentDetails}</CardTitle>
+                          <CardDescription className="text-xs">
+                            {selectedBuildingData.name} · {t.buildings.apartmentNumber} {selectedApartment.number}
+                          </CardDescription>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="h-8 w-8 cursor-pointer border-none bg-white hover:bg-primary/5"
-                        onClick={() => { setEditingApt(selectedApartment); setIsEditAptOpen(true) }}
-                      >
-                        <Pencil className="h-3.5 w-3.5 text-neutral-500" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="h-8 w-8 cursor-pointer border-none bg-white hover:bg-primary/5 group"
-                        onClick={() => handleDeleteConfirm(selectedApartment, "apartment")}
-                      >
-                        <Trash2 className="h-3.5 w-3.5 text-red-500 group-hover:text-red-600" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="icon" 
+                          className="h-8 w-8 cursor-pointer border-none bg-white hover:bg-primary/5"
+                          onClick={() => { setEditingApt(selectedApartment); setIsEditAptOpen(true) }}
+                        >
+                          <Pencil className="h-3.5 w-3.5 text-neutral-500" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
@@ -270,9 +303,9 @@ export default function BuildingsPage() {
                         {/* Apartment Info */}
                         <div className="space-y-3">
                           <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.apartmentNumber} {t.common.info}</h4>
-                          <div className="p-4 rounded-xl bg-white shadow-none border-none">
+                          <div className="p-4 rounded-sm bg-white border border-black/5">
                             <div className="flex items-center gap-3 mb-4">
-                              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                              <div className="h-10 w-10 rounded-sm bg-primary/10 flex items-center justify-center shrink-0">
                                 <DoorOpen className="h-5 w-5 text-primary" />
                               </div>
                               <div>
@@ -285,10 +318,6 @@ export default function BuildingsPage() {
                                 <p className="text-[10px] text-neutral-400 uppercase">{t.buildings.tantiemes}</p>
                                 <p className="text-sm font-semibold">{selectedApartment.tantiemes} m²</p>
                               </div>
-                              <div>
-                                <p className="text-[10px] text-neutral-400 uppercase">{t.buildings.owner}</p>
-                                <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -297,27 +326,37 @@ export default function BuildingsPage() {
                         <div className="space-y-3">
                           <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.occupants}</h4>
                           <div className="space-y-2">
-                            <div className="flex items-center gap-3 p-3 rounded-lg bg-white border border-black/5">
-                              <Avatar className="h-10 w-10 border border-black/5">
-                                <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedApartment.ownerName.charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
-                                <p className="text-[10px] text-neutral-500">{t.common.owner}</p>
-                              </div>
+                            <div className="flex items-center gap-3 p-3 rounded-sm bg-white border border-black/5">
+                              {selectedApartment.ownerName ? (
+                                <>
+                                  <Avatar className="h-10 w-10 border border-black/5">
+                                    <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedApartment.ownerName.charAt(0)}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
+                                    <p className="text-[10px] text-neutral-500">{t.common.owner}</p>
+                                  </div>
+                                </>
+                              ) : (
+                                <p className="text-xs text-neutral-400 italic py-2">{t.buildings.selectOwner} (Empty)</p>
+                              )}
                             </div>
 
-                            {selectedApartment.tenantName && (
-                              <div className="flex items-center gap-3 p-3 rounded-lg bg-white border border-black/5">
-                                <Avatar className="h-10 w-10 border border-black/5">
-                                  <AvatarFallback className="bg-neutral-200 text-neutral-600">{selectedApartment.tenantName.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <p className="text-sm font-semibold">{selectedApartment.tenantName}</p>
-                                  <p className="text-[10px] text-neutral-500">{t.common.tenant}</p>
-                                </div>
-                              </div>
-                            )}
+                            <div className="flex items-center gap-3 p-3 rounded-sm bg-white border border-black/5">
+                              {selectedApartment.tenantName ? (
+                                <>
+                                  <Avatar className="h-10 w-10 border border-black/5">
+                                    <AvatarFallback className="bg-neutral-200 text-neutral-600">{selectedApartment.tenantName.charAt(0)}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <p className="text-sm font-semibold">{selectedApartment.tenantName}</p>
+                                    <p className="text-[10px] text-neutral-500">{t.common.tenant}</p>
+                                  </div>
+                                </>
+                              ) : (
+                                <p className="text-xs text-neutral-400 italic py-2">No Tenant</p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -332,7 +371,7 @@ export default function BuildingsPage() {
                           {charges
                             .filter(c => c.apartmentId === selectedApartment.id)
                             .map((charge) => (
-                              <div key={charge.id} className="flex items-center justify-between p-3 rounded-lg bg-white shadow-none border-none">
+                              <div key={charge.id} className="flex items-center justify-between p-3 rounded-sm bg-white border border-black/5">
                                 <div>
                                   <p className="text-sm font-medium">{charge.month} {charge.year}</p>
                                   <p className="text-xs font-bold text-neutral-900 mt-0.5">{charge.amount} MAD</p>
@@ -346,7 +385,7 @@ export default function BuildingsPage() {
                               </div>
                             ))}
                           {charges.filter(c => c.apartmentId === selectedApartment.id).length === 0 && (
-                            <div className="text-center py-10 bg-white rounded-xl border border-dashed border-black/5">
+                            <div className="text-center py-10 bg-white rounded-sm border border-dashed border-black/5">
                               <p className="text-xs text-neutral-400 italic">{t.buildings.noHistoryFound}</p>
                             </div>
                           )}
@@ -358,77 +397,56 @@ export default function BuildingsPage() {
               ) : (
                 <>
                   <CardHeader className="p-4 pb-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-base">{selectedBuildingData.name}</CardTitle>
-                        <CardDescription className="text-xs">{selectedBuildingData.floors} {t.common.floorsAptsRegistered.split('·')[0].trim()} · {buildingApartments.length} {t.common.floorsAptsRegistered.split('·')[1].trim()}</CardDescription>
-                      </div>
-                      <Button variant="outline" size="sm" className="gap-1.5 text-xs cursor-pointer" onClick={() => setIsAddAptOpen(true)}>
-                        <Plus className="h-3.5 w-3.5" />
-                        {t.buildings.addApartment}
-                      </Button>
+                    <div className="flex justify-between items-center">
+                       <div>
+                         <CardTitle className="text-base">{selectedBuildingData.name}</CardTitle>
+                         <CardDescription className="text-xs">{selectedBuildingData.floors} {t.common.floorsAptsRegistered.split('·')[0].trim()} · {buildingApartments.length} {t.common.floorsAptsRegistered.split('·')[1].trim()}</CardDescription>
+                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-4 pt-2">
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="border-b border-black/5">
-                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.apartmentNumber} #</th>
-                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.floor}</th>
-                             <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.tantiemes}</th>
-                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.owner}</th>
-                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.tenant}</th>
-                            <th className="text-right text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {buildingApartments.map((apt) => (
-                            <tr 
-                              key={apt.id} 
-                              className="border-b border-black/5 last:border-0 hover:bg-black/5 transition-colors cursor-pointer"
-                              onClick={() => setSelectedApartment(apt)}
-                            >
-                              <td className="px-3 py-2.5">
-                                <div className="flex items-center gap-2">
-                                  <DoorOpen className="h-3.5 w-3.5 text-primary" />
-                                  <span className="text-sm font-semibold">{apt.number}</span>
-                                </div>
-                              </td>
-                              <td className="px-3 py-2.5 text-xs text-neutral-600">{t.buildings.floor} {apt.floor}</td>
-                              <td className="px-3 py-2.5 text-xs font-medium">{apt.tantiemes}</td>
-                              <td className="px-3 py-2.5 text-xs font-medium">{apt.ownerName}</td>
-                              <td className="px-3 py-2.5 text-xs text-neutral-600">{apt.tenantName || <span className="text-neutral-300 italic">{t.buildings.noTenant}</span>}</td>
-                              <td className="px-3 py-2.5 text-right">
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7 cursor-pointer rounded-full hover:bg-black/5">
-                                      <MoreVertical className="h-3.5 w-3.5 text-neutral-400" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end" className="bg-white border-none shadow-lg rounded-sm">
-                                    <DropdownMenuItem 
-                                      className="cursor-pointer text-xs gap-2 py-2 hover:bg-primary/5 focus:bg-primary/5 focus:text-neutral-900 rounded-sm"
-                                      onClick={(e) => { e.stopPropagation(); setEditingApt(apt); setIsEditAptOpen(true) }}
-                                    >
-                                      <Pencil className="h-3.5 w-3.5 text-neutral-500" />
-                                      {t.common.edit}
-                                    </DropdownMenuItem>
-                                    <DropdownMenuSeparator className="bg-black/5" />
-                                    <DropdownMenuItem 
-                                      className="cursor-pointer text-xs gap-2 py-2 text-red-600 hover:bg-primary/5 focus:bg-primary/5 focus:text-red-600 rounded-sm"
-                                      onClick={(e) => { e.stopPropagation(); handleDeleteConfirm(apt, "apartment") }}
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5" />
-                                      {t.common.delete}
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                  <CardContent className="p-4 pt-4 bg-neutral-50/50 rounded-b-xl border-t border-black/5">
+                    <div className="space-y-8">
+                      {Array.from({ length: selectedBuildingData.floors }, (_, i) => selectedBuildingData.floors - i).map(floorNum => {
+                        const aptsOnFloor = buildingApartments.filter(a => a.floor === floorNum).sort((a, b) => parseInt(a.number) - parseInt(b.number))
+                        return (
+                          <div key={floorNum} className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <div className="h-px bg-neutral-200 flex-1"></div>
+                              <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">{t.buildings.floor} {floorNum}</span>
+                              <div className="h-px bg-neutral-200 flex-1"></div>
+                            </div>
+                            <div className={cn("grid gap-3", getGridColsClass(selectedBuildingData.aptsPerFloor))}>
+                              {aptsOnFloor.map(apt => {
+                                const isOccupied = !!apt.ownerId
+                                return (
+                                  <div 
+                                    key={apt.id}
+                                    onClick={() => setSelectedApartment(apt)}
+                                    className={cn("p-3 rounded-sm border cursor-pointer transition-all duration-200 relative group min-h-[5rem]", 
+                                      isOccupied ? "bg-primary/5 border-primary/20 hover:border-primary/40 hover:bg-primary/10" : "bg-neutral-100 border-neutral-200 hover:border-neutral-300 hover:shadow-sm"
+                                    )}
+                                  >
+                                    <div className="flex justify-between items-start mb-1.5">
+                                      <div className={cn("font-bold text-lg", isOccupied ? "text-primary" : "text-neutral-400")}>{apt.number}</div>
+                                      {isOccupied ? <div className="h-2 w-2 rounded-full bg-primary mt-1.5"></div> : <div className="h-2 w-2 rounded-full bg-neutral-200 mt-1.5"></div>}
+                                    </div>
+                                    <div className="flex flex-col justify-end">
+                                      {isOccupied ? (
+                                        <div className="text-[10px] font-medium text-neutral-700 truncate leading-tight">{apt.ownerName}</div>
+                                      ) : (
+                                        <div className="text-[10px] text-neutral-400 italic">Empty</div>
+                                      )}
+                                      {apt.tenantName && (
+                                        <div className="text-[9px] text-neutral-500 truncate mt-0.5 leading-tight">{apt.tenantName} (T)</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
                   </CardContent>
                 </>
@@ -444,31 +462,6 @@ export default function BuildingsPage() {
       </div>
 
 
-
-      {/* Add Apartment Dialog */}
-      <Dialog open={isAddAptOpen} onOpenChange={(o) => { setIsAddAptOpen(o); if (!o) setNewApt({ floor: "", number: "", tantiemes: "", ownerId: "" }) }}>
-        <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
-          <DialogHeader><DialogTitle>{t.buildings.addApartment}</DialogTitle><DialogDescription>{t.buildings.addApartmentTo} {selectedBuildingData?.name}.</DialogDescription></DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-3 items-start">
-              <div className="grid gap-2"><Label className="text-xs">{t.buildings.apartmentNumber}</Label><Input placeholder="101" className="bg-neutral-100 border-none rounded-sm" value={newApt.number} onChange={(e) => setNewApt(p => ({ ...p, number: e.target.value }))} /></div>
-              <div className="grid gap-2 items-start">
-                <Label className="text-xs">{t.buildings.floor}</Label>
-                <Input type="number" placeholder="1" className={cn("bg-neutral-100 border-none rounded-sm", parseInt(newApt.floor) > (selectedBuildingData?.floors || 0) && "ring-1 ring-red-500")} value={newApt.floor} onChange={(e) => setNewApt(p => ({ ...p, floor: e.target.value }))} />
-                {parseInt(newApt.floor) > (selectedBuildingData?.floors || 0) && <p className="text-[10px] text-red-500 font-medium leading-tight mt-1">{t.buildings.floorValidationError}</p>}
-              </div>
-            </div>
-            <div className="grid gap-2"><Label className="text-xs">{t.buildings.tantiemes}</Label><Input type="number" placeholder="120" className="bg-neutral-100 border-none rounded-sm" value={newApt.tantiemes} onChange={(e) => setNewApt(p => ({ ...p, tantiemes: e.target.value }))} /></div>
-            <div className="grid gap-2"><Label className="text-xs">{t.buildings.owner}</Label>
-              <Select value={newApt.ownerId} onValueChange={(v) => setNewApt(p => ({ ...p, ownerId: v }))}>
-                <SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder={t.buildings.selectOwner} /></SelectTrigger>
-                <SelectContent className="bg-white border-none shadow-lg">{managedUsers.filter(u => u.role === "Owner").map(u => (<SelectItem key={u.id} value={u.id}>{u.fullName}</SelectItem>))}</SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter><Button className="w-full cursor-pointer" onClick={handleAddApartment}>{t.buildings.addApartment}</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Edit Building Dialog */}
       <Dialog open={isEditBuildingOpen} onOpenChange={(o) => { setIsEditBuildingOpen(o); if (!o) setEditingBuilding(null) }}>
@@ -493,14 +486,25 @@ export default function BuildingsPage() {
                 onChange={(e) => setEditingBuilding(p => p ? ({ ...p, address: e.target.value }) : null)} 
               />
             </div>
-            <div className="grid gap-2">
-              <Label className="text-xs">{t.buildings.totalFloors}</Label>
-              <Input 
-                type="number" 
-                className="bg-neutral-100 border-none rounded-sm" 
-                value={editingBuilding?.floors || ""} 
-                onChange={(e) => setEditingBuilding(p => p ? ({ ...p, floors: parseInt(e.target.value) || 0 }) : null)} 
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-2">
+                <Label className="text-xs">{t.buildings.totalFloors}</Label>
+                <Input 
+                  type="number" 
+                  className="bg-neutral-100 border-none rounded-sm" 
+                  value={editingBuilding?.floors || ""} 
+                  onChange={(e) => setEditingBuilding(p => p ? ({ ...p, floors: parseInt(e.target.value) || 0 }) : null)} 
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label className="text-xs">Apts per Floor</Label>
+                <Input 
+                  type="number" 
+                  className="bg-neutral-100 border-none rounded-sm" 
+                  value={editingBuilding?.aptsPerFloor || ""} 
+                  onChange={(e) => setEditingBuilding(p => p ? ({ ...p, aptsPerFloor: parseInt(e.target.value) || 0 }) : null)} 
+                />
+              </div>
             </div>
           </div>
           <DialogFooter>
@@ -516,25 +520,6 @@ export default function BuildingsPage() {
             <DialogTitle>{t.buildings.editApartment}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-3 items-start">
-              <div className="grid gap-2">
-                <Label className="text-xs">{t.buildings.apartmentNumber}</Label>
-                <Input 
-                  className="bg-neutral-100 border-none rounded-sm" 
-                  value={editingApt?.number || ""} 
-                  onChange={(e) => setEditingApt(p => p ? ({ ...p, number: e.target.value }) : null)} 
-                />
-              </div>
-              <div className="grid gap-2 items-start">
-                <Label className="text-xs">{t.buildings.floor}</Label>
-                <Input 
-                  type="number" 
-                  className={cn("bg-neutral-100 border-none rounded-sm", (editingApt?.floor || 0) > (selectedBuildingData?.floors || 0) && "ring-1 ring-red-500")} 
-                  value={editingApt?.floor || ""} 
-                  onChange={(e) => setEditingApt(p => p ? ({ ...p, floor: parseInt(e.target.value) || 0 }) : null)} 
-                />
-              </div>
-            </div>
             <div className="grid gap-2">
               <Label className="text-xs">{t.buildings.tantiemes}</Label>
               <Input 
@@ -543,19 +528,6 @@ export default function BuildingsPage() {
                 value={editingApt?.tantiemes || ""} 
                 onChange={(e) => setEditingApt(p => p ? ({ ...p, tantiemes: parseInt(e.target.value) || 0 }) : null)} 
               />
-            </div>
-            <div className="grid gap-2">
-              <Label className="text-xs">{t.buildings.owner}</Label>
-              <Select value={editingApt?.ownerId} onValueChange={(v) => setEditingApt(p => p ? ({ ...p, ownerId: v }) : null)}>
-                <SelectTrigger className="bg-neutral-100 border-none rounded-sm">
-                  <SelectValue placeholder={t.buildings.selectOwner} />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-none shadow-lg">
-                  {managedUsers.filter(u => u.role === "Owner").map(u => (
-                    <SelectItem key={u.id} value={u.id}>{u.fullName}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
           <DialogFooter>
@@ -569,10 +541,10 @@ export default function BuildingsPage() {
         <AlertDialogContent className="bg-white border-none rounded-sm">
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {confirmType === "building" ? t.buildings.deleteBuilding : t.buildings.deleteApartment}
+              {t.buildings.deleteBuilding}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {confirmType === "building" ? t.buildings.confirmDeleteBuilding : t.buildings.confirmDeleteApartment}
+              {t.buildings.confirmDeleteBuilding}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -586,6 +558,8 @@ export default function BuildingsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+
     </div>
   )
 }

@@ -8,7 +8,7 @@ export interface Building {
   name: string
   address: string
   floors: number
-  totalApartments: number
+  aptsPerFloor: number
 }
 
 export interface Apartment {
@@ -24,18 +24,18 @@ export interface Apartment {
 }
 
 export const buildings: Building[] = [
-  { id: "building-1", name: "Résidence Al Andalous", address: "12 Rue Mohammed V, Casablanca", floors: 6, totalApartments: 24 },
-  { id: "building-2", name: "Résidence Les Jardins", address: "45 Avenue Hassan II, Rabat", floors: 4, totalApartments: 16 },
-  { id: "building-3", name: "Résidence Palm View", address: "8 Boulevard Zerktouni, Marrakech", floors: 5, totalApartments: 20 },
+  { id: "building-1", name: "Résidence Al Andalous", address: "12 Rue Mohammed V, Casablanca", floors: 6, aptsPerFloor: 4 },
+  { id: "building-2", name: "Résidence Les Jardins", address: "45 Avenue Hassan II, Rabat", floors: 4, aptsPerFloor: 3 },
+  { id: "building-3", name: "Résidence Palm View", address: "8 Boulevard Zerktouni, Marrakech", floors: 3, aptsPerFloor: 6 },
 ]
 
 export const apartments: Apartment[] = [
-  { id: "apt-101", buildingId: "building-1", floor: 1, number: "101", tantiemes: 120, ownerId: "user-owner-1", ownerName: "Ahmed Benali", tenantId: "user-tenant-1", tenantName: "Karim Moussaoui" },
-  { id: "apt-102", buildingId: "building-1", floor: 1, number: "102", tantiemes: 120, ownerId: "user-owner-3", ownerName: "Youssef Alami" },
-  { id: "apt-201", buildingId: "building-1", floor: 2, number: "201", tantiemes: 100, ownerId: "user-owner-4", ownerName: "Rachid Tazi" },
-  { id: "apt-202", buildingId: "building-1", floor: 2, number: "202", tantiemes: 100, ownerId: "user-owner-2", ownerName: "Fatima Zahra" },
-  { id: "apt-301", buildingId: "building-2", floor: 3, number: "301", tantiemes: 150, ownerId: "user-owner-5", ownerName: "Hassan Bennani", tenantId: "user-tenant-2", tenantName: "Sara Idrissi" },
-  { id: "apt-302", buildingId: "building-2", floor: 3, number: "302", tantiemes: 150, ownerId: "user-owner-6", ownerName: "Amina Chraibi" },
+  { id: "apt-1", buildingId: "building-1", floor: 1, number: "1", tantiemes: 120, ownerId: "user-owner-1", ownerName: "Ahmed Benali", tenantId: "user-tenant-1", tenantName: "Karim Moussaoui" },
+  { id: "apt-2", buildingId: "building-1", floor: 1, number: "2", tantiemes: 120, ownerId: "user-owner-3", ownerName: "Youssef Alami" },
+  { id: "apt-5", buildingId: "building-1", floor: 2, number: "5", tantiemes: 100, ownerId: "user-owner-4", ownerName: "Rachid Tazi" },
+  { id: "apt-6", buildingId: "building-1", floor: 2, number: "6", tantiemes: 100, ownerId: "user-owner-2", ownerName: "Fatima Zahra" },
+  { id: "apt-b2-1", buildingId: "building-2", floor: 1, number: "1", tantiemes: 150, ownerId: "user-owner-5", ownerName: "Hassan Bennani", tenantId: "user-tenant-2", tenantName: "Sara Idrissi" },
+  { id: "apt-b2-2", buildingId: "building-2", floor: 1, number: "2", tantiemes: 150, ownerId: "user-owner-6", ownerName: "Amina Chraibi" },
 ]
 
 // ========================
@@ -59,14 +59,14 @@ export interface Charge {
 }
 
 export const charges: Charge[] = [
-  { id: "chg-001", apartmentId: "apt-101", apartmentNumber: "101", buildingName: "Résidence Al Andalous", ownerName: "Ahmed Benali", month: "April", year: 2026, amount: 500, status: "Paid", paidDate: "2026-04-05", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
-  { id: "chg-002", apartmentId: "apt-102", apartmentNumber: "102", buildingName: "Résidence Al Andalous", ownerName: "Youssef Alami", month: "April", year: 2026, amount: 500, status: "Unpaid", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" },
-  { id: "chg-003", apartmentId: "apt-201", apartmentNumber: "201", buildingName: "Résidence Al Andalous", ownerName: "Rachid Tazi", month: "April", year: 2026, amount: 450, status: "Unpaid", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" },
-  { id: "chg-004", apartmentId: "apt-202", apartmentNumber: "202", buildingName: "Résidence Al Andalous", ownerName: "Fatima Zahra", month: "April", year: 2026, amount: 450, status: "Paid", paidDate: "2026-04-10", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
-  { id: "chg-005", apartmentId: "apt-301", apartmentNumber: "301", buildingName: "Résidence Les Jardins", ownerName: "Hassan Bennani", month: "April", year: 2026, amount: 600, status: "Partial", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop" },
-  { id: "chg-006", apartmentId: "apt-302", apartmentNumber: "302", buildingName: "Résidence Les Jardins", ownerName: "Amina Chraibi", month: "April", year: 2026, amount: 600, status: "Unpaid", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop" },
-  { id: "chg-007", apartmentId: "apt-101", apartmentNumber: "101", buildingName: "Résidence Al Andalous", ownerName: "Ahmed Benali", month: "March", year: 2026, amount: 500, status: "Paid", paidDate: "2026-03-08", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
-  { id: "chg-008", apartmentId: "apt-202", apartmentNumber: "202", buildingName: "Résidence Al Andalous", ownerName: "Fatima Zahra", month: "March", year: 2026, amount: 450, status: "Paid", paidDate: "2026-03-12", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
+  { id: "chg-001", apartmentId: "apt-1", apartmentNumber: "1", buildingName: "Résidence Al Andalous", ownerName: "Ahmed Benali", month: "April", year: 2026, amount: 500, status: "Paid", paidDate: "2026-04-05", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
+  { id: "chg-002", apartmentId: "apt-2", apartmentNumber: "2", buildingName: "Résidence Al Andalous", ownerName: "Youssef Alami", month: "April", year: 2026, amount: 500, status: "Unpaid", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" },
+  { id: "chg-003", apartmentId: "apt-4", apartmentNumber: "4", buildingName: "Résidence Al Andalous", ownerName: "Rachid Tazi", month: "April", year: 2026, amount: 450, status: "Unpaid", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" },
+  { id: "chg-004", apartmentId: "apt-5", apartmentNumber: "5", buildingName: "Résidence Al Andalous", ownerName: "Fatima Zahra", month: "April", year: 2026, amount: 450, status: "Paid", paidDate: "2026-04-10", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
+  { id: "chg-005", apartmentId: "apt-b2-1", apartmentNumber: "1", buildingName: "Résidence Les Jardins", ownerName: "Hassan Bennani", month: "April", year: 2026, amount: 600, status: "Partial", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop" },
+  { id: "chg-006", apartmentId: "apt-b2-2", apartmentNumber: "2", buildingName: "Résidence Les Jardins", ownerName: "Amina Chraibi", month: "April", year: 2026, amount: 600, status: "Unpaid", validatedByAdmin: false, ownerAvatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop" },
+  { id: "chg-007", apartmentId: "apt-1", apartmentNumber: "1", buildingName: "Résidence Al Andalous", ownerName: "Ahmed Benali", month: "March", year: 2026, amount: 500, status: "Paid", paidDate: "2026-03-08", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
+  { id: "chg-008", apartmentId: "apt-5", apartmentNumber: "5", buildingName: "Résidence Al Andalous", ownerName: "Fatima Zahra", month: "March", year: 2026, amount: 450, status: "Paid", paidDate: "2026-03-12", validatedByAdmin: true, ownerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
 ]
 
 // ========================
@@ -97,7 +97,7 @@ export const tickets: Ticket[] = [
     submittedBy: "Karim Moussaoui", 
     submittedByRole: "Tenant", 
     buildingName: "Résidence Al Andalous", 
-    apartmentNumber: "101", 
+    apartmentNumber: "1", 
     status: "Open", 
     createdAt: "2026-04-25", 
     photo: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800",
@@ -108,10 +108,10 @@ export const tickets: Ticket[] = [
     ],
     submittedByAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" 
   },
-  { id: "TKT-002", title: "Broken elevator", description: "The main elevator in building A has been out of service for 3 days. Elderly residents are having difficulty accessing upper floors.", submittedBy: "Ahmed Benali", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", createdAt: "2026-04-22", submittedByAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
-  { id: "TKT-003", title: "Noisy neighbors", description: "Neighbors on the 3rd floor are consistently playing loud music past midnight. This has been ongoing for 2 weeks.", submittedBy: "Sara Idrissi", submittedByRole: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "301", status: "Open", createdAt: "2026-04-24", submittedByAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
-  { id: "TKT-004", title: "Parking space dispute", description: "Another resident has been parking in my designated spot (P-12) repeatedly.", submittedBy: "Fatima Zahra", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "202", status: "Resolved", createdAt: "2026-04-15", submittedByAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
-  { id: "TKT-005", title: "Lobby lights not working", description: "Several light fixtures in the ground floor lobby are not functioning, making it very dark at night.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "101", status: "In Progress", createdAt: "2026-04-20", submittedByAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
+  { id: "TKT-002", title: "Broken elevator", description: "The main elevator in building A has been out of service for 3 days. Elderly residents are having difficulty accessing upper floors.", submittedBy: "Ahmed Benali", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "1", status: "In Progress", createdAt: "2026-04-22", submittedByAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" },
+  { id: "TKT-003", title: "Noisy neighbors", description: "Neighbors on the 3rd floor are consistently playing loud music past midnight. This has been ongoing for 2 weeks.", submittedBy: "Sara Idrissi", submittedByRole: "Tenant", buildingName: "Résidence Les Jardins", apartmentNumber: "1", status: "Open", createdAt: "2026-04-24", submittedByAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" },
+  { id: "TKT-004", title: "Parking space dispute", description: "Another resident has been parking in my designated spot (P-12) repeatedly.", submittedBy: "Fatima Zahra", submittedByRole: "Owner", buildingName: "Résidence Al Andalous", apartmentNumber: "5", status: "Resolved", createdAt: "2026-04-15", submittedByAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" },
+  { id: "TKT-005", title: "Lobby lights not working", description: "Several light fixtures in the ground floor lobby are not functioning, making it very dark at night.", submittedBy: "Karim Moussaoui", submittedByRole: "Tenant", buildingName: "Résidence Al Andalous", apartmentNumber: "1", status: "In Progress", createdAt: "2026-04-20", submittedByAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop" },
 ];
 
 // ========================
