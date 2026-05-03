@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Building2, Plus, ChevronRight, DoorOpen, MapPin } from "lucide-react"
+import { Building2, Plus, ChevronRight, DoorOpen, MapPin, ArrowLeft } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -54,8 +53,15 @@ export default function BuildingsPage() {
 
   const handleAddApartment = () => {
     if (!selectedBuilding || !newApt.floor || !newApt.number || !newApt.tantiemes || !newApt.ownerId) return
+    
+    const floorNum = parseInt(newApt.floor)
+    if (selectedBuildingData && floorNum > selectedBuildingData.floors) {
+      alert(t.buildings.floorValidationError)
+      return
+    }
+
     const owner = managedUsers.find(u => u.id === newApt.ownerId)
-    const apt: Apartment = { id: `apt-${Date.now()}`, buildingId: selectedBuilding, floor: parseInt(newApt.floor) || 1, number: newApt.number, tantiemes: parseInt(newApt.tantiemes) || 100, ownerId: newApt.ownerId, ownerName: owner?.fullName || "Unknown" }
+    const apt: Apartment = { id: `apt-${Date.now()}`, buildingId: selectedBuilding, floor: floorNum || 0, number: newApt.number, tantiemes: parseInt(newApt.tantiemes) || 100, ownerId: newApt.ownerId, ownerName: owner?.fullName || "Unknown" }
     setLocalApartments(prev => [...prev, apt])
     setNewApt({ floor: "", number: "", tantiemes: "", ownerId: "" })
     setIsAddAptOpen(false)
@@ -129,53 +135,168 @@ export default function BuildingsPage() {
         <div className="lg:col-span-2">
           {selectedBuildingData ? (
             <Card className="border-none bg-neutral-100">
-              <CardHeader className="p-4 pb-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-base">{selectedBuildingData.name}</CardTitle>
-                    <CardDescription className="text-xs">{selectedBuildingData.floors} floors · {buildingApartments.length} apartments registered</CardDescription>
-                  </div>
-                  <Button variant="outline" size="sm" className="gap-1.5 text-xs cursor-pointer" onClick={() => setIsAddAptOpen(true)}>
-                    <Plus className="h-3.5 w-3.5" />
-                    {t.buildings.addApartment}
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4 pt-2">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-black/5">
-                        <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.apartmentNumber} #</th>
-                        <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.floor}</th>
-                        <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.tantiemes}</th>
-                        <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.owner}</th>
-                        <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.tenant}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {buildingApartments.map((apt) => (
-                        <tr 
-                          key={apt.id} 
-                          className="border-b border-black/5 last:border-0 transition-colors cursor-pointer"
-                          onClick={() => setSelectedApartment(apt)}
-                        >
-                          <td className="px-3 py-2.5">
-                            <div className="flex items-center gap-2">
-                              <DoorOpen className="h-3.5 w-3.5 text-primary" />
-                              <span className="text-sm font-semibold">{apt.number}</span>
+              {selectedApartment ? (
+                <>
+                  <CardHeader className="p-4 pb-2 border-b border-black/5">
+                    <div className="flex items-center gap-3">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8 rounded-full hover:bg-black/5 cursor-pointer"
+                        onClick={() => setSelectedApartment(null)}
+                      >
+                        <ArrowLeft className="h-4 w-4" />
+                      </Button>
+                      <div>
+                        <CardTitle className="text-base">{t.buildings.residentDetails}</CardTitle>
+                        <CardDescription className="text-xs">
+                          {selectedBuildingData.name} · {t.buildings.apartmentNumber} {selectedApartment.number}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-6">
+                        {/* Apartment Info */}
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.apartmentNumber} Info</h4>
+                          <div className="p-4 rounded-xl bg-white shadow-none border-none">
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                <DoorOpen className="h-5 w-5 text-primary" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-bold">{t.buildings.apartmentNumber} {selectedApartment.number}</p>
+                                <p className="text-xs text-neutral-500">{t.buildings.floor} {selectedApartment.floor}</p>
+                              </div>
                             </div>
-                          </td>
-                          <td className="px-3 py-2.5 text-xs text-neutral-600">{t.buildings.floor} {apt.floor}</td>
-                          <td className="px-3 py-2.5 text-xs font-medium">{apt.tantiemes}</td>
-                          <td className="px-3 py-2.5 text-xs font-medium">{apt.ownerName}</td>
-                          <td className="px-3 py-2.5 text-xs text-neutral-600">{apt.tenantName || <span className="text-neutral-300 italic">{t.buildings.noTenant}</span>}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
+                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-black/5">
+                              <div>
+                                <p className="text-[10px] text-neutral-400 uppercase">{t.buildings.tantiemes}</p>
+                                <p className="text-sm font-semibold">{selectedApartment.tantiemes} m²</p>
+                              </div>
+                              <div>
+                                <p className="text-[10px] text-neutral-400 uppercase">{t.buildings.owner}</p>
+                                <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Occupants */}
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.occupants}</h4>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-3 p-3 rounded-lg bg-white border border-black/5">
+                              <Avatar className="h-10 w-10 border border-black/5">
+                                <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedApartment.ownerName.charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
+                                <p className="text-[10px] text-neutral-500">Owner</p>
+                              </div>
+                            </div>
+
+                            {selectedApartment.tenantName && (
+                              <div className="flex items-center gap-3 p-3 rounded-lg bg-white border border-black/5">
+                                <Avatar className="h-10 w-10 border border-black/5">
+                                  <AvatarFallback className="bg-neutral-200 text-neutral-600">{selectedApartment.tenantName.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="text-sm font-semibold">{selectedApartment.tenantName}</p>
+                                  <p className="text-[10px] text-neutral-500">Tenant</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Payment History */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.paymentHistory}</h4>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          {charges
+                            .filter(c => c.apartmentId === selectedApartment.id)
+                            .map((charge) => (
+                              <div key={charge.id} className="flex items-center justify-between p-3 rounded-lg bg-white shadow-none border-none">
+                                <div>
+                                  <p className="text-sm font-medium">{charge.month} {charge.year}</p>
+                                  <p className="text-xs font-bold text-neutral-900 mt-0.5">{charge.amount} MAD</p>
+                                </div>
+                                <div className="text-right">
+                                  <Badge variant={charge.status === "Paid" ? "success" : charge.status === "Partial" ? "warning" : "danger"} className="text-[10px] mb-1 block w-fit ml-auto">
+                                    {charge.status}
+                                  </Badge>
+                                  {charge.paidDate && <p className="text-[9px] text-neutral-400">Paid on {charge.paidDate}</p>}
+                                </div>
+                              </div>
+                            ))}
+                          {charges.filter(c => c.apartmentId === selectedApartment.id).length === 0 && (
+                            <div className="text-center py-10 bg-white rounded-xl border border-dashed border-black/5">
+                              <p className="text-xs text-neutral-400 italic">{t.buildings.noHistoryFound}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </>
+              ) : (
+                <>
+                  <CardHeader className="p-4 pb-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-base">{selectedBuildingData.name}</CardTitle>
+                        <CardDescription className="text-xs">{selectedBuildingData.floors} floors · {buildingApartments.length} apartments registered</CardDescription>
+                      </div>
+                      <Button variant="outline" size="sm" className="gap-1.5 text-xs cursor-pointer" onClick={() => setIsAddAptOpen(true)}>
+                        <Plus className="h-3.5 w-3.5" />
+                        {t.buildings.addApartment}
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-2">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-black/5">
+                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.apartmentNumber} #</th>
+                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.floor}</th>
+                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.tantiemes}</th>
+                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.owner}</th>
+                            <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-3 py-2.5">{t.buildings.tenant}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {buildingApartments.map((apt) => (
+                            <tr 
+                              key={apt.id} 
+                              className="border-b border-black/5 last:border-0 hover:bg-black/5 transition-colors cursor-pointer"
+                              onClick={() => setSelectedApartment(apt)}
+                            >
+                              <td className="px-3 py-2.5">
+                                <div className="flex items-center gap-2">
+                                  <DoorOpen className="h-3.5 w-3.5 text-primary" />
+                                  <span className="text-sm font-semibold">{apt.number}</span>
+                                </div>
+                              </td>
+                              <td className="px-3 py-2.5 text-xs text-neutral-600">{t.buildings.floor} {apt.floor}</td>
+                              <td className="px-3 py-2.5 text-xs font-medium">{apt.tantiemes}</td>
+                              <td className="px-3 py-2.5 text-xs font-medium">{apt.ownerName}</td>
+                              <td className="px-3 py-2.5 text-xs text-neutral-600">{apt.tenantName || <span className="text-neutral-300 italic">{t.buildings.noTenant}</span>}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </>
+              )}
             </Card>
           ) : (
             <div className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-black/5 rounded-xl bg-neutral-50/50">
@@ -186,95 +307,20 @@ export default function BuildingsPage() {
         </div>
       </div>
 
-      <Sheet open={!!selectedApartment} onOpenChange={(open) => !open && setSelectedApartment(null)}>
-        <SheetContent className="w-full sm:max-w-md overflow-y-auto">
-          {selectedApartment && (
-            <>
-              <SheetHeader className="mb-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <DoorOpen className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <SheetTitle>{t.buildings.apartmentNumber} {selectedApartment.number}</SheetTitle>
-                    <SheetDescription>
-                      {selectedBuildingData?.name} · {t.buildings.floor} {selectedApartment.floor} · {selectedApartment.tantiemes} {t.buildings.tantiemes}
-                    </SheetDescription>
-                  </div>
-                </div>
-              </SheetHeader>
 
-              <div className="space-y-6">
-                {/* People Info */}
-                <div className="space-y-3">
-                  <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.occupants}</h4>
-                  
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 border border-black/5">
-                    <Avatar className="h-10 w-10 border border-black/5">
-                      <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedApartment.ownerName.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
-                      <p className="text-[10px] text-neutral-500">Owner</p>
-                    </div>
-                  </div>
-
-                  {selectedApartment.tenantName && (
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 border border-black/5">
-                      <Avatar className="h-10 w-10 border border-black/5">
-                        <AvatarFallback className="bg-neutral-200 text-neutral-600">{selectedApartment.tenantName.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-semibold">{selectedApartment.tenantName}</p>
-                        <p className="text-[10px] text-neutral-500">Tenant</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Payment History */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.paymentHistory}</h4>
-                    <Button variant="outline" size="sm" className="h-7 text-[10px] px-2">{t.buildings.viewAll}</Button>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    {charges
-                      .filter(c => c.apartmentId === selectedApartment.id)
-                      .map((charge) => (
-                        <div key={charge.id} className="flex items-center justify-between p-3 rounded-lg bg-neutral-50 border border-black/5">
-                          <div>
-                            <p className="text-sm font-medium">{charge.month} {charge.year}</p>
-                            <p className="text-xs font-bold text-neutral-900 mt-0.5">{charge.amount} MAD</p>
-                          </div>
-                          <div className="text-right">
-                            <Badge variant={charge.status === "Paid" ? "success" : charge.status === "Partial" ? "warning" : "danger"} className="text-[10px] mb-1 block w-fit ml-auto">
-                              {charge.status}
-                            </Badge>
-                            {charge.paidDate && <p className="text-[9px] text-neutral-400">Paid on {charge.paidDate}</p>}
-                          </div>
-                        </div>
-                      ))}
-                    {charges.filter(c => c.apartmentId === selectedApartment.id).length === 0 && (
-                      <p className="text-xs text-neutral-500 text-center py-4 italic">{t.buildings.noHistoryFound}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
 
       {/* Add Apartment Dialog */}
       <Dialog open={isAddAptOpen} onOpenChange={(o) => { setIsAddAptOpen(o); if (!o) setNewApt({ floor: "", number: "", tantiemes: "", ownerId: "" }) }}>
         <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
           <DialogHeader><DialogTitle>{t.buildings.addApartment}</DialogTitle><DialogDescription>{t.buildings.addApartmentTo} {selectedBuildingData?.name}.</DialogDescription></DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 items-start">
               <div className="grid gap-2"><Label className="text-xs">Apartment Number</Label><Input placeholder="101" className="bg-neutral-100 border-none rounded-sm" value={newApt.number} onChange={(e) => setNewApt(p => ({ ...p, number: e.target.value }))} /></div>
-              <div className="grid gap-2"><Label className="text-xs">Floor</Label><Input type="number" placeholder="1" className="bg-neutral-100 border-none rounded-sm" value={newApt.floor} onChange={(e) => setNewApt(p => ({ ...p, floor: e.target.value }))} /></div>
+              <div className="grid gap-2 items-start">
+                <Label className="text-xs">Floor</Label>
+                <Input type="number" placeholder="1" className={cn("bg-neutral-100 border-none rounded-sm", parseInt(newApt.floor) > (selectedBuildingData?.floors || 0) && "ring-1 ring-red-500")} value={newApt.floor} onChange={(e) => setNewApt(p => ({ ...p, floor: e.target.value }))} />
+                {parseInt(newApt.floor) > (selectedBuildingData?.floors || 0) && <p className="text-[10px] text-red-500 font-medium leading-tight mt-1">{t.buildings.floorValidationError}</p>}
+              </div>
             </div>
             <div className="grid gap-2"><Label className="text-xs">Tantièmes (m²)</Label><Input type="number" placeholder="120" className="bg-neutral-100 border-none rounded-sm" value={newApt.tantiemes} onChange={(e) => setNewApt(p => ({ ...p, tantiemes: e.target.value }))} /></div>
             <div className="grid gap-2"><Label className="text-xs">Owner</Label>

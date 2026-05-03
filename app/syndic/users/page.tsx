@@ -50,13 +50,15 @@ export default function UsersPage() {
 
   const handleOpenEdit = (user: ManagedUser) => {
     setEditingUser(user)
-    setEditForm({ fullName: user.fullName, building: user.buildingName, apartment: user.apartmentNumber, username: user.username || "", phone: user.phone || "" })
+    const building = buildings.find(b => b.name === user.buildingName)
+    setEditForm({ fullName: user.fullName, building: building?.id || "", apartment: user.apartmentNumber, username: user.username || "", phone: user.phone || "" })
     setIsEditOpen(true)
   }
 
   const handleSaveEdit = () => {
     if (!editingUser || !editForm.fullName) return
-    setLocalUsers(p => p.map(u => u.id === editingUser.id ? { ...u, fullName: editForm.fullName, buildingName: editForm.building || u.buildingName, apartmentNumber: editForm.apartment || u.apartmentNumber, username: u.role === "Owner" ? (editForm.username || u.username) : u.username, phone: u.role === "Tenant" ? (editForm.phone || u.phone) : u.phone } : u))
+    const bd = buildings.find(b => b.id === editForm.building)
+    setLocalUsers(p => p.map(u => u.id === editingUser.id ? { ...u, fullName: editForm.fullName, buildingName: bd?.name || u.buildingName, apartmentNumber: editForm.apartment || u.apartmentNumber, username: u.role === "Owner" ? (editForm.username || u.username) : u.username, phone: u.role === "Tenant" ? (editForm.phone || u.phone) : u.phone } : u))
     setIsEditOpen(false); setEditingUser(null)
   }
 
@@ -136,7 +138,18 @@ export default function UsersPage() {
             <div className="grid gap-2"><Label className="text-xs">Full Name</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.fullName} onChange={(e) => setEditForm(p => ({ ...p, fullName: e.target.value }))} /></div>
             {editingUser.role === "Owner" && <div className="grid gap-2"><Label className="text-xs">Username</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.username} onChange={(e) => setEditForm(p => ({ ...p, username: e.target.value }))} /></div>}
             {editingUser.role === "Tenant" && <div className="grid gap-2"><Label className="text-xs">Phone Number</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.phone} onChange={(e) => setEditForm(p => ({ ...p, phone: e.target.value }))} /></div>}
-            <div className="grid gap-2"><Label className="text-xs">Building</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.building} onChange={(e) => setEditForm(p => ({ ...p, building: e.target.value }))} /></div>
+            <div className="grid gap-2"><Label className="text-xs">Building</Label>
+              <Select value={editForm.building} onValueChange={(v) => setEditForm(p => ({ ...p, building: v }))}>
+                <SelectTrigger className="bg-neutral-100 border-none rounded-sm">
+                  <SelectValue placeholder="Select building" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-none shadow-lg">
+                  {buildings.map(b => (
+                    <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="grid gap-2"><Label className="text-xs">Apartment Number</Label><Input className="bg-neutral-100 border-none rounded-sm" value={editForm.apartment} onChange={(e) => setEditForm(p => ({ ...p, apartment: e.target.value }))} /></div>
           </div>)}
           <DialogFooter><Button className="w-full cursor-pointer" onClick={handleSaveEdit}>Save Changes</Button></DialogFooter>

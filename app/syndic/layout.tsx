@@ -33,8 +33,8 @@ interface SidebarItem {
 // Admin pages
 const adminSidebarItems: SidebarItem[] = [
   { title: "Dashboard", icon: Home, path: "/syndic/dashboard", description: "Overview, unpaid charges, tickets, announcements" },
-  { title: "Users", icon: Users, path: "/syndic/users", description: "Manage Owner and Tenant accounts" },
   { title: "Buildings", icon: Building2, path: "/syndic/buildings", description: "Buildings, floors, and apartments" },
+  { title: "Users", icon: Users, path: "/syndic/users", description: "Manage Owner and Tenant accounts" },
   { title: "Charges", icon: CreditCard, path: "/syndic/charges", description: "Generate and track monthly charges" },
   { title: "Helpdesk", icon: TicketCheck, path: "/syndic/helpdesk", description: "View and manage all tickets" },
   { title: "Documents", icon: FolderOpen, path: "/syndic/documents", description: "Upload and organize files" },

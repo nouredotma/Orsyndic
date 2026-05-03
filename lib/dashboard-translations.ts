@@ -112,6 +112,8 @@ export interface DashboardTranslations {
     addApartmentTo: string
     selectOwner: string
     selectBuilding: string
+    floorValidationError: string
+    residentDetails: string
   }
   charges: {
     total: string
@@ -320,6 +322,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       addApartmentTo: "Add a new apartment to",
       selectOwner: "Select owner",
       selectBuilding: "Select building",
+      floorValidationError: "Floor cannot exceed the building's total floors",
+      residentDetails: "Resident Details",
     },
     charges: {
       total: "Total",
@@ -526,6 +530,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       addApartmentTo: "Ajouter un nouvel appartement à",
       selectOwner: "Sélectionner le propriétaire",
       selectBuilding: "Sélectionner l'immeuble",
+      floorValidationError: "L'étage ne peut pas dépasser le nombre total d'étages de l'immeuble",
+      residentDetails: "Détails du Résident",
     },
     charges: {
       total: "Total",
@@ -732,6 +738,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       addApartmentTo: "Agregar un nuevo apartamento a",
       selectOwner: "Seleccionar propietario",
       selectBuilding: "Seleccionar edificio",
+      floorValidationError: "El piso no puede exceder el total de pisos del edificio",
+      residentDetails: "Detalles del Residente",
     },
     charges: {
       total: "Total",
