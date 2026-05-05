@@ -20,8 +20,8 @@ export function FloatingActions() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Don't show floating actions on syndic dashboard pages
-  if (pathname?.startsWith("/syndic")) {
+  // Don't show floating actions on syndic and admin dashboard pages
+  if (pathname?.startsWith("/syndic") || pathname?.startsWith("/syndic-demo") || pathname?.startsWith("/app-admin")) {
     return null
   }
 
