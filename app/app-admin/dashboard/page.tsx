@@ -7,6 +7,7 @@ import {
   Activity,
   CreditCard,
   ArrowUpRight,
+  ArrowDownRight,
 } from "lucide-react"
 import {
   Card,
@@ -16,6 +17,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 import { platformStats, recentSyndics } from "@/lib/app-admin-mock-data"
 
@@ -35,8 +38,22 @@ export default function AppAdminDashboard() {
 
   if (!mounted) return null
 
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
+  const dateStr = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+
   return (
     <div className="flex flex-col gap-4">
+
+      {/* Greeting Header */}
+      <div className="flex items-center justify-between mb-1">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">{greeting}, Admin!</h1>
+          <p className="text-xs text-neutral-500">
+            {dateStr.charAt(0).toUpperCase() + dateStr.slice(1)}
+          </p>
+        </div>
+      </div>
 
       {/* Stats Grid */}
       <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -44,20 +61,20 @@ export default function AppAdminDashboard() {
           const Icon = iconMap[stat.iconName] || Activity
           return (
             <Card key={stat.title} className="overflow-hidden border-none bg-neutral-100">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-3.5 px-4">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-3.5 px-2">
                 <CardTitle className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider">
                   {stat.title}
                 </CardTitle>
                 <div className="p-1.5 bg-primary/10 rounded-sm">
-                  <Icon className="h-4 w-4 text-primary" />
+                  <Icon className="h-3.5 w-3.5 text-primary" />
                 </div>
               </CardHeader>
-              <CardContent className="px-4 pb-4">
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <div className="flex items-center gap-1 mt-1 text-[10px] text-green-600 font-medium">
-                  <ArrowUpRight className="h-3 w-3" />
-                  <span>{stat.trend}</span>
-                  <span className="text-neutral-500 ml-1 font-normal text-[10px]">vs last month</span>
+              <CardContent className="px-2 pb-3.5">
+                <div className="text-xl font-bold">{stat.value}</div>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <ArrowUpRight className="h-3 w-3 text-[#00D100]" />
+                  <span className="text-[10px] font-semibold text-[#00D100]">{stat.trend}</span>
+                  <span className="text-[10px] text-neutral-500 ml-0.5">vs last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -68,32 +85,41 @@ export default function AppAdminDashboard() {
       <div className="grid gap-4 grid-cols-1">
         {/* Recent Syndics Activity */}
         <Card className="border-none bg-neutral-100">
-          <CardContent className="p-4">
-            <div className="space-y-3">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-base">Recent Syndics</CardTitle>
+            <CardDescription className="text-xs">
+              Latest syndic activity on the platform
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4 pt-1 pb-4">
+            <div className="space-y-2">
               {recentSyndics.map((syndic) => (
                 <div key={syndic.id} className="flex items-center justify-between border-b border-black/5 last:border-0 pb-3 last:pb-0">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border border-black/5">
-                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                      <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold text-xs">
                         {syndic.name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-semibold text-neutral-900 leading-none">{syndic.name}</p>
+                      <p className="text-sm font-semibold leading-none">{syndic.name}</p>
                       <p className="text-[10px] text-neutral-500 mt-1">{syndic.company}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                      <p className="text-xs font-semibold text-neutral-900">{syndic.buildings} Buildings</p>
+                      <p className="text-xs font-semibold">{syndic.buildings} Buildings</p>
                       <p className="text-[10px] text-neutral-500">{syndic.users} Users</p>
                     </div>
                     <div className="text-right">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-sm text-[10px] font-bold ${
-                        syndic.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {syndic.status.toUpperCase()}
-                      </span>
+                      <Badge 
+                        variant="outline"
+                        className={cn(
+                          "text-[10px] font-bold border-none",
+                          syndic.status === 'Active' ? 'bg-green-100 text-green-800 hover:bg-green-100' : 'bg-amber-100 text-amber-800 hover:bg-amber-100'
+                        )}>
+                        {syndic.status}
+                      </Badge>
                       <p className="text-[10px] text-neutral-500 mt-1">{syndic.joined}</p>
                     </div>
                   </div>

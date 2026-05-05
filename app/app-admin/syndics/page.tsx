@@ -10,6 +10,10 @@ import {
   Copy,
   Check,
   Building,
+  Eye,
+  Pencil,
+  CheckCircle2,
+  Ban,
 } from "lucide-react"
 import {
   Card,
@@ -40,6 +44,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
 
 import { initialSyndicsList as initialSyndics } from "@/lib/app-admin-mock-data"
 
@@ -54,7 +59,6 @@ export default function ManageSyndicsPage() {
     companyName: "",
     contactName: "",
     email: "",
-    subscription: "Standard"
   })
   const [generatedKey, setGeneratedKey] = React.useState<string | null>(null)
 
@@ -91,7 +95,6 @@ export default function ManageSyndicsPage() {
       buildings: 0,
       status: "Pending",
       joined: "Just now",
-      subscription: newSyndicForm.subscription
     }, ...prev])
   }
 
@@ -102,13 +105,18 @@ export default function ManageSyndicsPage() {
   }
 
   const resetForm = () => {
-    setNewSyndicForm({ companyName: "", contactName: "", email: "", subscription: "Standard" });
+    setNewSyndicForm({ companyName: "", contactName: "", email: "" });
     setGeneratedKey(null);
   }
 
   const handleApprove = (id: string) => {
     setSyndics(prev => prev.map(s => s.id === id ? { ...s, status: 'Active' } : s))
   }
+
+  // Stats
+  const activeCount = syndics.filter(s => s.status === "Active").length
+  const pendingCount = syndics.filter(s => s.status === "Pending" || s.status === "Pending Approval").length
+  const totalBuildings = syndics.reduce((sum, s) => sum + s.buildings, 0)
 
   return (
     <div className="flex flex-col gap-4">
@@ -161,20 +169,6 @@ export default function ManageSyndicsPage() {
                     onChange={(e) => setNewSyndicForm({...newSyndicForm, email: e.target.value})}
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="plan" className="text-xs">Subscription Plan</Label>
-                  <select 
-                    id="plan" 
-                    className="flex h-10 w-full items-center justify-between rounded-sm border-none bg-neutral-100 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20"
-                    value={newSyndicForm.subscription}
-                    onChange={(e) => setNewSyndicForm({...newSyndicForm, subscription: e.target.value})}
-                  >
-                    <option value="Starter">Starter (Up to 2 Buildings)</option>
-                    <option value="Standard">Standard (Up to 10 Buildings)</option>
-                    <option value="Premium">Premium (Up to 25 Buildings)</option>
-                    <option value="Enterprise">Enterprise (Unlimited)</option>
-                  </select>
-                </div>
               </div>
             ) : (
               <div className="py-6 flex flex-col items-center justify-center text-center space-y-4">
@@ -220,6 +214,28 @@ export default function ManageSyndicsPage() {
         </Dialog>
       </div>
 
+      {/* Stats Summary */}
+      <div className="grid grid-cols-3 gap-2">
+        <Card className="border-none bg-neutral-100">
+          <CardContent className="p-3 flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-sm"><Users className="h-4 w-4 text-primary" /></div>
+            <div><p className="text-lg font-bold">{activeCount}</p><p className="text-[10px] text-neutral-500">Active Syndics</p></div>
+          </CardContent>
+        </Card>
+        <Card className="border-none bg-neutral-100">
+          <CardContent className="p-3 flex items-center gap-3">
+            <div className="p-2 bg-amber-50 rounded-sm"><Users className="h-4 w-4 text-amber-500" /></div>
+            <div><p className="text-lg font-bold">{pendingCount}</p><p className="text-[10px] text-neutral-500">Pending</p></div>
+          </CardContent>
+        </Card>
+        <Card className="border-none bg-neutral-100">
+          <CardContent className="p-3 flex items-center gap-3">
+            <div className="p-2 bg-blue-50 rounded-sm"><Building className="h-4 w-4 text-blue-500" /></div>
+            <div><p className="text-lg font-bold">{totalBuildings}</p><p className="text-[10px] text-neutral-500">Total Buildings</p></div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="flex items-center gap-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
@@ -236,38 +252,37 @@ export default function ManageSyndicsPage() {
       <Card className="border-none bg-neutral-100">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-[10px] text-neutral-500 border-b border-black/5 uppercase tracking-wider font-bold">
-                <tr>
-                  <th className="px-4 py-3 font-bold">Syndic / Company</th>
-                  <th className="px-4 py-3 font-bold">Contact Details</th>
-                  <th className="px-4 py-3 font-bold text-center">Buildings</th>
-                  <th className="px-4 py-3 font-bold">Plan</th>
-                  <th className="px-4 py-3 font-bold">Status</th>
-                  <th className="px-4 py-3 font-bold text-right">Actions</th>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-black/5">
+                  <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">Syndic / Company</th>
+                  <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">Contact Details</th>
+                  <th className="text-center text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">Buildings</th>
+                  <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">Status</th>
+                  <th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/5">
+              <tbody>
                 {filteredSyndics.length > 0 ? (
                   filteredSyndics.map((syndic) => (
-                    <tr key={syndic.id} className="hover:bg-black/5 transition-colors group">
+                    <tr key={syndic.id} className="border-b border-black/5 last:border-0 transition-colors">
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2.5">
                           <Avatar className="h-8 w-8 border border-black/5 shrink-0">
-                            <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                            <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">
                               {syndic.company.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-semibold text-neutral-900 leading-none">{syndic.company}</div>
-                            <div className="text-[10px] text-neutral-500 flex items-center gap-1 mt-1">
+                            <span className="text-sm font-medium">{syndic.company}</span>
+                            <div className="text-[10px] text-neutral-500 flex items-center gap-1 mt-0.5">
                               <Users className="h-3 w-3" /> {syndic.name}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="text-neutral-900 text-xs font-medium">{syndic.email}</div>
+                        <div className="text-xs text-neutral-600 font-medium">{syndic.email}</div>
                         <div className="text-[10px] text-neutral-500 mt-0.5">{syndic.phone}</div>
                       </td>
                       <td className="px-4 py-3 text-center">
@@ -275,46 +290,53 @@ export default function ManageSyndicsPage() {
                           {syndic.buildings}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        <Badge variant="outline" className="font-bold text-[10px] bg-white border-black/5 text-neutral-700">
-                          {syndic.subscription.toUpperCase()}
-                        </Badge>
-                      </td>
+
                       <td className="px-4 py-3">
                         <Badge 
-                          className={`text-[10px] font-bold border-none shadow-xs ${
+                          variant="outline"
+                          className={cn(
+                            "text-[10px] font-bold border-none",
                             syndic.status === 'Active' 
-                              ? 'bg-green-100 text-green-800' 
+                              ? 'bg-green-100 text-green-800 hover:bg-green-100' 
                               : syndic.status === 'Pending Approval'
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'bg-amber-100 text-amber-800'
-                          }`}
+                                ? 'bg-blue-100 text-blue-800 hover:bg-blue-100'
+                                : 'bg-amber-100 text-amber-800 hover:bg-amber-100'
+                          )}
                         >
-                          {syndic.status.toUpperCase()}
+                          {syndic.status}
                         </Badge>
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-4 py-3">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer rounded-full hover:bg-black/5">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 cursor-pointer hover:bg-black/5 transition-colors">
                               <span className="sr-only">Open menu</span>
-                              <MoreVertical className="h-4 w-4" />
+                              <MoreVertical className="h-3.5 w-3.5 text-neutral-400" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-white border-none shadow-lg rounded-sm p-1.5 min-w-[150px]">
-                            <DropdownMenuLabel className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">Actions</DropdownMenuLabel>
-                            <DropdownMenuItem className="cursor-pointer text-xs rounded-sm py-2 px-3 hover:bg-primary/5">View Details</DropdownMenuItem>
+                          <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-lg rounded-sm p-1">
+                            <DropdownMenuItem className="cursor-pointer text-xs gap-2 py-2 hover:bg-primary/5 focus:bg-primary/5 focus:text-black rounded-sm">
+                              <Eye className="h-3.5 w-3.5" />
+                              View Details
+                            </DropdownMenuItem>
                             {syndic.status === 'Pending Approval' && (
                               <DropdownMenuItem 
-                                className="cursor-pointer text-xs rounded-sm py-2 px-3 text-green-600 hover:bg-green-50 hover:text-green-600"
+                                className="cursor-pointer text-xs gap-2 py-2 text-emerald-600 hover:bg-primary/5 focus:bg-primary/5 focus:text-emerald-600 rounded-sm"
                                 onClick={() => handleApprove(syndic.id)}
                               >
+                                <CheckCircle2 className="h-3.5 w-3.5" />
                                 Approve Syndic
                               </DropdownMenuItem>
                             )}
-                            <DropdownMenuItem className="cursor-pointer text-xs rounded-sm py-2 px-3 hover:bg-primary/5">Edit Plan</DropdownMenuItem>
-                            <DropdownMenuSeparator className="bg-black/5 my-1" />
-                            <DropdownMenuItem className="cursor-pointer text-xs rounded-sm py-2 px-3 text-red-600 hover:bg-red-50 hover:text-red-600">Suspend Account</DropdownMenuItem>
+                            <DropdownMenuItem className="cursor-pointer text-xs gap-2 py-2 hover:bg-primary/5 focus:bg-primary/5 focus:text-black rounded-sm">
+                              <Pencil className="h-3.5 w-3.5" />
+                              Edit Plan
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-black/5" />
+                            <DropdownMenuItem className="cursor-pointer text-xs gap-2 py-2 text-red-500 hover:bg-primary/5 focus:bg-primary/5 focus:text-red-500 rounded-sm">
+                              <Ban className="h-3.5 w-3.5" />
+                              Suspend Account
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </td>
@@ -322,10 +344,10 @@ export default function ManageSyndicsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-4 py-12 text-center">
+                    <td colSpan={5} className="px-4 py-12 text-center">
                       <div className="flex flex-col items-center justify-center">
-                        <Users className="h-10 w-10 text-neutral-300 mb-2" />
-                        <p className="text-sm text-neutral-500 font-medium">No syndics found</p>
+                        <Users className="h-8 w-8 text-neutral-300 mx-auto mb-2" />
+                        <p className="text-xs text-neutral-400">No syndics found</p>
                         <p className="text-xs text-neutral-400 mt-1">Try adjusting your search query</p>
                       </div>
                     </td>

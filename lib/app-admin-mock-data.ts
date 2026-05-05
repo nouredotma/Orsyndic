@@ -13,11 +13,11 @@ export const recentSyndics = [
 ]
 
 export const initialSyndicsList = [
-  { id: "1", name: "Ahmed Benali", email: "ahmed@benali-management.ma", phone: "+212 661-234567", company: "Benali Management", buildings: 12, status: "Active", joined: "2 days ago", subscription: "Premium" },
-  { id: "2", name: "Sara Idrissi", email: "sara@idrissi-syndic.com", phone: "+212 677-654321", company: "Idrissi Syndic", buildings: 8, status: "Active", joined: "1 week ago", subscription: "Standard" },
-  { id: "3", name: "Mohammed Amine", email: "amine@casasyndic.ma", phone: "+212 600-112233", company: "Casa Syndic Pro", buildings: 24, status: "Active", joined: "2 weeks ago", subscription: "Enterprise" },
-  { id: "4", name: "Youssef Tazi", email: "contact@tazi-immo.com", phone: "+212 699-887766", company: "Tazi Immobilier", buildings: 5, status: "Pending", joined: "1 month ago", subscription: "Standard" },
-  { id: "5", name: "Karim Mansour", email: "k.mansour@syndic.ma", phone: "+212 611-223344", company: "Mansour Gestion", buildings: 0, status: "Pending Approval", joined: "1 hour ago", subscription: "Starter" },
-  { id: "6", name: "Laila Houssani", email: "laila@houssani-gestion.com", phone: "+212 655-443322", company: "Houssani Syndic", buildings: 0, status: "Pending Approval", joined: "3 hours ago", subscription: "Standard" },
-  { id: "7", name: "Omar Ziri", email: "omar@ziri-management.ma", phone: "+212 622-334455", company: "Ziri Management", buildings: 0, status: "Pending Approval", joined: "5 hours ago", subscription: "Premium" },
+  { id: "1", name: "Ahmed Benali", email: "ahmed@benali-management.ma", phone: "+212 661-234567", company: "Benali Management", buildings: 12, status: "Active", joined: "2 days ago" },
+  { id: "2", name: "Sara Idrissi", email: "sara@idrissi-syndic.com", phone: "+212 677-654321", company: "Idrissi Syndic", buildings: 8, status: "Active", joined: "1 week ago" },
+  { id: "3", name: "Mohammed Amine", email: "amine@casasyndic.ma", phone: "+212 600-112233", company: "Casa Syndic Pro", buildings: 24, status: "Active", joined: "2 weeks ago" },
+  { id: "4", name: "Youssef Tazi", email: "contact@tazi-immo.com", phone: "+212 699-887766", company: "Tazi Immobilier", buildings: 5, status: "Pending", joined: "1 month ago" },
+  { id: "5", name: "Karim Mansour", email: "k.mansour@syndic.ma", phone: "+212 611-223344", company: "Mansour Gestion", buildings: 0, status: "Pending Approval", joined: "1 hour ago" },
+  { id: "6", name: "Laila Houssani", email: "laila@houssani-gestion.com", phone: "+212 655-443322", company: "Houssani Syndic", buildings: 0, status: "Pending Approval", joined: "3 hours ago" },
+  { id: "7", name: "Omar Ziri", email: "omar@ziri-management.ma", phone: "+212 622-334455", company: "Ziri Management", buildings: 0, status: "Pending Approval", joined: "5 hours ago" },
 ]
