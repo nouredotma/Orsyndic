@@ -106,6 +106,10 @@ export default function ManageSyndicsPage() {
     setGeneratedKey(null);
   }
 
+  const handleApprove = (id: string) => {
+    setSyndics(prev => prev.map(s => s.id === id ? { ...s, status: 'Active' } : s))
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
@@ -281,7 +285,9 @@ export default function ManageSyndicsPage() {
                           className={`text-[10px] font-bold border-none shadow-xs ${
                             syndic.status === 'Active' 
                               ? 'bg-green-100 text-green-800' 
-                              : 'bg-amber-100 text-amber-800'
+                              : syndic.status === 'Pending Approval'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-amber-100 text-amber-800'
                           }`}
                         >
                           {syndic.status.toUpperCase()}
@@ -298,6 +304,14 @@ export default function ManageSyndicsPage() {
                           <DropdownMenuContent align="end" className="bg-white border-none shadow-lg rounded-sm p-1.5 min-w-[150px]">
                             <DropdownMenuLabel className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">Actions</DropdownMenuLabel>
                             <DropdownMenuItem className="cursor-pointer text-xs rounded-sm py-2 px-3 hover:bg-primary/5">View Details</DropdownMenuItem>
+                            {syndic.status === 'Pending Approval' && (
+                              <DropdownMenuItem 
+                                className="cursor-pointer text-xs rounded-sm py-2 px-3 text-green-600 hover:bg-green-50 hover:text-green-600"
+                                onClick={() => handleApprove(syndic.id)}
+                              >
+                                Approve Syndic
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem className="cursor-pointer text-xs rounded-sm py-2 px-3 hover:bg-primary/5">Edit Plan</DropdownMenuItem>
                             <DropdownMenuSeparator className="bg-black/5 my-1" />
                             <DropdownMenuItem className="cursor-pointer text-xs rounded-sm py-2 px-3 text-red-600 hover:bg-red-50 hover:text-red-600">Suspend Account</DropdownMenuItem>

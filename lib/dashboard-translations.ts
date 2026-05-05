@@ -298,6 +298,10 @@ export interface DashboardTranslations {
     haveAccount: string
     login: string
     companyName: string
+    phone: string
+    address: string
+    successTitle: string
+    successMessage: string
   }
   common: {
     all: string
@@ -654,6 +658,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       haveAccount: "Already have an account?",
       login: "Login",
       companyName: "Company Name",
+      phone: "Phone Number",
+      address: "Address",
+      successTitle: "Registration Successful!",
+      successMessage: "Your request has been sent for approval. You will be able to log in once the administrator approves your account.",
     },
     common: {
       all: "All",
@@ -1008,6 +1016,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       haveAccount: "Vous avez déjà un compte ?",
       login: "Connexion",
       companyName: "Nom de l'Entreprise",
+      phone: "Numéro de téléphone",
+      address: "Adresse",
+      successTitle: "Inscription réussie !",
+      successMessage: "Votre demande a été envoyée pour approbation. Vous pourrez vous connecter une fois que l'administrateur aura approuvé votre compte.",
     },
     common: {
       all: "Tous",
@@ -1362,6 +1374,10 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       haveAccount: "¿Ya tiene una cuenta?",
       login: "Iniciar Sesión",
       companyName: "Nombre de la Empresa",
+      phone: "Número de teléfono",
+      address: "Dirección",
+      successTitle: "¡Registro exitoso!",
+      successMessage: "Su solicitud ha sido enviada para aprobación. Podrá iniciar sesión una vez que el administrador apruebe su cuenta.",
     },
     common: {
       all: "Todos",

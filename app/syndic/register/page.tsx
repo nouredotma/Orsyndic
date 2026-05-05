@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { Eye, EyeOff, Loader2, CheckCircle } from "lucide-react"
 import { isAuthenticated, registerUser, getDashboardPath } from "@/lib/auth"
 import {
   DropdownMenu,
@@ -32,9 +32,10 @@ export default function RegisterPage() {
   const router = useRouter()
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({ fullName: "", email: "", password: "", companyName: "" })
+  const [formData, setFormData] = useState({ fullName: "", email: "", phone: "", password: "", companyName: "", address: "" })
 
   const currentLanguage = languages.find(l => l.code === language) || languages[0]
 
@@ -65,10 +66,10 @@ export default function RegisterPage() {
     setIsLoading(true)
     setError("")
     try {
-      if (!formData.fullName || !formData.email || !formData.password || !formData.companyName) throw new Error(t.profile.passwordRequired)
+      if (!formData.fullName || !formData.email || !formData.phone || !formData.password || !formData.companyName || !formData.address) throw new Error(t.profile.passwordRequired)
       if (formData.password.length < 6) throw new Error(t.profile.passwordTooShort)
-      await registerUser(formData.fullName, formData.email, formData.password, formData.companyName)
-      router.push("/syndic/dashboard")
+      await registerUser(formData.fullName, formData.email, formData.password, formData.companyName, formData.phone, formData.address)
+      setIsSubmitted(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")
     } finally {
@@ -113,11 +114,11 @@ export default function RegisterPage() {
                 <span className="sr-only">Change language</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-neutral-100 border-none shadow-xl rounded-sm p-1.5">
+            <DropdownMenuContent align="end" className="w-40 bg-white border-none shadow-xl rounded-sm p-1.5">
               {languages.map((lang) => (
-                <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code as DashboardLanguage)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 rounded-sm py-2 px-2.5">
+                <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code as DashboardLanguage)} className="flex items-center gap-2.5 cursor-pointer hover:bg-black/5 focus:bg-black/5 focus:text-black rounded-sm py-2 px-2.5 transition-colors">
                   <img src={lang.flag} alt={lang.name} className="h-5 w-5 object-cover rounded-full border border-black/10" />
-                  <span className={cn("text-xs font-semibold", currentLanguage.code === lang.code && "text-primary")}>{lang.name}</span>
+                  <span className={cn("text-xs font-semibold", currentLanguage.code === lang.code ? "text-primary font-bold" : "text-black")}>{lang.name}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -125,51 +126,84 @@ export default function RegisterPage() {
         </div>
 
         <div className="w-full max-w-md space-y-6 py-4">
-          <div className="space-y-2 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">{renderTitle(t.register.title)}</h2>
-            <p className="text-neutral-500">{t.register.subtitle}</p>
-          </div>
+          {!isSubmitted ? (
+            <>
+              <div className="space-y-2 text-center">
+                <h2 className="text-3xl font-bold tracking-tight">{renderTitle(t.register.title)}</h2>
+                <p className="text-neutral-500">{t.register.subtitle}</p>
+              </div>
 
-          <form onSubmit={handleSubmit} className="space-y-2">
-            {error && <div className="rounded-sm bg-red-50 border border-red-100 p-3 text-sm text-[#FF0000]">{error}</div>}
+              <form onSubmit={handleSubmit} className="space-y-2">
+                {error && <div className="rounded-sm bg-red-50 border border-red-100 p-3 text-sm text-[#FF0000]">{error}</div>}
 
-            <div className="space-y-1">
-              <Label htmlFor="fullName">{t.users.fullName}</Label>
-              <Input id="fullName" name="fullName" type="text" placeholder="John Doe" autoComplete="name" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.fullName} onChange={handleChange} disabled={isLoading} />
-            </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="fullName">{t.users.fullName}</Label>
+                    <Input id="fullName" name="fullName" type="text" placeholder="John Doe" autoComplete="name" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.fullName} onChange={handleChange} disabled={isLoading} />
+                  </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="name@example.com" autoComplete="email" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.email} onChange={handleChange} disabled={isLoading} />
-            </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" name="email" type="email" placeholder="name@example.com" autoComplete="email" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.email} onChange={handleChange} disabled={isLoading} />
+                  </div>
+                </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="password">{t.profile.currentPassword.replace(/current /i, "")}</Label>
-              <div className="relative">
-                <Input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="••••••••" autoComplete="new-password" required value={formData.password} onChange={handleChange} disabled={isLoading} spellCheck="false" autoCorrect="off" className="pr-10 rounded-sm bg-neutral-100 border-transparent focus:bg-white" />
-                {formData.password && (
-                  <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent rounded-sm" onClick={() => setShowPassword(!showPassword)} disabled={isLoading} tabIndex={-1}>
-                    {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
-                    <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
-                  </Button>
-                )}
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="phone">{t.register.phone}</Label>
+                    <Input id="phone" name="phone" type="tel" placeholder="06XXXXXXXX" autoComplete="tel" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.phone} onChange={handleChange} disabled={isLoading} />
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label htmlFor="password">{t.profile.currentPassword.replace(/current /i, "")}</Label>
+                    <div className="relative">
+                      <Input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="••••••••" autoComplete="new-password" required value={formData.password} onChange={handleChange} disabled={isLoading} spellCheck="false" autoCorrect="off" className="pr-10 rounded-sm bg-neutral-100 border-transparent focus:bg-white" />
+                      {formData.password && (
+                        <Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent rounded-sm" onClick={() => setShowPassword(!showPassword)} disabled={isLoading} tabIndex={-1}>
+                          {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
+                          <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="companyName">{t.register.companyName}</Label>
+                  <Input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.companyName} onChange={handleChange} disabled={isLoading} />
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="address">{t.register.address}</Label>
+                  <Input id="address" name="address" type="text" placeholder="123 Street, City" required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.address} onChange={handleChange} disabled={isLoading} />
+                </div>
+
+                <Button type="submit" className="w-full mt-2 rounded-sm cursor-pointer hover:bg-primary/90" disabled={isLoading}>
+                  {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t.register.registering}</>) : (t.register.register)}
+                </Button>
+              </form>
+
+              <div className="mt-2 text-center text-sm">
+                {t.register.haveAccount}{" "}
+                <Link href="/syndic/login" className="font-medium text-primary underline underline-offset-4">{t.register.login}</Link>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center space-y-4 animate-in fade-in zoom-in duration-300">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-2">
+                <CheckCircle className="w-12 h-12" />
+              </div>
+              <h2 className="text-3xl font-bold tracking-tight text-neutral-900">{t.register.successTitle}</h2>
+              <p className="text-neutral-500 max-w-sm leading-relaxed">
+                {t.register.successMessage}
+              </p>
+              <div className="pt-4 w-full">
+                <Button asChild className="w-full rounded-sm cursor-pointer hover:bg-primary/90">
+                  <Link href="/syndic/login">{t.register.login}</Link>
+                </Button>
               </div>
             </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="companyName">{t.register.companyName}</Label>
-              <Input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required className="rounded-sm bg-neutral-100 border-transparent focus:bg-white" value={formData.companyName} onChange={handleChange} disabled={isLoading} />
-            </div>
-
-            <Button type="submit" className="w-full mt-2 rounded-sm cursor-pointer hover:bg-primary/90" disabled={isLoading}>
-              {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t.register.registering}</>) : (t.register.register)}
-            </Button>
-          </form>
-
-          <div className="mt-2 text-center text-sm">
-            {t.register.haveAccount}{" "}
-            <Link href="/syndic/login" className="font-medium text-primary underline underline-offset-4">{t.register.login}</Link>
-          </div>
+          )}
         </div>
       </div>
     </div>

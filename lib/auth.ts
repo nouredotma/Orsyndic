@@ -153,6 +153,8 @@ export const registerUser = async (
   email: string,
   password: string,
   companyName: string,
+  phone: string,
+  address: string,
 ): Promise<User> => {
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -162,11 +164,14 @@ export const registerUser = async (
   }
 
   const userId = generateId()
-  const user: User & { password: string } = {
+  const user: User & { password: string; companyName: string; address: string } = {
     id: userId,
     fullName,
     email,
     password,
+    phone,
+    companyName,
+    address,
     role: "Admin",
   }
 
