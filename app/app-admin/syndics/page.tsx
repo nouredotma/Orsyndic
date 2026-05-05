@@ -4,14 +4,9 @@ import * as React from "react"
 import {
   Users,
   Search,
-  Plus,
   MoreVertical,
-  Key,
-  Copy,
-  Check,
   Building,
   Eye,
-  Pencil,
   CheckCircle2,
   Ban,
 } from "lucide-react"
@@ -28,25 +23,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
-import { initialSyndicsList as initialSyndics } from "@/lib/app-admin-mock-data"
+import { initialSyndicsList as initialSyndics } from "@/lib/mock-data"
 
 export default function ManageSyndicsPage() {
   const [mounted, setMounted] = React.useState(false)
@@ -54,14 +38,6 @@ export default function ManageSyndicsPage() {
   const [searchQuery, setSearchQuery] = React.useState("")
   const [copiedKey, setCopiedKey] = React.useState<string | null>(null)
   
-  // New Syndic Form State
-  const [newSyndicForm, setNewSyndicForm] = React.useState({
-    companyName: "",
-    contactName: "",
-    email: "",
-  })
-  const [generatedKey, setGeneratedKey] = React.useState<string | null>(null)
-
   React.useEffect(() => {
     setMounted(true)
   }, [])
@@ -74,41 +50,6 @@ export default function ManageSyndicsPage() {
     s.email.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleGenerateKey = () => {
-    if (!newSyndicForm.companyName || !newSyndicForm.contactName || !newSyndicForm.email) return;
-    
-    // Generate a random activation key (e.g., ORS-ABCD-1234-WXYZ)
-    const segments = Array.from({length: 3}, () => 
-      Math.random().toString(36).substring(2, 6).toUpperCase()
-    );
-    const key = `ORS-${segments.join('-')}`;
-    
-    setGeneratedKey(key);
-    
-    // In a real app, this would save to the DB as 'Pending'
-    setSyndics(prev => [{
-      id: Date.now().toString(),
-      name: newSyndicForm.contactName,
-      email: newSyndicForm.email,
-      phone: "—",
-      company: newSyndicForm.companyName,
-      buildings: 0,
-      status: "Pending",
-      joined: "Just now",
-    }, ...prev])
-  }
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedKey(text);
-    setTimeout(() => setCopiedKey(null), 2000);
-  }
-
-  const resetForm = () => {
-    setNewSyndicForm({ companyName: "", contactName: "", email: "" });
-    setGeneratedKey(null);
-  }
-
   const handleApprove = (id: string) => {
     setSyndics(prev => prev.map(s => s.id === id ? { ...s, status: 'Active' } : s))
   }
@@ -120,99 +61,6 @@ export default function ManageSyndicsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-end">
-        <Dialog onOpenChange={(open) => !open && resetForm()}>
-          <DialogTrigger asChild>
-            <Button className="gap-2 shrink-0 cursor-pointer text-sm h-9">
-              <Plus className="h-4 w-4" />
-              Add New Syndic
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-white border-none rounded-sm">
-            <DialogHeader>
-              <DialogTitle>Register New Syndic</DialogTitle>
-              <DialogDescription className="text-xs">
-                Enter the syndic's details to generate a unique activation key they can use to register.
-              </DialogDescription>
-            </DialogHeader>
-            
-            {!generatedKey ? (
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="company" className="text-xs">Company / Agency Name</Label>
-                  <Input 
-                    id="company" 
-                    placeholder="e.g. Benali Management" 
-                    className="bg-neutral-100 border-none rounded-sm"
-                    value={newSyndicForm.companyName}
-                    onChange={(e) => setNewSyndicForm({...newSyndicForm, companyName: e.target.value})}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="contact" className="text-xs">Contact Person Name</Label>
-                  <Input 
-                    id="contact" 
-                    placeholder="e.g. Ahmed Benali" 
-                    className="bg-neutral-100 border-none rounded-sm"
-                    value={newSyndicForm.contactName}
-                    onChange={(e) => setNewSyndicForm({...newSyndicForm, contactName: e.target.value})}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="email" className="text-xs">Email Address</Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="contact@agency.com" 
-                    className="bg-neutral-100 border-none rounded-sm"
-                    value={newSyndicForm.email}
-                    onChange={(e) => setNewSyndicForm({...newSyndicForm, email: e.target.value})}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="py-6 flex flex-col items-center justify-center text-center space-y-4">
-                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-2">
-                  <Check className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Activation Key Generated!</h3>
-                  <p className="text-xs text-neutral-500 mt-1">Send this key to the syndic to allow them to register.</p>
-                </div>
-                
-                <div className="w-full bg-neutral-100 p-4 rounded-sm flex items-center justify-between mt-4 border border-black/5">
-                  <code className="font-mono text-lg font-bold tracking-wider">{generatedKey}</code>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => copyToClipboard(generatedKey)}
-                    className="h-8 w-8 hover:bg-black/5 cursor-pointer"
-                  >
-                    {copiedKey === generatedKey ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </div>
-            )}
-            
-            <DialogFooter>
-              {!generatedKey ? (
-                <Button 
-                  className="w-full cursor-pointer"
-                  onClick={handleGenerateKey} 
-                  disabled={!newSyndicForm.companyName || !newSyndicForm.contactName || !newSyndicForm.email}
-                >
-                  <Key className="h-4 w-4 mr-2" />
-                  Generate Key
-                </Button>
-              ) : (
-                <Button variant="outline" className="w-full cursor-pointer border-none bg-neutral-100" onClick={resetForm}>
-                  Create Another
-                </Button>
-              )}
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
 
       {/* Stats Summary */}
       <div className="grid grid-cols-3 gap-2">
@@ -328,10 +176,6 @@ export default function ManageSyndicsPage() {
                                 Approve Syndic
                               </DropdownMenuItem>
                             )}
-                            <DropdownMenuItem className="cursor-pointer text-xs gap-2 py-2 hover:bg-primary/5 focus:bg-primary/5 focus:text-black rounded-sm">
-                              <Pencil className="h-3.5 w-3.5" />
-                              Edit Plan
-                            </DropdownMenuItem>
                             <DropdownMenuSeparator className="bg-black/5" />
                             <DropdownMenuItem className="cursor-pointer text-xs gap-2 py-2 text-red-500 hover:bg-primary/5 focus:bg-primary/5 focus:text-red-500 rounded-sm">
                               <Ban className="h-3.5 w-3.5" />

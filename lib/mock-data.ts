@@ -261,3 +261,51 @@ export const chartConfig = {
     color: "var(--primary)",
   },
 }
+
+// ========================
+// PLATFORM ADMIN DATA
+// ========================
+export const recentSyndics = [
+  { id: "1", name: "Ahmed Benali", company: "Benali Management", buildings: 12, users: 450, status: "Active", joined: "2 days ago" },
+  { id: "2", name: "Sara Idrissi", company: "Idrissi Syndic", buildings: 8, users: 210, status: "Active", joined: "1 week ago" },
+  { id: "3", name: "Mohammed Amine", company: "Casa Syndic Pro", buildings: 24, users: 890, status: "Active", joined: "2 weeks ago" },
+  { id: "4", name: "Youssef Tazi", company: "Tazi Immobilier", buildings: 5, users: 120, status: "Pending", joined: "1 month ago" },
+]
+
+export const initialSyndicsList = [
+  { id: "1", name: "Ahmed Benali", email: "ahmed@benali-management.ma", phone: "+212 661-234567", company: "Benali Management", buildings: 12, status: "Active", joined: "2 days ago" },
+  { id: "2", name: "Sara Idrissi", email: "sara@idrissi-syndic.com", phone: "+212 677-654321", company: "Idrissi Syndic", buildings: 8, status: "Active", joined: "1 week ago" },
+  { id: "3", name: "Mohammed Amine", email: "amine@casasyndic.ma", phone: "+212 600-112233", company: "Casa Syndic Pro", buildings: 24, status: "Active", joined: "2 weeks ago" },
+  { id: "4", name: "Youssef Tazi", email: "contact@tazi-immo.com", phone: "+212 699-887766", company: "Tazi Immobilier", buildings: 5, status: "Pending", joined: "1 month ago" },
+  { id: "5", name: "Karim Mansour", email: "k.mansour@syndic.ma", phone: "+212 611-223344", company: "Mansour Gestion", buildings: 0, status: "Pending Approval", joined: "1 hour ago" },
+  { id: "6", name: "Laila Houssani", email: "laila@houssani-gestion.com", phone: "+212 655-443322", company: "Houssani Syndic", buildings: 0, status: "Pending Approval", joined: "3 hours ago" },
+  { id: "7", name: "Omar Ziri", email: "omar@ziri-management.ma", phone: "+212 622-334455", company: "Ziri Management", buildings: 0, status: "Pending Approval", joined: "5 hours ago" },
+  { id: "demo", name: "Demo Admin", email: "demo@orsyndic.ma", phone: "+212 522-000000", company: "Orsyndic Demo", buildings: 3, status: "Active", joined: "1 month ago" },
+]
+
+export const platformStats = [
+  { 
+    title: "Total Syndics", 
+    value: initialSyndicsList.length.toString(), 
+    trend: "+12%", 
+    iconName: "Users" 
+  },
+  { 
+    title: "Total Buildings", 
+    value: initialSyndicsList.reduce((acc, s) => acc + s.buildings, 0).toString(), 
+    trend: "+8%", 
+    iconName: "Building2" 
+  },
+  { 
+    title: "Total Users", 
+    value: (recentSyndics.reduce((acc, s) => acc + s.users, 0) + managedUsers.length).toLocaleString(), 
+    trend: "+15%", 
+    iconName: "Activity" 
+  },
+  { 
+    title: "Platform Revenue", 
+    value: "84.2K MAD", 
+    trend: "+5%", 
+    iconName: "CreditCard" 
+  },
+]

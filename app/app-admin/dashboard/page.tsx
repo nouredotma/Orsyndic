@@ -20,7 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
-import { platformStats, recentSyndics } from "@/lib/app-admin-mock-data"
+import { platformStats, recentSyndics } from "@/lib/mock-data"
 
 const iconMap: Record<string, any> = {
   Users,
