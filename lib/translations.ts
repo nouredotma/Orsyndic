@@ -114,27 +114,12 @@ export interface Translations {
     pricing: string;
     subtitle: string;
     tiers: {
-      starter: {
-        name: string;
-        description: string;
-        cta: string;
-        features: string[];
-        limitations: string[];
-      };
-      professional: {
-        name: string;
-        description: string;
-        cta: string;
-        features: string[];
-        limitations: string[];
-      };
-      enterprise: {
+      pro: {
         name: string;
         price: string;
         description: string;
         cta: string;
         features: string[];
-        limitations: string[];
       };
     };
   };
@@ -237,6 +222,25 @@ export interface Translations {
       footerAgreement: string;
     };
   };
+  features: {
+    projects: {
+      saas: { category: string; mobileCategory: string; description: string };
+      corporate: { category: string; mobileCategory: string; description: string };
+      ecommerce: { category: string; mobileCategory: string; description: string };
+      association: { category: string; mobileCategory: string; description: string };
+      travel: { category: string; mobileCategory: string; description: string };
+    };
+  };
+  transformation: {
+    title: string;
+    subtitle: string;
+    steps: {
+      step1: { title: string; description: string };
+      step2: { title: string; description: string };
+      step3: { title: string; description: string };
+      step4: { title: string; description: string };
+    };
+  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -335,50 +339,23 @@ export const translations: Record<Language, Translations> = {
     pricing: {
       title: "Simple, Transparent ",
       pricing: "Pricing",
-      subtitle: "Choose the perfect plan for your needs",
+      subtitle: "One plan. Everything you need.",
       tiers: {
-        starter: {
-          name: "Starter",
-          description: "Perfect for single buildings and small associations",
-          cta: "Order Now",
+        pro: {
+          name: "Pro",
+          price: "$20 / month",
+          description: "Full access to Orsyndic — manage your building with complete transparency",
+          cta: "Get Started",
           features: [
-            "Up to 50 lots",
+            "Multi-building management",
             "Automated charge generation",
             "Resident incident reporting",
-            "Basic document library",
-            "Email support",
-            "Financial dashboard",
-          ],
-          limitations: ["Multi-building management", "Advanced accounting exports", "Custom web application"],
-        },
-        professional: {
-          name: "Professional",
-          description: "For growing syndics and property managers",
-          cta: "Order Now",
-          features: [
-            "Everything in Starter",
-            "Up to 200 lots",
-            "Multi-building management",
-            "Advanced accounting exports",
+            "Document library",
+            "Real-time payment tracking",
             "Automated payment reminders",
+            "Financial dashboard",
             "Priority support",
           ],
-          limitations: ["Dedicated account manager", "Custom integrations", "White-label platform"],
-        },
-        enterprise: {
-          name: "Enterprise",
-          price: "Custom",
-          description: "For large-scale property management firms",
-          cta: "Get a Quote",
-          features: [
-            "Everything in Pro",
-            "Unlimited lots",
-            "Dedicated account manager",
-            "Custom integrations",
-            "White-label platform",
-            "API Access",
-          ],
-          limitations: [],
         },
       },
     },
@@ -569,6 +546,57 @@ export const translations: Record<Language, Translations> = {
         footerAgreement: "By submitting this form, you agree to our privacy policy and terms of service.",
       },
     },
+    features: {
+      projects: {
+        saas: {
+          category: "SaaS & Platform",
+          mobileCategory: "SaaS",
+          description: "High-performance software solutions for modern businesses, focusing on scalability and user experience.",
+        },
+        corporate: {
+          category: "Corporate & Professional",
+          mobileCategory: "Corporate",
+          description: "Sophisticated digital presences for professional service firms and established corporations.",
+        },
+        ecommerce: {
+          category: "E-commerce & Retail",
+          mobileCategory: "E-comm",
+          description: "Conversion-focused online stores with seamless checkout experiences and robust backend management.",
+        },
+        association: {
+          category: "Association & NGO",
+          mobileCategory: "NGO",
+          description: "Community-driven platforms designed to foster engagement and streamline organizational management.",
+        },
+        travel: {
+          category: "Travel & Hospitality",
+          mobileCategory: "Travel",
+          description: "Immersive digital experiences for the travel industry, featuring booking integrations and stunning visuals.",
+        },
+      },
+    },
+    transformation: {
+      title: "How Orsyndic transforms your management",
+      subtitle: "Experience a seamless transition from manual chaos to automated efficiency with our proven onboarding process.",
+      steps: {
+        step1: {
+          title: "Digital Onboarding",
+          description: "We digitize your building records, floors, and apartment data to create a perfect mirror of your physical property.",
+        },
+        step2: {
+          title: "Rules Configuration",
+          description: "Set up automated charge calculations, late fees, and financial rules tailored to your co-ownership regulations.",
+        },
+        step3: {
+          title: "Team Activation",
+          description: "Comprehensive training for your syndic staff and automated invitations for co-owners to join the platform.",
+        },
+        step4: {
+          title: "Live Operations",
+          description: "Go live with automated billing, real-time tracking, and professional support available at every step.",
+        },
+      },
+    },
   },
   fr: {
     nav: {
@@ -665,50 +693,23 @@ export const translations: Record<Language, Translations> = {
     pricing: {
       title: "Des Tarifs Simples et ",
       pricing: "Transparents",
-      subtitle: "Choisissez le plan parfait pour vos besoins",
+      subtitle: "Un seul plan. Tout ce qu'il vous faut.",
       tiers: {
-        starter: {
-          name: "Starter",
-          description: "Parfait pour les petits immeubles",
-          cta: "Commander",
+        pro: {
+          name: "Pro",
+          price: "200 MAD / mois",
+          description: "Accès complet à Orsyndic — gérez votre immeuble en toute transparence",
+          cta: "Démarrer",
           features: [
-            "Jusqu'à 50 lots",
+            "Gestion multi-immeubles",
             "Génération automatique des charges",
             "Signalement d'incidents",
-            "Bibliothèque de documents de base",
-            "Support par email",
-            "Tableau de bord financier",
-          ],
-          limitations: ["Gestion multi-immeubles", "Exports comptables avancés", "Application Web Personnalisée"],
-        },
-        professional: {
-          name: "Professionnel",
-          description: "Pour les syndics en croissance",
-          cta: "Commander",
-          features: [
-            "Tout ce qui est dans Starter",
-            "Jusqu'à 200 lots",
-            "Gestion multi-immeubles",
-            "Exports comptables avancés",
+            "Bibliothèque de documents",
+            "Suivi des paiements en temps réel",
             "Rappels de paiement automatisés",
+            "Tableau de bord financier",
             "Support prioritaire",
           ],
-          limitations: ["Gestionnaire de compte dédié", "Intégrations sur mesure", "Plateforme en marque blanche"],
-        },
-        enterprise: {
-          name: "Entreprise",
-          price: "Sur Mesure",
-          description: "Pour les grands cabinets de gestion",
-          cta: "Obtenir un devis",
-          features: [
-            "Tout ce qui est dans Pro",
-            "Lots illimités",
-            "Gestionnaire de compte dédié",
-            "Intégrations sur mesure",
-            "Plateforme en marque blanche",
-            "Accès API",
-          ],
-          limitations: [],
         },
       },
     },
@@ -899,6 +900,57 @@ export const translations: Record<Language, Translations> = {
         footerAgreement: "En soumettant ce formulaire, vous acceptez notre politique de confidentialité et nos conditions d'utilisation.",
       },
     },
+    features: {
+      projects: {
+        saas: {
+          category: "SaaS & Plateforme",
+          mobileCategory: "SaaS",
+          description: "Solutions logicielles haute performance pour les entreprises modernes, axées sur l'évolutivité et l'expérience utilisateur.",
+        },
+        corporate: {
+          category: "Entreprise & Professionnel",
+          mobileCategory: "Entreprise",
+          description: "Présences numériques sophistiquées pour les sociétés de services professionnels et les entreprises établies.",
+        },
+        ecommerce: {
+          category: "E-commerce & Retail",
+          mobileCategory: "E-comm",
+          description: "Boutiques en ligne axées sur la conversion avec des expériences de paiement fluides et une gestion robuste.",
+        },
+        association: {
+          category: "Association & ONG",
+          mobileCategory: "ONG",
+          description: "Plateformes communautaires conçues pour favoriser l'engagement et simplifier la gestion organisationnelle.",
+        },
+        travel: {
+          category: "Voyage & Hôtellerie",
+          mobileCategory: "Voyage",
+          description: "Expériences numériques immersives pour l'industrie du voyage, avec des intégrations de réservation.",
+        },
+      },
+    },
+    transformation: {
+      title: "Comment Orsyndic transforme votre gestion",
+      subtitle: "Vivez une transition fluide du chaos manuel à l'efficacité automatisée grâce à notre processus d'intégration éprouvé.",
+      steps: {
+        step1: {
+          title: "Intégration Numérique",
+          description: "Nous numérisons vos dossiers d'immeuble, étages et données d'appartements pour créer un miroir parfait de votre propriété.",
+        },
+        step2: {
+          title: "Configuration des Règles",
+          description: "Configurez le calcul automatique des charges, les frais de retard et les règles financières selon votre règlement de copropriété.",
+        },
+        step3: {
+          title: "Activation de l'Équipe",
+          description: "Formation complète pour votre personnel de syndic et invitations automatisées pour les copropriétaires.",
+        },
+        step4: {
+          title: "Opérations en Direct",
+          description: "Lancez-vous avec la facturation automatisée, le suivi en temps réel et un support professionnel à chaque étape.",
+        },
+      },
+    },
   },
   es: {
     nav: {
@@ -911,19 +963,19 @@ export const translations: Record<Language, Translations> = {
       access: "Acceso Síndico",
     },
     hero: {
-      badge: "Experiencia Digital Re-imaginada",
+      badge: "Gestión de Síndicos Simplificada",
       title: {
-        part1: "Donde los visionarios construyen",
-        part2: "su presencia digital",
+        part1: "Gestione sus propiedades",
+        part2: "con total transparencia",
       },
-      description: "Nos asociamos con personas y equipos ambiciosos para crear sitios web impresionantes, plataformas potentes y estrategias de crecimiento inteligentes.",
+      description: "Orsyndic centraliza sus finanzas, automatiza sus cargos y agiliza la comunicación entre administradores, propietarios y residentes.",
       startProject: "Probar una demo",
-      viewServices: "Ver Servicios",
-      chatWhatsApp: "Chat por WhatsApp",
-      sendEmail: "Enviar un Email",
+      viewServices: "Funcionalidades",
+      chatWhatsApp: "Soporte WhatsApp",
+      sendEmail: "Envíanos un Email",
       stats: {
-        solutions: { value: "500", label: "Soluciones Digitales" },
-        experience: { value: "12", label: "Años de Experiencia" },
+        solutions: { value: "100%", label: "Transparencia" },
+        experience: { value: "24/7", label: "Disponibilidad" },
       },
     },
     trusted: {
@@ -995,50 +1047,23 @@ export const translations: Record<Language, Translations> = {
     pricing: {
       title: "Precios Simples y ",
       pricing: "Transparentes",
-      subtitle: "Elige el plan perfecto para tus necesidades",
+      subtitle: "Un solo plan. Todo lo que necesitas.",
       tiers: {
-        starter: {
-          name: "Starter",
-          description: "Perfecto para edificios pequeños",
-          cta: "Ordenar ahora",
+        pro: {
+          name: "Pro",
+          price: "200 MAD / mes",
+          description: "Acceso completo a Orsyndic — gestiona tu edificio con total transparencia",
+          cta: "Empezar",
           features: [
-            "Hasta 50 lotes",
+            "Gestión multi-edificio",
             "Generación automática de cargos",
             "Reporte de incidentes",
-            "Biblioteca de documentos básica",
-            "Soporte por email",
-            "Panel financiero",
-          ],
-          limitations: ["Gestión multi-edificio", "Exportaciones contables avanzadas", "Aplicación Web Personalizada"],
-        },
-        professional: {
-          name: "Profesional",
-          description: "Para síndicos en crecimiento",
-          cta: "Ordenar ahora",
-          features: [
-            "Todo lo de Starter",
-            "Hasta 200 lotes",
-            "Gestión multi-edificio",
-            "Exportaciones contables avanzadas",
+            "Biblioteca de documentos",
+            "Seguimiento de pagos en tiempo real",
             "Recordatorios automáticos",
+            "Panel financiero",
             "Soporte prioritario",
           ],
-          limitations: ["Gestor de cuenta dedicado", "Integraciones personalizadas", "Marca blanca"],
-        },
-        enterprise: {
-          name: "Enterprise",
-          price: "Personalizado",
-          description: "Para grandes firmas de gestión",
-          cta: "Obtener presupuesto",
-          features: [
-            "Todo lo de Pro",
-            "Lotes ilimitados",
-            "Gestor de cuenta dedicado",
-            "Integraciones personalizadas",
-            "Marca blanca",
-            "Acceso API",
-          ],
-          limitations: [],
         },
       },
     },
@@ -1227,6 +1252,57 @@ export const translations: Record<Language, Translations> = {
         submit: "Enviar Mensaje",
         whatsapp: "WhatsApp",
         footerAgreement: "Al enviar este formulario, aceptas nuestra política de privacidad y términos de servicio.",
+      },
+    },
+    features: {
+      projects: {
+        saas: {
+          category: "SaaS y Plataforma",
+          mobileCategory: "SaaS",
+          description: "Soluciones de software de alto rendimiento para empresas modernas, centradas en la escalabilidad y la experiencia del usuario.",
+        },
+        corporate: {
+          category: "Corporativo y Profesional",
+          mobileCategory: "Corp",
+          description: "Presencias digitales sofisticadas para firmas de servicios profesionales y corporaciones establecidas.",
+        },
+        ecommerce: {
+          category: "E-commerce y Retail",
+          mobileCategory: "E-comm",
+          description: "Tiendas online enfocadas en la conversión con experiencias de pago fluidas y una gestión robusta.",
+        },
+        association: {
+          category: "Asociación y ONG",
+          mobileCategory: "ONG",
+          description: "Plataformas comunitarias diseñadas para fomentar el compromiso y agilizar la gestión organizacional.",
+        },
+        travel: {
+          category: "Viajes y Hostelería",
+          mobileCategory: "Viajes",
+          description: "Experiencias digitales inmersivas para la industria de viajes, con integraciones de reservas.",
+        },
+      },
+    },
+    transformation: {
+      title: "Cómo Orsyndic transforma su gestión",
+      subtitle: "Experimente una transición fluida del caos manual a la eficiencia automatizada con nuestro proceso de incorporación probado.",
+      steps: {
+        step1: {
+          title: "Incorporación Digital",
+          description: "Digitalizamos los registros de su edificio, pisos y datos de apartamentos para crear un espejo perfecto de su propiedad.",
+        },
+        step2: {
+          title: "Configuración de Reglas",
+          description: "Configure el cálculo automático de cargos, recargos por mora y reglas financieras adaptadas a su reglamento de copropiedad.",
+        },
+        step3: {
+          title: "Activación del Equipo",
+          description: "Capacitación integral para su personal de síndico e invitaciones automatizadas para que los copropietarios se unan.",
+        },
+        step4: {
+          title: "Operaciones en Vivo",
+          description: "Póngase en marcha con facturación automatizada, seguimiento en tiempo real y soporte profesional en cada paso.",
+        },
       },
     },
   },

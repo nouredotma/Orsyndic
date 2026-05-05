@@ -25,7 +25,7 @@ export default function CTASection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-row gap-2 md:gap-4 justify-center">
-              <Link href="/get-a-quote">
+              <Link href="/syndic/register">
                 <Button
                   className="group bg-white hover:bg-white/90 text-black rounded-sm pl-2 pr-1 py-1 md:pl-4 md:pr-2 md:py-2 cursor-pointer w-full font-medium tracking-tight text-xs md:text-base h-auto border border-white flex items-center justify-center gap-2 transition-all duration-300"
                 >

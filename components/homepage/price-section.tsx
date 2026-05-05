@@ -1,48 +1,23 @@
 "use client"
 import { PricingCard, type PricingTier } from "@/components/ui/pricing-card"
 
-import { motion } from "framer-motion"
-
-import { Zap, Rocket, Building2 } from "lucide-react"
+import { Rocket } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 export default function PriceSection() {
   const { t } = useLanguage()
 
-  const TIERS: (PricingTier & { limitations: string[] })[] = [
-    {
-      name: t.pricing.tiers.starter.name,
-      price: t.pricing.tiers.enterprise.price,
-      description: t.pricing.tiers.starter.description,
-      features: t.pricing.tiers.starter.features,
-      limitations: t.pricing.tiers.starter.limitations,
-      cta: t.pricing.tiers.starter.cta,
-      link: "/get-a-quote",
-      primaryBorder: true,
-      icon: Zap,
-    },
-    {
-      name: t.pricing.tiers.professional.name,
-      price: t.pricing.tiers.enterprise.price,
-      description: t.pricing.tiers.professional.description,
-      features: t.pricing.tiers.professional.features,
-      limitations: t.pricing.tiers.professional.limitations,
-      cta: t.pricing.tiers.professional.cta,
-      link: "/get-a-quote",
-      popular: true,
-      icon: Rocket,
-    },
-    {
-      name: t.pricing.tiers.enterprise.name,
-      price: t.pricing.tiers.enterprise.price,
-      description: t.pricing.tiers.enterprise.description,
-      features: t.pricing.tiers.enterprise.features,
-      limitations: t.pricing.tiers.enterprise.limitations,
-      cta: t.pricing.tiers.enterprise.cta,
-      link: "/get-a-quote",
-      icon: Building2,
-    },
-  ]
+  const TIER: PricingTier & { limitations: string[] } = {
+    name: t.pricing.tiers.pro.name,
+    price: t.pricing.tiers.pro.price,
+    description: t.pricing.tiers.pro.description,
+    features: t.pricing.tiers.pro.features,
+    limitations: [],
+    cta: t.pricing.tiers.pro.cta,
+    link: "/syndic/register",
+    popular: true,
+    icon: Rocket,
+  }
 
   return (
     <section id="pricing" className="w-full py-10 px-3 md:px-16 bg-background overflow-hidden scroll-mt-20">
@@ -57,10 +32,8 @@ export default function PriceSection() {
             </div>
           </div>
 
-          <div className="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {TIERS.map((tier) => (
-              <PricingCard key={tier.name} tier={tier} />
-            ))}
+          <div className="w-full max-w-sm mx-auto">
+            <PricingCard tier={TIER} />
           </div>
         </div>
       </div>
