@@ -19,6 +19,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { AppAdminDashboardSkeleton } from "@/components/dashboard-skeletons"
 
 import { platformStats, recentSyndics } from "@/lib/mock-data"
 
@@ -36,7 +37,7 @@ export default function AppAdminDashboard() {
     setMounted(true)
   }, [])
 
-  if (!mounted) return null
+  if (!mounted) return <AppAdminDashboardSkeleton />
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"

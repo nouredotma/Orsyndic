@@ -29,6 +29,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { ManageSyndicsSkeleton } from "@/components/dashboard-skeletons"
 
 import { initialSyndicsList as initialSyndics } from "@/lib/mock-data"
 
@@ -42,7 +43,7 @@ export default function ManageSyndicsPage() {
     setMounted(true)
   }, [])
 
-  if (!mounted) return null
+  if (!mounted) return <ManageSyndicsSkeleton />
 
   const filteredSyndics = syndics.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 

@@ -580,3 +580,151 @@ export function ProfilePageSkeleton() {
     </div>
   )
 }
+
+// ========================
+// APP ADMIN DASHBOARD SKELETON
+// ========================
+export function AppAdminDashboardSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Greeting Header */}
+      <div className="flex items-center justify-between mb-1">
+        <div className="space-y-1.5">
+          <Skeleton className="h-7 w-56" />
+          <Skeleton className="h-3 w-40" />
+        </div>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Card key={i} className="overflow-hidden border-none bg-neutral-100">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-3.5 px-2">
+              <Skeleton className="h-2.5 w-20" />
+              <Skeleton className="h-6 w-6 rounded-sm" />
+            </CardHeader>
+            <CardContent className="px-2 pb-3.5">
+              <Skeleton className="h-7 w-12 mb-1.5" />
+              <div className="flex items-center gap-1">
+                <Skeleton className="h-2.5 w-24" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-4 grid-cols-1">
+        {/* Recent Syndics Activity */}
+        <Card className="border-none bg-neutral-100">
+          <CardHeader className="p-4 pb-2">
+            <Skeleton className="h-4 w-32 mb-1" />
+            <Skeleton className="h-3 w-48" />
+          </CardHeader>
+          <CardContent className="p-4 pt-1 pb-4">
+            <div className="space-y-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between border-b border-black/5 last:border-0 pb-3 last:pb-0">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-9 w-9 rounded-full shrink-0" />
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-3.5 w-28" />
+                      <Skeleton className="h-2.5 w-20" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="text-right hidden sm:block space-y-1">
+                      <Skeleton className="h-3 w-16 ml-auto" />
+                      <Skeleton className="h-2 w-12 ml-auto" />
+                    </div>
+                    <div className="text-right space-y-1">
+                      <Skeleton className="h-4 w-14 rounded-full ml-auto" />
+                      <Skeleton className="h-2 w-16 ml-auto" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+// ========================
+// MANAGE SYNDICS SKELETON
+// ========================
+export function ManageSyndicsSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Stats Summary */}
+      <div className="grid grid-cols-3 gap-2">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Card key={i} className="border-none bg-neutral-100">
+            <CardContent className="p-3 flex items-center gap-3">
+              <Skeleton className="h-8 w-8 rounded-sm" />
+              <div className="space-y-1.5">
+                <Skeleton className="h-5 w-8" />
+                <Skeleton className="h-2.5 w-16" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-9 w-full max-w-sm rounded-sm" />
+      </div>
+
+      {/* Table */}
+      <Card className="border-none bg-neutral-100">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-black/5">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <th key={i} className="px-4 py-3 text-left">
+                      <Skeleton className="h-2.5 w-16" />
+                    </th>
+                  ))}
+                  <th className="px-4 py-3 w-10"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-b border-black/5 last:border-0">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2.5">
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <div className="space-y-1.5">
+                          <Skeleton className="h-3.5 w-24" />
+                          <Skeleton className="h-2.5 w-20" />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="space-y-1.5">
+                        <Skeleton className="h-3 w-32" />
+                        <Skeleton className="h-2.5 w-24" />
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <Skeleton className="h-6 w-8 mx-auto rounded-sm" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <Skeleton className="h-5 w-20 rounded-full" />
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Skeleton className="h-7 w-7 rounded-sm ml-auto" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
