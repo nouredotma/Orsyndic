@@ -173,7 +173,7 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-2">
-            {error && <div className="rounded-sm bg-destructive/15 p-3 text-sm text-destructive">{error}</div>}
+            {error && <div className="rounded-sm bg-red-50 border border-red-100 p-3 text-sm text-[#FF0000]">{error}</div>}
 
             {loginMode === "admin" ? (
               <div className="space-y-1">
