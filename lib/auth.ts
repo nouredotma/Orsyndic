@@ -183,14 +183,7 @@ export const logoutUser = (): void => {
 
 // Get the dashboard path based on user role
 export const getDashboardPath = (role: UserRole): string => {
-  switch (role) {
-    case "Admin":
-      return "/syndic/dashboard"
-    case "Owner":
-      return "/syndic/dashboard"
-    case "Tenant":
-      return "/syndic/dashboard"
-    default:
-      return "/syndic/dashboard"
-  }
+  const isDemo = typeof window !== "undefined" && window.location.pathname.startsWith("/syndic-demo")
+  const prefix = isDemo ? "/syndic-demo" : "/syndic"
+  return `${prefix}/dashboard`
 }
