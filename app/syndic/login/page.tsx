@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, EyeOff, Loader2, ChevronLeft, Mail, User, Phone } from "lucide-react"
-import { isAuthenticated, loginWithEmail, loginWithUsername, loginWithPhone, getDashboardPath } from "@/lib/auth"
+import { isAuthenticated, loginWithEmail, loginWithUsername, loginWithPhone, getDashboardPath, getCurrentUser } from "@/lib/auth"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,10 +49,14 @@ export default function LoginPage() {
   })
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      const userData = JSON.parse(localStorage.getItem("user") || "{}")
-      router.push(getDashboardPath(userData.role))
+    const checkAuth = async () => {
+      const authenticated = await isAuthenticated()
+      if (authenticated) {
+        const userData = getCurrentUser()
+        if (userData) router.push(getDashboardPath(userData.role))
+      }
     }
+    checkAuth()
   }, [router, pathname])
 
   const renderTitle = (text: string) => {
@@ -212,26 +216,6 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="rounded-sm bg-neutral-50 border border-neutral-200 p-3 space-y-2">
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.login.demoCredentials}</p>
-            {loginMode === "admin" ? (
-              <div className="text-xs text-neutral-600 space-y-0.5">
-                <p><span className="font-medium text-neutral-800">Email:</span> admin@orsyndic.com</p>
-                <p><span className="font-medium text-neutral-800">Password:</span> password123</p>
-              </div>
-            ) : loginMode === "owner" ? (
-              <div className="text-xs text-neutral-600 space-y-0.5">
-                <p><span className="font-medium text-neutral-800">{t.users.username}:</span> ahmed.benali</p>
-                <p><span className="font-medium text-neutral-800">Password:</span> password123</p>
-              </div>
-            ) : (
-              <div className="text-xs text-neutral-600 space-y-0.5">
-                <p><span className="font-medium text-neutral-800">{t.users.phone}:</span> 0661234567</p>
-                <p><span className="font-medium text-neutral-800">Password:</span> password123</p>
-              </div>
-            )}
-          </div>
 
           {loginMode === "admin" && (
             <div className="mt-2 text-center text-sm">

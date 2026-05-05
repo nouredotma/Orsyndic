@@ -43,6 +43,8 @@
     "@radix-ui/react-visually-hidden": "latest",
     "@splinetool/react-spline": "latest",
     "@splinetool/runtime": "latest",
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.105.3",
     "@vercel/analytics": "latest",
     "autoprefixer": "latest",
     "class-variance-authority": "latest",

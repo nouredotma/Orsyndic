@@ -211,8 +211,8 @@ function SyndicLayoutContent({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer)
   }, [pathname])
 
-  const handleLogout = () => {
-    logoutUser()
+  const handleLogout = async () => {
+    await logoutUser()
     router.push("/syndic/login")
   }
 

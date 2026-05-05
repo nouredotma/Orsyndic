@@ -52,8 +52,8 @@ import {
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import { getCurrentUser } from "@/lib/auth"
-import type { UserRole } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/demo-auth"
+import type { UserRole } from "@/lib/demo-auth"
 import {
   adminStatsData,
   charges,

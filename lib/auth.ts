@@ -1,7 +1,11 @@
-// Mock authentication functions for local storage
+// Supabase-backed authentication functions
+// Replaces the previous localStorage-based mock auth
 
-// Types
-export type UserRole = "Admin" | "Owner" | "Tenant"
+import { supabase } from '@/lib/supabase'
+import type { UserRole } from '@/lib/types'
+
+// Re-export types for backward compatibility
+export type { UserRole } from '@/lib/types'
 
 export interface User {
   id: string
@@ -13,141 +17,125 @@ export interface User {
   avatar?: string
   apartmentId?: string
   buildingId?: string
+  syndicId?: string
 }
 
-// Mock users for testing
-// Admin logs in with email + password
-// Owner logs in with username + password
-// Tenant logs in with phone + password
-const mockUsers: (User & { password: string; email?: string; username?: string; phone?: string })[] = [
-  {
-    id: "user-admin-1",
-    fullName: "Noureddine Elm",
-    email: "admin@orsyndic.com",
-    password: "password123",
-    role: "Admin",
-    avatar: "/me.webp",
-  },
-  {
-    id: "user-owner-1",
-    fullName: "Ahmed Benali",
-    username: "ahmed.benali",
-    password: "password123",
-    role: "Owner",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-    buildingId: "building-1",
-    apartmentId: "apt-1",
-  },
-  {
-    id: "user-owner-2",
-    fullName: "Fatima Zahra",
-    username: "fatima.zahra",
-    password: "password123",
-    role: "Owner",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-    buildingId: "building-1",
-    apartmentId: "apt-6",
-  },
-  {
-    id: "user-tenant-1",
-    fullName: "Karim Moussaoui",
-    phone: "0661234567",
-    password: "password123",
-    role: "Tenant",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop",
-    buildingId: "building-1",
-    apartmentId: "apt-1",
-  },
-  {
-    id: "user-tenant-2",
-    fullName: "Sara Idrissi",
-    phone: "0677654321",
-    password: "password123",
-    role: "Tenant",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
-    buildingId: "building-2",
-    apartmentId: "apt-b2-1",
-  },
-]
-
-// Helper to generate IDs
-const generateId = () => `id-${Math.random().toString(36).substring(2, 9)}`
-
 // Check if user is authenticated
-export const isAuthenticated = (): boolean => {
-  if (typeof window === "undefined") return false
-  const user = localStorage.getItem("user")
+export const isAuthenticated = async (): Promise<boolean> => {
+  const { data: { session } } = await supabase.auth.getSession()
+  return !!session
+}
+
+// Synchronous check using cached session (for guards that need sync check)
+export const isAuthenticatedSync = (): boolean => {
+  if (typeof window === 'undefined') return false
+  const user = localStorage.getItem('user')
   return !!user
 }
 
-// Get the current user from localStorage
+// Get the current user from Supabase session + profile
 export const getCurrentUser = (): User | null => {
-  if (typeof window === "undefined") return null
-  const userJson = localStorage.getItem("user")
+  if (typeof window === 'undefined') return null
+  const userJson = localStorage.getItem('user')
   if (!userJson) return null
   return JSON.parse(userJson) as User
 }
 
-// Login with email + password (Admin)
-export const loginWithEmail = async (email: string, password: string): Promise<User> => {
-  await new Promise((resolve) => setTimeout(resolve, 800))
+// Fetch and cache user profile after Supabase auth
+const fetchAndCacheProfile = async (authUserId: string): Promise<User> => {
+  // First check if user is a syndic (Admin)
+  const { data: syndic } = await supabase
+    .from('syndics')
+    .select('*')
+    .eq('auth_user_id', authUserId)
+    .single()
 
-  const user = mockUsers.find(
-    (u) => u.email === email && u.password === password && u.role === "Admin"
-  )
-
-  if (!user) {
-    throw new Error("Invalid email or password")
+  if (syndic) {
+    const user: User = {
+      id: syndic.id,
+      fullName: syndic.full_name,
+      email: syndic.email,
+      role: 'Admin',
+      avatar: undefined,
+      syndicId: syndic.id,
+    }
+    localStorage.setItem('user', JSON.stringify(user))
+    return user
   }
 
-  const { password: _, ...userWithoutPassword } = user
-  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
+  // Otherwise check profiles table (Owner/Tenant)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('auth_user_id', authUserId)
+    .single()
 
-  return userWithoutPassword
+  if (profile) {
+    const user: User = {
+      id: profile.id,
+      fullName: profile.full_name,
+      email: profile.email || undefined,
+      username: profile.username || undefined,
+      phone: profile.phone || undefined,
+      role: profile.role as UserRole,
+      avatar: profile.avatar_url || undefined,
+      apartmentId: profile.apartment_id || undefined,
+      buildingId: profile.building_id || undefined,
+      syndicId: profile.syndic_id,
+    }
+    localStorage.setItem('user', JSON.stringify(user))
+    return user
+  }
+
+  throw new Error('User profile not found')
+}
+
+// Login with email + password (Admin / Syndic)
+export const loginWithEmail = async (email: string, password: string): Promise<User> => {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) throw new Error(error.message)
+  return fetchAndCacheProfile(data.user.id)
 }
 
 // Login with username + password (Owner)
+// Looks up the email via API route, then signs in with Supabase
 export const loginWithUsername = async (username: string, password: string): Promise<User> => {
-  await new Promise((resolve) => setTimeout(resolve, 800))
+  const res = await fetch('/api/auth/lookup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'username', value: username }),
+  })
+  const result = await res.json()
+  if (!res.ok) throw new Error(result.error || 'User not found')
 
-  const user = mockUsers.find(
-    (u) => u.username === username && u.password === password && u.role === "Owner"
-  )
-
-  if (!user) {
-    throw new Error("Invalid username or password")
-  }
-
-  const { password: _, ...userWithoutPassword } = user
-  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
-
-  return userWithoutPassword
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: result.email,
+    password,
+  })
+  if (error) throw new Error('Invalid username or password')
+  return fetchAndCacheProfile(data.user.id)
 }
 
 // Login with phone + password (Tenant)
+// Looks up the email via API route, then signs in with Supabase
 export const loginWithPhone = async (phone: string, password: string): Promise<User> => {
-  await new Promise((resolve) => setTimeout(resolve, 800))
+  const res = await fetch('/api/auth/lookup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'phone', value: phone }),
+  })
+  const result = await res.json()
+  if (!res.ok) throw new Error(result.error || 'User not found')
 
-  const user = mockUsers.find(
-    (u) => u.phone === phone && u.password === password && u.role === "Tenant"
-  )
-
-  if (!user) {
-    throw new Error("Invalid phone number or password")
-  }
-
-  const { password: _, ...userWithoutPassword } = user
-  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
-
-  return userWithoutPassword
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: result.email,
+    password,
+  })
+  if (error) throw new Error('Invalid phone number or password')
+  return fetchAndCacheProfile(data.user.id)
 }
 
-// Legacy login (kept for compatibility — Admin only via email)
-export const loginUser = async (email: string, password: string): Promise<User> => {
-  return loginWithEmail(email, password)
-}
-
-// Register a new admin user (admin-only registration)
+// Register a new syndic (Admin)
 export const registerUser = async (
   fullName: string,
   email: string,
@@ -156,39 +144,58 @@ export const registerUser = async (
   phone: string,
   address: string,
 ): Promise<User> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  const existingUser = mockUsers.find((user) => user.email === email)
-  if (existingUser) {
-    throw new Error("Email already in use")
-  }
-
-  const userId = generateId()
-  const user: User & { password: string; companyName: string; address: string } = {
-    id: userId,
-    fullName,
+  // Sign up with Supabase Auth
+  const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
-    phone,
-    companyName,
-    address,
-    role: "Admin",
+    options: {
+      data: { full_name: fullName, company_name: companyName },
+    },
+  })
+  if (authError) throw new Error(authError.message)
+  if (!authData.user) throw new Error('Registration failed')
+
+  // Create syndic record via API route (needs service role)
+  const res = await fetch('/api/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      authUserId: authData.user.id,
+      fullName,
+      email,
+      phone,
+      companyName,
+      address,
+    }),
+  })
+  const result = await res.json()
+  if (!res.ok) throw new Error(result.error || 'Registration failed')
+
+  const user: User = {
+    id: result.syndic.id,
+    fullName,
+    email,
+    role: 'Admin',
+    syndicId: result.syndic.id,
   }
+  localStorage.setItem('user', JSON.stringify(user))
+  return user
+}
 
-  const { password: _, ...userWithoutPassword } = user
-  localStorage.setItem("user", JSON.stringify(userWithoutPassword))
-
-  return userWithoutPassword
+// Legacy login (kept for compatibility — Admin only via email)
+export const loginUser = async (email: string, password: string): Promise<User> => {
+  return loginWithEmail(email, password)
 }
 
 // Logout user
-export const logoutUser = (): void => {
-  localStorage.removeItem("user")
+export const logoutUser = async (): Promise<void> => {
+  await supabase.auth.signOut()
+  localStorage.removeItem('user')
 }
 
 // Get the dashboard path based on user role
 export const getDashboardPath = (role: UserRole): string => {
-  const isDemo = typeof window !== "undefined" && window.location.pathname.startsWith("/syndic-demo")
-  const prefix = isDemo ? "/syndic-demo" : "/syndic"
+  const isDemo = typeof window !== 'undefined' && window.location.pathname.startsWith('/syndic-demo')
+  const prefix = isDemo ? '/syndic-demo' : '/syndic'
   return `${prefix}/dashboard`
 }

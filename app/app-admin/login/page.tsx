@@ -51,17 +51,19 @@ export default function AppAdminLoginPage() {
     setError("")
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 800))
-      
       const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL
       const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD
 
-      if (formData.email === adminEmail && formData.password === adminPassword) {
-        localStorage.setItem("isAppAdmin", "true")
-        router.push("/app-admin/dashboard")
-      } else {
-        throw new Error("Invalid credentials.")
+      if (!adminEmail || !adminPassword) {
+        throw new Error("Admin credentials are not configured.")
       }
+
+      if (formData.email !== adminEmail || formData.password !== adminPassword) {
+        throw new Error("Invalid email or password.")
+      }
+
+      localStorage.setItem("isAppAdmin", "true")
+      router.push("/app-admin/dashboard")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed")
     } finally {

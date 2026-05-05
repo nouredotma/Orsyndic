@@ -15,8 +15,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { announcements as initialAnnouncements, buildings } from "@/lib/mock-data"
-import type { Announcement } from "@/lib/mock-data"
+import { useAnnouncements, useBuildings } from "@/lib/hooks"
+import type { Announcement } from "@/lib/types"
 import { getCurrentUser } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
@@ -26,8 +26,9 @@ export default function AnnouncementsPage() {
   const { t } = useI18n()
   const user = getCurrentUser()
   const isAdmin = user?.role === "Admin"
-  const [isLoading, setIsLoading] = useState(true)
-  const [localAnnouncements, setLocalAnnouncements] = useState<Announcement[]>(initialAnnouncements)
+  const { data: fetchedAnn, loading: loadingAnn } = useAnnouncements(user?.syndicId)
+  const { data: buildings = [], loading: loadingBuildings } = useBuildings(user?.syndicId)
+  const [localAnnouncements, setLocalAnnouncements] = useState<Announcement[]>([])
   
   // Create state
   const [isOpen, setIsOpen] = useState(false)
@@ -54,13 +55,15 @@ export default function AnnouncementsPage() {
     if (!title || !content) return
     const ann: Announcement = {
       id: `ann-${Date.now()}`,
+      syndic_id: user?.syndicId || '',
       title,
       content,
-      createdAt: new Date().toISOString().split("T")[0],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
       urgent,
-      createdBy: "Admin",
+      created_by: "Admin",
       audience,
-      buildingIds: selectedBuildings,
+      building_ids: selectedBuildings.length > 0 ? selectedBuildings : null,
     }
     setLocalAnnouncements(prev => [ann, ...prev])
     setTitle(""); setContent(""); setUrgent(false); setAudience("Both"); setSelectedBuildings([]); setIsOpen(false)
@@ -72,13 +75,13 @@ export default function AnnouncementsPage() {
     setEditContent(ann.content)
     setEditUrgent(ann.urgent)
     setEditAudience(ann.audience)
-    setEditSelectedBuildings(ann.buildingIds || [])
+    setEditSelectedBuildings(ann.building_ids || [])
     setIsEditOpen(true)
   }
 
   const handleSaveEdit = () => {
     if (!editingAnn || !editTitle || !editContent) return
-    setLocalAnnouncements(p => p.map(a => a.id === editingAnn.id ? { ...a, title: editTitle, content: editContent, urgent: editUrgent, audience: editAudience, buildingIds: editSelectedBuildings } : a))
+    setLocalAnnouncements(p => p.map(a => a.id === editingAnn.id ? { ...a, title: editTitle, content: editContent, urgent: editUrgent, audience: editAudience, building_ids: editSelectedBuildings.length > 0 ? editSelectedBuildings : null } : a))
     setIsEditOpen(false); setEditingAnn(null)
   }
 
@@ -94,11 +97,10 @@ export default function AnnouncementsPage() {
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
+    if (fetchedAnn) setLocalAnnouncements(fetchedAnn)
+  }, [fetchedAnn])
 
-  if (isLoading) return <AnnouncementsPageSkeleton />
+  if (loadingAnn || loadingBuildings) return <AnnouncementsPageSkeleton />
 
   return (
     <div className="flex flex-col gap-4">
@@ -194,7 +196,7 @@ export default function AnnouncementsPage() {
             if (isAdmin) return true
             const user = getCurrentUser()
             const matchesAudience = user?.role === "Owner" ? (ann.audience === "Both" || ann.audience === "Owners") : (ann.audience === "Both" || ann.audience === "Tenants")
-            const matchesBuilding = !ann.buildingIds || ann.buildingIds.length === 0 || (user?.buildingId && ann.buildingIds.includes(user.buildingId))
+            const matchesBuilding = !ann.building_ids || ann.building_ids.length === 0 || (user?.buildingId && ann.building_ids.includes(user.buildingId))
             return matchesAudience && matchesBuilding
           })
           return filtered.length === 0 ? (
@@ -219,9 +221,9 @@ export default function AnnouncementsPage() {
                           {ann.audience === "Both" ? t.common.all : ann.audience === "Owners" ? t.users.owners : t.users.tenants}
                         </Badge>
                       )}
-                      {isAdmin && ann.buildingIds && ann.buildingIds.length > 0 && (
+                      {isAdmin && ann.building_ids && ann.building_ids.length > 0 && (
                         <Badge variant="outline" className="text-[9px] font-normal opacity-70 border-neutral-300">
-                          {ann.buildingIds.length === buildings.length ? t.common.all : `${ann.buildingIds.length} ${t.sidebar.buildings}`}
+                          {ann.building_ids.length === buildings.length ? t.common.all : `${ann.building_ids.length} ${t.sidebar.buildings}`}
                         </Badge>
                       )}
                     </div>
@@ -247,7 +249,7 @@ export default function AnnouncementsPage() {
                     )}
                   </div>
                   <p className="text-xs text-neutral-600 leading-relaxed">{ann.content}</p>
-                  <p className="text-[10px] text-neutral-400 mt-2">{t.common.postedOn} {ann.createdAt} {t.common.by} {ann.createdBy}</p>
+                  <p className="text-[10px] text-neutral-400 mt-2">{t.common.postedOn} {new Date(ann.created_at).toLocaleDateString()} {t.common.by} {ann.created_by}</p>
                 </div>
               </div>
             </CardContent>
@@ -354,3 +356,4 @@ export default function AnnouncementsPage() {
     </div>
   )
 }
+

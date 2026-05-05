@@ -42,41 +42,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { buildings as initBuildings, apartments as initApartments, charges, managedUsers } from "@/lib/mock-data"
-import type { Apartment, Building } from "@/lib/mock-data"
+import { getCurrentUser } from "@/lib/auth"
+import { useBuildings, useApartments, useCharges, useProfiles } from "@/lib/hooks"
+import type { Apartment, Building } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { BuildingsPageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function BuildingsPage() {
   const { t } = useI18n()
-  const [isLoading, setIsLoading] = useState(true)
-  const [localBuildings, setLocalBuildings] = useState<Building[]>(initBuildings)
-  const [localApartments, setLocalApartments] = useState<Apartment[]>(() => {
-    const apts = [...initApartments];
-    initBuildings.forEach(b => {
-      let aptNumberCounter = 1;
-      for (let f = 1; f <= b.floors; f++) {
-        for (let a = 1; a <= b.aptsPerFloor; a++) {
-          const numberStr = aptNumberCounter.toString();
-          const exists = apts.some(apt => apt.buildingId === b.id && apt.number === numberStr);
-          if (!exists) {
-            apts.push({
-              id: `apt-${b.id}-${f}-${a}`,
-              buildingId: b.id,
-              floor: f,
-              number: numberStr,
-              tantiemes: 100,
-              ownerId: "",
-              ownerName: ""
-            });
-          }
-          aptNumberCounter++;
-        }
-      }
-    });
-    return apts;
-  });
+  const currentUser = getCurrentUser()
+  const { data: fetchedBuildings, loading: loadingB } = useBuildings(currentUser?.syndicId)
+  const { data: fetchedApartments, loading: loadingA } = useApartments(currentUser?.syndicId)
+  const { data: fetchedCharges, loading: loadingC } = useCharges(currentUser?.syndicId)
+  const { data: fetchedProfiles, loading: loadingP } = useProfiles(currentUser?.syndicId)
+  const [localBuildings, setLocalBuildings] = useState<Building[]>([])
+  const [localApartments, setLocalApartments] = useState<Apartment[]>([])
   const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null)
   const [selectedApartment, setSelectedApartment] = useState<Apartment | null>(null)
   const [isAddBuildingOpen, setIsAddBuildingOpen] = useState(false)
@@ -101,14 +82,20 @@ export default function BuildingsPage() {
   const [itemToDelete, setItemToDelete] = useState<Building | null>(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
+    if (fetchedBuildings) setLocalBuildings(fetchedBuildings)
+  }, [fetchedBuildings])
 
-  if (isLoading) return <BuildingsPageSkeleton />
+  useEffect(() => {
+    if (fetchedApartments) setLocalApartments(fetchedApartments)
+  }, [fetchedApartments])
+
+  if (loadingB || loadingA || loadingC || loadingP) return <BuildingsPageSkeleton />
+
+  const charges = fetchedCharges || []
+  const managedUsers = fetchedProfiles || []
 
   const selectedBuildingData = localBuildings.find(b => b.id === selectedBuilding)
-  const buildingApartments = localApartments.filter(a => a.buildingId === selectedBuilding)
+  const buildingApartments = localApartments.filter(a => a.building_id === selectedBuilding)
 
   const handleAddBuilding = () => {
     if (!newBuilding.name || !newBuilding.address || !newBuilding.floors || !newBuilding.aptsPerFloor) return
@@ -116,7 +103,7 @@ export default function BuildingsPage() {
     const aptsPerFloor = Math.max(1, parseInt(newBuilding.aptsPerFloor) || 1)
     const bId = `building-${Date.now()}`
     
-    const b: Building = { id: bId, name: newBuilding.name, address: newBuilding.address, floors: floors, aptsPerFloor: aptsPerFloor }
+    const b: Building = { id: bId, syndic_id: currentUser?.syndicId || '', name: newBuilding.name, address: newBuilding.address, floors: floors, apts_per_floor: aptsPerFloor, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
     
     // Auto-generate apartments
     const generatedApts: Apartment[] = []
@@ -125,12 +112,16 @@ export default function BuildingsPage() {
       for (let a = 1; a <= aptsPerFloor; a++) {
         generatedApts.push({
           id: `apt-${bId}-${f}-${a}`,
-          buildingId: bId,
+          building_id: bId,
           floor: f,
           number: aptNumberCounter.toString(),
           tantiemes: 100,
-          ownerId: "",
-          ownerName: "",
+          owner_id: null,
+          owner_name: null,
+          tenant_id: null,
+          tenant_name: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         })
         aptNumberCounter++;
       }
@@ -145,20 +136,20 @@ export default function BuildingsPage() {
   const handleEditBuilding = () => {
     if (!editingBuilding) return
     const oldBuilding = localBuildings.find(b => b.id === editingBuilding.id)
-    const floorsChanged = oldBuilding && (oldBuilding.floors !== editingBuilding.floors || oldBuilding.aptsPerFloor !== editingBuilding.aptsPerFloor)
+    const floorsChanged = oldBuilding && (oldBuilding.floors !== editingBuilding.floors || oldBuilding.apts_per_floor !== editingBuilding.apts_per_floor)
     
     // Enforce min 1
-    const safeBuilding = { ...editingBuilding, floors: Math.max(1, editingBuilding.floors), aptsPerFloor: Math.max(1, editingBuilding.aptsPerFloor) }
+    const safeBuilding = { ...editingBuilding, floors: Math.max(1, editingBuilding.floors), apts_per_floor: Math.max(1, editingBuilding.apts_per_floor) }
     
     setLocalBuildings(prev => prev.map(b => b.id === safeBuilding.id ? safeBuilding : b))
     
     // Regenerate apartments if structure changed
     if (floorsChanged) {
-      const existingApts = localApartments.filter(a => a.buildingId === safeBuilding.id)
+      const existingApts = localApartments.filter(a => a.building_id === safeBuilding.id)
       const newApts: Apartment[] = []
       let aptNumberCounter = 1
       for (let f = 1; f <= safeBuilding.floors; f++) {
-        for (let a = 1; a <= safeBuilding.aptsPerFloor; a++) {
+        for (let a = 1; a <= safeBuilding.apts_per_floor; a++) {
           const numberStr = aptNumberCounter.toString()
           const existing = existingApts.find(apt => apt.number === numberStr)
           if (existing) {
@@ -166,18 +157,22 @@ export default function BuildingsPage() {
           } else {
             newApts.push({
               id: `apt-${safeBuilding.id}-${f}-${a}-${Date.now()}`,
-              buildingId: safeBuilding.id,
+              building_id: safeBuilding.id,
               floor: f,
               number: numberStr,
               tantiemes: 100,
-              ownerId: "",
-              ownerName: ""
+              owner_id: null,
+              owner_name: null,
+              tenant_id: null,
+              tenant_name: null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
             })
           }
           aptNumberCounter++
         }
       }
-      setLocalApartments(prev => [...prev.filter(a => a.buildingId !== safeBuilding.id), ...newApts])
+      setLocalApartments(prev => [...prev.filter(a => a.building_id !== safeBuilding.id), ...newApts])
     }
     
     setIsEditBuildingOpen(false)
@@ -206,7 +201,7 @@ export default function BuildingsPage() {
   const executeDelete = () => {
     if (!itemToDelete) return
     setLocalBuildings(prev => prev.filter(b => b.id !== itemToDelete.id))
-    setLocalApartments(prev => prev.filter(a => a.buildingId !== itemToDelete.id))
+    setLocalApartments(prev => prev.filter(a => a.building_id !== itemToDelete.id))
     if (selectedBuilding === itemToDelete.id) {
       setSelectedBuilding(null)
       setSelectedApartment(null)
@@ -257,7 +252,7 @@ export default function BuildingsPage() {
               <p className="text-xs text-neutral-400 mt-1">{t.emptyStates.noBuildingsSubtitle}</p>
             </div>
           ) : localBuildings.map((building) => {
-            const aptCount = localApartments.filter(a => a.buildingId === building.id).length
+            const aptCount = localApartments.filter(a => a.building_id === building.id).length
             return (
               <Card
                 key={building.id}
@@ -379,13 +374,13 @@ export default function BuildingsPage() {
                           <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.buildings.occupants}</h4>
                           <div className="space-y-2">
                             <div className="flex items-center gap-3 p-3 rounded-sm bg-white border border-black/5">
-                              {selectedApartment.ownerName ? (
+                              {selectedApartment.owner_name ? (
                                 <>
                                   <Avatar className="h-10 w-10 border border-black/5">
-                                    <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedApartment.ownerName.charAt(0)}</AvatarFallback>
+                                    <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedApartment.owner_name.charAt(0)}</AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <p className="text-sm font-semibold">{selectedApartment.ownerName}</p>
+                                    <p className="text-sm font-semibold">{selectedApartment.owner_name}</p>
                                     <p className="text-[10px] text-neutral-500">{t.common.owner}</p>
                                   </div>
                                 </>
@@ -395,13 +390,13 @@ export default function BuildingsPage() {
                             </div>
 
                             <div className="flex items-center gap-3 p-3 rounded-sm bg-white border border-black/5">
-                              {selectedApartment.tenantName ? (
+                              {selectedApartment.tenant_name ? (
                                 <>
                                   <Avatar className="h-10 w-10 border border-black/5">
-                                    <AvatarFallback className="bg-neutral-200 text-neutral-600">{selectedApartment.tenantName.charAt(0)}</AvatarFallback>
+                                    <AvatarFallback className="bg-neutral-200 text-neutral-600">{selectedApartment.tenant_name.charAt(0)}</AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <p className="text-sm font-semibold">{selectedApartment.tenantName}</p>
+                                    <p className="text-sm font-semibold">{selectedApartment.tenant_name}</p>
                                     <p className="text-[10px] text-neutral-500">{t.common.tenant}</p>
                                   </div>
                                 </>
@@ -421,7 +416,7 @@ export default function BuildingsPage() {
                         
                         <div className="space-y-2">
                           {charges
-                            .filter(c => c.apartmentId === selectedApartment.id)
+                            .filter(c => c.apartment_id === selectedApartment.id)
                             .map((charge) => (
                               <div key={charge.id} className="flex items-center justify-between p-3 rounded-sm bg-white border border-black/5">
                                 <div>
@@ -432,11 +427,11 @@ export default function BuildingsPage() {
                                   <Badge variant={charge.status === "Paid" ? "success" : charge.status === "Partial" ? "warning" : "danger"} className="text-[10px] mb-1 block w-fit ml-auto">
                                     {charge.status === "Paid" ? t.status.paid : charge.status === "Partial" ? t.status.partial : t.status.unpaid}
                                   </Badge>
-                                  {charge.paidDate && <p className="text-[9px] text-neutral-400">{t.common.paidOn} {charge.paidDate}</p>}
+                                  {charge.paid_date && <p className="text-[9px] text-neutral-400">{t.common.paidOn} {charge.paid_date}</p>}
                                 </div>
                               </div>
                             ))}
-                          {charges.filter(c => c.apartmentId === selectedApartment.id).length === 0 && (
+                          {charges.filter(c => c.apartment_id === selectedApartment.id).length === 0 && (
                             <div className="text-center py-10 bg-white rounded-sm border border-dashed border-black/5">
                               <p className="text-xs text-neutral-400 italic">{t.buildings.noHistoryFound}</p>
                             </div>
@@ -467,9 +462,9 @@ export default function BuildingsPage() {
                               <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">{t.buildings.floor} {floorNum}</span>
                               <div className="h-px bg-neutral-200 flex-1"></div>
                             </div>
-                            <div className={cn("grid gap-3", getGridColsClass(selectedBuildingData.aptsPerFloor))}>
+                            <div className={cn("grid gap-3", getGridColsClass(selectedBuildingData.apts_per_floor))}>
                               {aptsOnFloor.map(apt => {
-                                const isOccupied = !!apt.ownerId
+                                const isOccupied = !!apt.owner_id
                                 return (
                                   <div 
                                     key={apt.id}
@@ -484,12 +479,12 @@ export default function BuildingsPage() {
                                     </div>
                                     <div className="flex flex-col justify-end">
                                       {isOccupied ? (
-                                        <div className="text-[10px] font-medium text-neutral-700 truncate leading-tight">{apt.ownerName}</div>
+                                        <div className="text-[10px] font-medium text-neutral-700 truncate leading-tight">{apt.owner_name}</div>
                                       ) : (
                                         <div className="text-[10px] text-neutral-400 italic">{t.buildings.empty}</div>
                                       )}
-                                      {apt.tenantName && (
-                                        <div className="text-[9px] text-neutral-500 truncate mt-0.5 leading-tight">{apt.tenantName} ({t.common.tenant})</div>
+                                      {apt.tenant_name && (
+                                        <div className="text-[9px] text-neutral-500 truncate mt-0.5 leading-tight">{apt.tenant_name} ({t.common.tenant})</div>
                                       )}
                                     </div>
                                   </div>
@@ -553,8 +548,8 @@ export default function BuildingsPage() {
                 <Input 
                   type="number" 
                   className="bg-neutral-100 border-none rounded-sm" 
-                  value={editingBuilding?.aptsPerFloor || ""} 
-                  onChange={(e) => setEditingBuilding(p => p ? ({ ...p, aptsPerFloor: parseInt(e.target.value) || 0 }) : null)} 
+                  value={editingBuilding?.apts_per_floor || ""} 
+                  onChange={(e) => setEditingBuilding(p => p ? ({ ...p, apts_per_floor: parseInt(e.target.value) || 0 }) : null)} 
                 />
               </div>
             </div>

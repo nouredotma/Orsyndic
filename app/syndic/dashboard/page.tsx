@@ -54,17 +54,47 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { getCurrentUser } from "@/lib/auth"
 import type { UserRole } from "@/lib/auth"
-import {
-  adminStatsData,
-  charges,
-  tickets,
-  announcements,
-  revenueDataSets,
-  chartConfig,
-  buildings,
-  managedUsers,
-  apartments
-} from "@/lib/mock-data"
+import { useCharges, useTickets, useAnnouncements, useBuildings, useApartments, useProfiles } from "@/lib/hooks"
+
+// Static card metadata (trend arrows, icons) — values are computed from live data
+const adminStatsData = [
+  { title: "Unpaid Charges", trend: "down" as const, trendValue: "-3", iconName: "CreditCard" },
+  { title: "Open Tickets", trend: "up" as const, trendValue: "+2", iconName: "TicketCheck" },
+  { title: "Total Buildings", trend: "neutral" as const, trendValue: "0", iconName: "Building2" },
+  { title: "Total Apartments", trend: "up" as const, trendValue: "+4", iconName: "DoorOpen" },
+  { title: "Active Users", trend: "up" as const, trendValue: "+6", iconName: "Users" },
+]
+
+// Revenue chart data — static placeholder until /api/dashboard/revenue endpoint is built
+const revenueDataSets = {
+  day: [
+    { label: "08:00", revenue: 120 }, { label: "10:00", revenue: 450 },
+    { label: "12:00", revenue: 890 }, { label: "14:00", revenue: 1200 },
+    { label: "16:00", revenue: 950 }, { label: "18:00", revenue: 1500 },
+    { label: "20:00", revenue: 1100 },
+  ],
+  month: [
+    { label: "Week 1", revenue: 12000 }, { label: "Week 2", revenue: 15000 },
+    { label: "Week 3", revenue: 11000 }, { label: "Week 4", revenue: 18000 },
+  ],
+  year: [
+    { label: "Jan", revenue: 4500 }, { label: "Feb", revenue: 4800 },
+    { label: "Mar", revenue: 5000 }, { label: "Apr", revenue: 4200 },
+    { label: "May", revenue: 5100 }, { label: "Jun", revenue: 4900 },
+    { label: "Jul", revenue: 5500 }, { label: "Aug", revenue: 5800 },
+    { label: "Sep", revenue: 5200 }, { label: "Oct", revenue: 6000 },
+    { label: "Nov", revenue: 5700 }, { label: "Dec", revenue: 6200 },
+  ],
+  all: [
+    { label: "2022", revenue: 45000 }, { label: "2023", revenue: 58000 },
+    { label: "2024", revenue: 62000 }, { label: "2025", revenue: 75000 },
+  ],
+}
+
+// Chart color config
+const chartConfig = {
+  revenue: { label: "Revenue", color: "var(--primary)" },
+}
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { ImageLightbox } from "@/components/image-lightbox"
@@ -150,11 +180,18 @@ function RevenueOverview({ timeframe, setTimeframe }: {
 function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, greeting: string, dateStr: string }) {
   const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
-  const unpaidCharges = charges.filter(c => c.status === "Unpaid" || c.status === "Partial")
-  const openTicketsCount = tickets.filter(t => t.status === "Open").length
-  const totalBuildingsCount = buildings.length
-  const totalApartmentsCount = apartments.length
-  const activeUsersCount = managedUsers.filter(u => u.status === "Active").length
+  const user = getCurrentUser()
+  const { data: charges = [] } = useCharges(user?.syndicId)
+  const { data: tickets = [] } = useTickets(user?.syndicId)
+  const { data: announcements = [] } = useAnnouncements(user?.syndicId)
+  const { data: buildings = [] } = useBuildings(user?.syndicId)
+  const { data: apartments = [] } = useApartments(user?.syndicId)
+  const { data: managedUsers } = useProfiles(user?.syndicId)
+  const unpaidCharges = (charges || []).filter(c => c.status === "Unpaid" || c.status === "Partial")
+  const openTicketsCount = (tickets || []).filter(t => t.status === "Open").length
+  const totalBuildingsCount = (buildings || []).length
+  const totalApartmentsCount = (apartments || []).length
+  const activeUsersCount = (managedUsers || []).filter(u => u.status === "Active").length
   const [buildingForm, setBuildingForm] = useState({ name: "", address: "", floors: "" })
   const [buildingAdded, setBuildingAdded] = useState(false)
   
@@ -277,15 +314,15 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                 {tickets.map((ticket) => (
                   <div key={ticket.id} className="flex items-start gap-3 py-1.5 border-b border-black/5 last:border-0">
                     <Avatar className="h-8 w-8 border border-black/5 shrink-0">
-                      <AvatarImage src={ticket.submittedByAvatar} alt={ticket.submittedBy} />
+                      <AvatarImage src={ticket.submitted_by_avatar ?? undefined} alt={ticket.submitted_by_name} />
                       <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">
-                        {ticket.submittedBy.charAt(0)}
+                        {ticket.submitted_by_name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold leading-none truncate">{ticket.title}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <p className="text-[10px] text-neutral-500">{ticket.submittedBy}</p>
+                        <p className="text-[10px] text-neutral-500">{ticket.submitted_by_name}</p>
                         <Badge variant={
                           ticket.status === "Open" ? "info" :
                           ticket.status === "In Progress" ? "warning" : "success"
@@ -295,28 +332,18 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                         </Badge>
                       </div>
                       {/* Photos Preview */}
-                      {(ticket.photos?.length || ticket.photo) && (
+                      {ticket.photos && ticket.photos.length > 0 && (
                         <div className="mt-2 flex gap-1.5 overflow-x-auto pb-0.5">
-                          {ticket.photos ? (
-                            ticket.photos.map((p, idx) => (
-                              <div 
-                                key={idx} 
-                                className="relative group w-10 h-10 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
-                                onClick={(e) => { e.stopPropagation(); openLightbox(ticket.photos!, idx) }}
-                              >
-                                <img src={p} alt={`Attached ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                              </div>
-                            ))
-                          ) : (
+                          {ticket.photos.map((p, idx) => (
                             <div 
+                              key={idx} 
                               className="relative group w-10 h-10 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
-                              onClick={(e) => { e.stopPropagation(); openLightbox([ticket.photo!], 0) }}
+                              onClick={(e) => { e.stopPropagation(); openLightbox(ticket.photos!, idx) }}
                             >
-                              <img src={ticket.photo} alt="Attached" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                              <img src={p} alt={`Attached ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                             </div>
-                          )}
+                          ))}
                         </div>
                       )}
                     </div>
@@ -370,7 +397,7 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                         {ann.urgent && <Badge variant="orange" className="text-[9px]">{t.status.urgent}</Badge>}
                       </div>
                       <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
-                      <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                      <p className="text-[9px] text-neutral-400 mt-1">{new Date(ann.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
                 ))}
@@ -400,14 +427,14 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                   <div key={charge.id} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <Avatar className="h-8 w-8 border border-white/10 shrink-0">
-                        <AvatarImage src={charge.ownerAvatar} alt={charge.ownerName} />
+                        <AvatarImage src={charge.owner_avatar ?? undefined} alt={charge.owner_name} />
                         <AvatarFallback className="bg-white/10 text-white text-[10px] font-bold">
-                          {charge.ownerName.charAt(0)}
+                          {charge.owner_name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1 pr-2">
-                        <p className="text-xs font-semibold text-white truncate">{charge.ownerName}</p>
-                        <p className="text-[10px] text-neutral-400 truncate">{t.charges.apt} {charge.apartmentNumber} · {charge.buildingName}</p>
+                        <p className="text-xs font-semibold text-white truncate">{charge.owner_name}</p>
+                        <p className="text-[10px] text-neutral-400 truncate">{t.charges.apt} {charge.apartment_number} · {charge.building_name}</p>
                       </div>
                     </div>
                     <div className="text-right shrink-0">
@@ -438,9 +465,13 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
   const { t } = useI18n()
   const [timeframe, setTimeframe] = useState<keyof typeof revenueDataSets>("year")
   const user = getCurrentUser()
-  const building = buildings.find(b => b.id === user?.buildingId)
-  const apartment = apartments.find(a => a.id === user?.apartmentId)
-  const myCharges = charges.filter(c => c.apartmentId === user?.apartmentId)
+  const { data: buildings = [] } = useBuildings(user?.syndicId)
+  const { data: apartments = [] } = useApartments(user?.syndicId)
+  const { data: charges = [] } = useCharges(user?.syndicId)
+  const { data: announcements = [] } = useAnnouncements(user?.syndicId)
+  const building = (buildings || []).find(b => b.id === user?.buildingId)
+  const apartment = (apartments || []).find(a => a.id === user?.apartmentId)
+  const myCharges = (charges || []).filter(c => c.apartment_id === user?.apartmentId)
   const unpaidTotal = myCharges.filter(c => c.status === "Unpaid" || c.status === "Partial").reduce((sum, c) => sum + c.amount, 0)
   const paidTotal = myCharges.filter(c => c.status === "Paid").reduce((sum, c) => sum + c.amount, 0)
   const [ticketForm, setTicketForm] = useState({ title: "", description: "" })
@@ -578,7 +609,7 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
                         {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
                       </div>
                       <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
-                      <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                      <p className="text-[9px] text-neutral-400 mt-1">{new Date(ann.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
                 )) : (
@@ -601,6 +632,8 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
 // ========================
 function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, greeting: string, dateStr: string }) {
   const { t } = useI18n()
+  const user = getCurrentUser()
+  const { data: announcements = [] } = useAnnouncements(user?.syndicId)
   const [complaintForm, setComplaintForm] = useState({ title: "", description: "" })
   const [complaintSubmitted, setComplaintSubmitted] = useState(false)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
@@ -701,7 +734,7 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
                       {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
                     </div>
                     <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
-                    <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                    <p className="text-[9px] text-neutral-400 mt-1">{new Date(ann.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
               )) : (
@@ -753,3 +786,4 @@ export default function DashboardPage() {
     </div>
   )
 }
+

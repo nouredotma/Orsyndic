@@ -15,16 +15,26 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Checkbox } from "@/components/ui/checkbox"
-import { managedUsers as initialUsers, buildings, apartments } from "@/lib/mock-data"
-import type { ManagedUser } from "@/lib/mock-data"
+import { getCurrentUser } from "@/lib/auth"
+import { useProfiles, useBuildings, useApartments } from "@/lib/hooks"
+import type { Profile, UserRole, UserStatus } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { UsersPageSkeleton } from "@/components/dashboard-skeletons"
 
+// Extended profile with display fields
+interface ManagedUser extends Profile {
+  building_name?: string
+  apartment_number?: string
+}
+
 export default function UsersPage() {
   const { t } = useI18n()
-  const [isLoading, setIsLoading] = useState(true)
-  const [localUsers, setLocalUsers] = useState<ManagedUser[]>(initialUsers)
+  const currentUser = getCurrentUser()
+  const { data: fetchedProfiles, loading: loadingProfiles } = useProfiles(currentUser?.syndicId)
+  const { data: buildings = [], loading: loadingBuildings } = useBuildings(currentUser?.syndicId)
+  const { data: apartments = [], loading: loadingApts } = useApartments(currentUser?.syndicId)
+  const [localUsers, setLocalUsers] = useState<ManagedUser[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [filterRole, setFilterRole] = useState<"All" | "Owner" | "Tenant">("All")
   const [isAddOpen, setIsAddOpen] = useState(false)
@@ -39,14 +49,20 @@ export default function UsersPage() {
   const ITEMS_PER_PAGE = 10
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
+    if (fetchedProfiles && buildings && apartments) {
+      const enriched: ManagedUser[] = fetchedProfiles.map(p => {
+        const bld = buildings.find(b => b.id === p.building_id)
+        const apt = apartments.find(a => a.id === p.apartment_id)
+        return { ...p, building_name: bld?.name || '', apartment_number: apt?.number || '' }
+      })
+      setLocalUsers(enriched)
+    }
+  }, [fetchedProfiles, buildings, apartments])
 
-  if (isLoading) return <UsersPageSkeleton />
+  if (loadingProfiles || loadingBuildings || loadingApts) return <UsersPageSkeleton />
 
   const filteredUsers = localUsers.filter((u) => {
-    const s = u.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || (u.username?.toLowerCase().includes(searchQuery.toLowerCase())) || (u.phone?.includes(searchQuery))
+    const s = u.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || (u.username?.toLowerCase().includes(searchQuery.toLowerCase())) || (u.phone?.includes(searchQuery))
     return s && (filterRole === "All" || u.role === filterRole)
   })
 
@@ -62,9 +78,9 @@ export default function UsersPage() {
     if (!newUser.fullName || !newUser.email || !newUser.role || !newUser.building) return
     if (newUser.role === "Owner" && (!newUser.username || !newUser.password || newUser.apartments.length === 0)) return
     if (newUser.role === "Tenant" && (!newUser.phone || !newUser.password || !newUser.apartment)) return
-    const bd = buildings.find(b => b.id === newUser.building)
+    const bd = buildings?.find(b => b.id === newUser.building)
     const aptNumber = newUser.role === "Owner" ? newUser.apartments.join(", ") : newUser.apartment
-    const u: ManagedUser = { id: `user-${Date.now()}`, fullName: newUser.fullName, email: newUser.email, username: newUser.role === "Owner" ? newUser.username : undefined, phone: newUser.role === "Tenant" ? newUser.phone : undefined, role: newUser.role, buildingId: newUser.building, buildingName: bd?.name || "", apartmentNumber: aptNumber, status: "Active", createdAt: new Date().toISOString().split("T")[0] }
+    const u: ManagedUser = { id: `user-${Date.now()}`, auth_user_id: null, syndic_id: currentUser?.syndicId || '', full_name: newUser.fullName, email: newUser.email, username: newUser.role === "Owner" ? newUser.username : null, phone: newUser.role === "Tenant" ? newUser.phone : null, role: newUser.role as UserRole, avatar_url: null, building_id: newUser.building, apartment_id: null, status: "Active" as UserStatus, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), building_name: bd?.name || "", apartment_number: aptNumber }
     setLocalUsers(prev => [u, ...prev]); resetNew(); setIsAddOpen(false)
   }
 
@@ -93,45 +109,45 @@ export default function UsersPage() {
 
   const handleOpenEdit = (user: ManagedUser) => {
     setEditingUser(user)
-    const building = buildings.find(b => b.name === user.buildingName)
-    setEditForm({ fullName: user.fullName, email: user.email || "", building: building?.id || "", apartment: user.role === "Tenant" ? user.apartmentNumber : "", apartments: user.role === "Owner" ? user.apartmentNumber.split(",").map(s => s.trim()).filter(Boolean) : [], username: user.username || "", phone: user.phone || "" })
+    const building = buildings?.find(b => b.name === user.building_name)
+    setEditForm({ fullName: user.full_name, email: user.email || "", building: building?.id || "", apartment: user.role === "Tenant" ? (user.apartment_number || "") : "", apartments: user.role === "Owner" ? (user.apartment_number || "").split(",").map(s => s.trim()).filter(Boolean) : [], username: user.username || "", phone: user.phone || "" })
     setIsEditOpen(true)
   }
 
   const handleSaveEdit = () => {
     if (!editingUser || !editForm.fullName) return
-    const bd = buildings.find(b => b.id === editForm.building)
+    const bd = buildings?.find(b => b.id === editForm.building)
     const aptNumber = editingUser.role === "Owner" ? editForm.apartments.join(", ") : editForm.apartment
-    setLocalUsers(p => p.map(u => u.id === editingUser.id ? { ...u, fullName: editForm.fullName, email: editForm.email || u.email, buildingId: editForm.building || u.buildingId, buildingName: bd?.name || u.buildingName, apartmentNumber: aptNumber || u.apartmentNumber, username: u.role === "Owner" ? (editForm.username || u.username) : u.username, phone: u.role === "Tenant" ? (editForm.phone || u.phone) : u.phone } : u))
+    setLocalUsers(p => p.map(u => u.id === editingUser.id ? { ...u, full_name: editForm.fullName, email: editForm.email || u.email, building_id: editForm.building || u.building_id, building_name: bd?.name || u.building_name, apartment_number: aptNumber || u.apartment_number, username: u.role === "Owner" ? (editForm.username || u.username) : u.username, phone: u.role === "Tenant" ? (editForm.phone || u.phone) : u.phone } : u))
     setIsEditOpen(false); setEditingUser(null)
   }
 
-  const selectedBuildingForNew = buildings.find(b => b.id === newUser.building)
+  const selectedBuildingForNew = buildings?.find(b => b.id === newUser.building)
   let availableAptsForNew: string[] = []
   if (selectedBuildingForNew) {
-    const totalApts = selectedBuildingForNew.floors * selectedBuildingForNew.aptsPerFloor
+    const totalApts = selectedBuildingForNew.floors * selectedBuildingForNew.apts_per_floor
     for (let i = 1; i <= totalApts; i++) {
       const aptNum = i.toString()
-      const existingApt = apartments.find(a => a.buildingId === selectedBuildingForNew.id && a.number === aptNum)
-      if (newUser.role === "Owner" && (!existingApt || !existingApt.ownerId)) availableAptsForNew.push(aptNum)
-      else if (newUser.role === "Tenant" && (!existingApt || !existingApt.tenantId)) availableAptsForNew.push(aptNum)
+      const existingApt = apartments?.find(a => a.building_id === selectedBuildingForNew.id && a.number === aptNum)
+      if (newUser.role === "Owner" && (!existingApt || !existingApt.owner_id)) availableAptsForNew.push(aptNum)
+      else if (newUser.role === "Tenant" && (!existingApt || !existingApt.tenant_id)) availableAptsForNew.push(aptNum)
     }
   }
 
-  const selectedBuildingForEdit = buildings.find(b => b.id === editForm.building)
+  const selectedBuildingForEdit = buildings?.find(b => b.id === editForm.building)
   let availableAptsForEdit: string[] = []
   if (selectedBuildingForEdit) {
-    const totalApts = selectedBuildingForEdit.floors * selectedBuildingForEdit.aptsPerFloor
+    const totalApts = selectedBuildingForEdit.floors * selectedBuildingForEdit.apts_per_floor
     for (let i = 1; i <= totalApts; i++) {
       const aptNum = i.toString()
-      const existingApt = apartments.find(a => a.buildingId === selectedBuildingForEdit.id && a.number === aptNum)
+      const existingApt = apartments?.find(a => a.building_id === selectedBuildingForEdit.id && a.number === aptNum)
       let isCurrentApt = false
       if (editingUser) {
-          const currentApts = editingUser.apartmentNumber.split(",").map(s => s.trim())
+          const currentApts = (editingUser.apartment_number || "").split(",").map(s => s.trim())
           if (currentApts.includes(aptNum)) isCurrentApt = true
       }
-      if (editingUser?.role === "Owner" && (isCurrentApt || !existingApt || !existingApt.ownerId)) availableAptsForEdit.push(aptNum)
-      else if (editingUser?.role === "Tenant" && (isCurrentApt || !existingApt || !existingApt.tenantId)) availableAptsForEdit.push(aptNum)
+      if (editingUser?.role === "Owner" && (isCurrentApt || !existingApt || !existingApt.owner_id)) availableAptsForEdit.push(aptNum)
+      else if (editingUser?.role === "Tenant" && (isCurrentApt || !existingApt || !existingApt.tenant_id)) availableAptsForEdit.push(aptNum)
     }
   }
 
@@ -152,7 +168,7 @@ export default function UsersPage() {
               {newUser.role === "Tenant" && <div className="grid gap-2"><Label className="text-xs">{t.users.phone}</Label><Input placeholder="0661234567" className="bg-neutral-100 border-none rounded-sm" value={newUser.phone} onChange={(e) => setNewUser(p => ({ ...p, phone: e.target.value }))} /></div>}
               {newUser.role && <div className="grid gap-2"><Label className="text-xs">{t.users.password}</Label><Input type="password" placeholder="••••••••" className="bg-neutral-100 border-none rounded-sm" value={newUser.password} onChange={(e) => setNewUser(p => ({ ...p, password: e.target.value }))} /></div>}
               <div className="grid gap-2"><Label className="text-xs">{t.users.building}</Label>
-                <Select value={newUser.building} onValueChange={(v) => setNewUser(p => ({ ...p, building: v, apartment: "" }))}><SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder={t.users.selectBuilding} /></SelectTrigger><SelectContent className="bg-white border-none shadow-lg">{buildings.map(b => (<SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>))}</SelectContent></Select>
+                <Select value={newUser.building} onValueChange={(v) => setNewUser(p => ({ ...p, building: v, apartment: "" }))}><SelectTrigger className="bg-neutral-100 border-none rounded-sm"><SelectValue placeholder={t.users.selectBuilding} /></SelectTrigger><SelectContent className="bg-white border-none shadow-lg">{(buildings || []).map(b => (<SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>))}</SelectContent></Select>
               </div>
               <div className="grid gap-2"><Label className="text-xs">{t.users.apartment}</Label>
                  {newUser.role === "Owner" ? (
@@ -217,11 +233,11 @@ export default function UsersPage() {
       <Card className="border-none bg-neutral-100"><CardContent className="p-0"><div className="overflow-x-auto"><table className="w-full"><thead><tr className="border-b border-black/5"><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.userHeader}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.usernamePhoneHeader}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.role}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.building}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.apartment}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.status}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3"></th></tr></thead>
         <tbody>{paginatedUsers.length > 0 ? paginatedUsers.map((user) => (
           <tr key={user.id} className="border-b border-black/5 last:border-0 transition-colors">
-            <td className="px-4 py-3"><div className="flex items-center gap-2.5"><Avatar className="h-8 w-8 border border-black/5"><AvatarImage src={user.avatar} alt={user.fullName} /><AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{user.fullName.charAt(0)}</AvatarFallback></Avatar><span className="text-sm font-medium">{user.fullName}</span></div></td>
+            <td className="px-4 py-3"><div className="flex items-center gap-2.5"><Avatar className="h-8 w-8 border border-black/5"><AvatarImage src={user.avatar_url || undefined} alt={user.full_name} /><AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{user.full_name.charAt(0)}</AvatarFallback></Avatar><span className="text-sm font-medium">{user.full_name}</span></div></td>
             <td className="px-4 py-3 text-xs text-neutral-600 font-mono">{user.role === "Owner" ? user.username : user.phone}</td>
             <td className="px-4 py-3 text-xs text-neutral-600">{user.role === "Owner" ? t.common.owner : user.role === "Admin" ? t.common.admin : t.common.tenant}</td>
-            <td className="px-4 py-3 text-xs text-neutral-600">{user.buildingName}</td>
-            <td className="px-4 py-3 text-xs text-neutral-600">{t.charges.apt} {user.apartmentNumber}</td>
+            <td className="px-4 py-3 text-xs text-neutral-600">{user.building_name}</td>
+            <td className="px-4 py-3 text-xs text-neutral-600">{t.charges.apt} {user.apartment_number}</td>
             <td className="px-4 py-3"><Badge variant={user.status === "Active" ? "success" : "secondary"} className="text-[10px] px-2.5 py-1 font-normal">{user.status === "Active" ? t.status.active : t.status.inactive}</Badge></td>
             <td className="px-4 py-3">{user.role !== "Admin" && (
               <DropdownMenu>
@@ -368,3 +384,4 @@ export default function UsersPage() {
     </div>
   )
 }
+

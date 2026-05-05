@@ -20,8 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { AppAdminDashboardSkeleton } from "@/components/dashboard-skeletons"
-
-import { platformStats, recentSyndics } from "@/lib/mock-data"
+import { useAdminDashboardData } from "@/lib/hooks"
 
 const iconMap: Record<string, any> = {
   Users,
@@ -31,13 +30,18 @@ const iconMap: Record<string, any> = {
 }
 
 export default function AppAdminDashboard() {
-  const [mounted, setMounted] = React.useState(false)
+  const { data, loading } = useAdminDashboardData()
 
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  if (loading || !data) return <AppAdminDashboardSkeleton />
 
-  if (!mounted) return <AppAdminDashboardSkeleton />
+  const { stats, recentSyndics } = data
+
+  const platformStatsCards = [
+    { title: "Total Syndics", value: stats.totalSyndics.toString(), iconName: "Users", trend: `${stats.activeSyndics} active` },
+    { title: "Total Buildings", value: stats.totalBuildings.toString(), iconName: "Building2", trend: `${stats.pendingSyndics} pending` },
+    { title: "Total Users", value: stats.totalUsers.toString(), iconName: "Activity", trend: "All roles" },
+    { title: "Total Apartments", value: stats.totalApartments.toString(), iconName: "CreditCard", trend: "Platform-wide" },
+  ]
 
   const hour = new Date().getHours()
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
@@ -58,7 +62,7 @@ export default function AppAdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {platformStats.map((stat) => {
+        {platformStatsCards.map((stat) => {
           const Icon = iconMap[stat.iconName] || Activity
           return (
             <Card key={stat.title} className="overflow-hidden border-none bg-neutral-100">
@@ -75,7 +79,6 @@ export default function AppAdminDashboard() {
                 <div className="flex items-center gap-1 mt-0.5">
                   <ArrowUpRight className="h-3 w-3 text-[#00D100]" />
                   <span className="text-[10px] font-semibold text-[#00D100]">{stat.trend}</span>
-                  <span className="text-[10px] text-neutral-500 ml-0.5">vs last month</span>
                 </div>
               </CardContent>
             </Card>
@@ -99,18 +102,17 @@ export default function AppAdminDashboard() {
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border border-black/5">
                       <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold text-xs">
-                        {syndic.name.charAt(0)}
+                        {syndic.full_name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-semibold leading-none">{syndic.name}</p>
-                      <p className="text-[10px] text-neutral-500 mt-1">{syndic.company}</p>
+                      <p className="text-sm font-semibold leading-none">{syndic.full_name}</p>
+                      <p className="text-[10px] text-neutral-500 mt-1">{syndic.company_name}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                      <p className="text-xs font-semibold">{syndic.buildings} Buildings</p>
-                      <p className="text-[10px] text-neutral-500">{syndic.users} Users</p>
+                      <p className="text-xs font-semibold">{syndic.buildings_count} Buildings</p>
                     </div>
                     <div className="text-right">
                       <Badge 
@@ -121,7 +123,7 @@ export default function AppAdminDashboard() {
                         )}>
                         {syndic.status}
                       </Badge>
-                      <p className="text-[10px] text-neutral-500 mt-1">{syndic.joined}</p>
+                      <p className="text-[10px] text-neutral-500 mt-1">{new Date(syndic.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
                 </div>

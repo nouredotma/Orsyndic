@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, EyeOff, Loader2, ChevronLeft, Mail, User, Phone } from "lucide-react"
-import { isAuthenticated, loginWithEmail, loginWithUsername, loginWithPhone, getDashboardPath } from "@/lib/auth"
+import { isAuthenticatedSync as isAuthenticated, loginWithEmail, loginWithUsername, loginWithPhone, getDashboardPath } from "@/lib/demo-auth"
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
-import { isAuthenticated, registerUser, getDashboardPath } from "@/lib/auth"
+import { isAuthenticatedSync as isAuthenticated, registerUser, getDashboardPath } from "@/lib/demo-auth"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,7 +67,7 @@ export default function RegisterPage() {
     try {
       if (!formData.fullName || !formData.email || !formData.password || !formData.companyName) throw new Error(t.profile.passwordRequired)
       if (formData.password.length < 6) throw new Error(t.profile.passwordTooShort)
-      await registerUser(formData.fullName, formData.email, formData.password, formData.companyName)
+      await registerUser(formData.fullName, formData.email, formData.password, formData.companyName, "", "")
       router.push("/syndic-demo/dashboard")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed")

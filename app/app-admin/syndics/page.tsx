@@ -30,35 +30,45 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { ManageSyndicsSkeleton } from "@/components/dashboard-skeletons"
-
-import { initialSyndicsList as initialSyndics } from "@/lib/mock-data"
+import { useAdminSyndics } from "@/lib/hooks"
+import type { Syndic } from "@/lib/types"
 
 export default function ManageSyndicsPage() {
-  const [mounted, setMounted] = React.useState(false)
-  const [syndics, setSyndics] = React.useState(initialSyndics)
+  const { data: syndicsList, loading, refetch } = useAdminSyndics()
   const [searchQuery, setSearchQuery] = React.useState("")
-  const [copiedKey, setCopiedKey] = React.useState<string | null>(null)
-  
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
 
-  if (!mounted) return <ManageSyndicsSkeleton />
+  if (loading || !syndicsList) return <ManageSyndicsSkeleton />
+
+  const syndics = syndicsList
 
   const filteredSyndics = syndics.filter(s => 
-    s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    s.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    s.full_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    s.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.email.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleApprove = (id: string) => {
-    setSyndics(prev => prev.map(s => s.id === id ? { ...s, status: 'Active' } : s))
+  const handleApprove = async (id: string) => {
+    await fetch('/api/admin/syndics', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: 'Active' }),
+    })
+    refetch()
+  }
+
+  const handleSuspend = async (id: string) => {
+    await fetch('/api/admin/syndics', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: 'Suspended' }),
+    })
+    refetch()
   }
 
   // Stats
   const activeCount = syndics.filter(s => s.status === "Active").length
   const pendingCount = syndics.filter(s => s.status === "Pending" || s.status === "Pending Approval").length
-  const totalBuildings = syndics.reduce((sum, s) => sum + s.buildings, 0)
+  const totalBuildings = syndics.reduce((sum, s) => sum + s.buildings_count, 0)
 
   return (
     <div className="flex flex-col gap-4">
@@ -119,13 +129,13 @@ export default function ManageSyndicsPage() {
                         <div className="flex items-center gap-2.5">
                           <Avatar className="h-8 w-8 border border-black/5 shrink-0">
                             <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">
-                              {syndic.company.charAt(0)}
+                              {syndic.company_name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <span className="text-sm font-medium">{syndic.company}</span>
+                            <span className="text-sm font-medium">{syndic.company_name}</span>
                             <div className="text-[10px] text-neutral-500 flex items-center gap-1 mt-0.5">
-                              <Users className="h-3 w-3" /> {syndic.name}
+                              <Users className="h-3 w-3" /> {syndic.full_name}
                             </div>
                           </div>
                         </div>
@@ -136,7 +146,7 @@ export default function ManageSyndicsPage() {
                       </td>
                       <td className="px-4 py-3 text-center">
                         <span className="text-xs font-bold bg-white px-2 py-1 rounded-sm border border-black/5 shadow-xs">
-                          {syndic.buildings}
+                          {syndic.buildings_count}
                         </span>
                       </td>
 
@@ -178,7 +188,10 @@ export default function ManageSyndicsPage() {
                               </DropdownMenuItem>
                             )}
                             <DropdownMenuSeparator className="bg-black/5" />
-                            <DropdownMenuItem className="cursor-pointer text-xs gap-2 py-2 text-red-500 hover:bg-primary/5 focus:bg-primary/5 focus:text-red-500 rounded-sm">
+                            <DropdownMenuItem 
+                              className="cursor-pointer text-xs gap-2 py-2 text-red-500 hover:bg-primary/5 focus:bg-primary/5 focus:text-red-500 rounded-sm"
+                              onClick={() => handleSuspend(syndic.id)}
+                            >
                               <Ban className="h-3.5 w-3.5" />
                               Suspend Account
                             </DropdownMenuItem>

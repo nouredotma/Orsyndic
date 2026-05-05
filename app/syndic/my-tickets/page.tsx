@@ -6,8 +6,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
-import { tickets as initialTickets, buildings } from "@/lib/mock-data"
-import type { Ticket } from "@/lib/mock-data"
+import { useTickets, useBuildings } from "@/lib/hooks"
+import { uploadBase64 } from "@/lib/storage"
+import type { Ticket } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { ImageLightbox } from "@/components/image-lightbox"
@@ -27,8 +28,9 @@ import { Textarea } from "@/components/ui/textarea"
 export default function MyTicketsPage() {
   const { t } = useI18n()
   const user = getCurrentUser()
-  const [isLoading, setIsLoading] = useState(true)
-  const [localTickets, setLocalTickets] = useState<Ticket[]>(initialTickets)
+  const { data: fetchedTickets = [], loading: loadingTickets } = useTickets(user?.syndicId)
+  const { data: buildings = [], loading: loadingBuildings } = useBuildings(user?.syndicId)
+  const [localTickets, setLocalTickets] = useState<Ticket[]>([])
   const [showForm, setShowForm] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -46,14 +48,13 @@ export default function MyTicketsPage() {
     setLightbox({ isOpen: true, images, index })
   }
 
-  const myTickets = localTickets.filter(t => t.submittedBy === user?.fullName)
-
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
+    if (fetchedTickets) setLocalTickets(fetchedTickets)
+  }, [fetchedTickets])
 
-  if (isLoading) return <MyTicketsPageSkeleton />
+  const myTickets = localTickets.filter(t => t.submitted_by_name === user?.fullName)
+
+  if (loadingTickets || loadingBuildings) return <MyTicketsPageSkeleton />
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -64,21 +65,37 @@ export default function MyTicketsPage() {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title || !description || !user) return
-    const userBuilding = buildings.find(b => b.id === user.buildingId)
+    const userBuilding = buildings?.find(b => b.id === user.buildingId)
+    
+    // Upload photo to storage if present
+    let photoUrls: string[] | null = null
+    if (photoPreview) {
+      try {
+        const url = await uploadBase64('ticket-photos', photoPreview)
+        photoUrls = [url]
+      } catch (err) {
+        console.error('Photo upload failed:', err)
+        photoUrls = null
+      }
+    }
+    
     const ticket: Ticket = {
       id: `TKT-${Date.now()}`,
+      syndic_id: user.syndicId || '',
       title,
       description,
-      submittedBy: user.fullName,
-      submittedByRole: user.role as "Owner" | "Tenant",
-      buildingName: userBuilding?.name || "—",
-      apartmentNumber: user.apartmentId?.split("-")[1] || "—",
+      submitted_by_name: user.fullName,
+      submitted_by_role: user.role as "Owner" | "Tenant",
+      submitted_by_id: null,
+      building_name: userBuilding?.name || "—",
+      apartment_number: user.apartmentId?.split("-")[1] || "—",
       status: "Open",
-      createdAt: new Date().toISOString().split("T")[0],
-      photo: photoPreview || undefined,
-      submittedByAvatar: user.avatar,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      photos: photoUrls,
+      submitted_by_avatar: user.avatar || null,
     }
     setLocalTickets(prev => [ticket, ...prev])
     setTitle(""); setDescription(""); setPhotoPreview(null); setShowForm(false)
@@ -183,45 +200,23 @@ export default function MyTicketsPage() {
                     <p className="text-xs text-neutral-500 mt-1 line-clamp-2">{ticket.description}</p>
                     
                     {/* Photos Preview */}
-                    {(ticket.photos?.length || ticket.photo) && (
+                    {ticket.photos && ticket.photos.length > 0 && (
                       <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-                        {ticket.photos ? (
-                          ticket.photos.map((p, idx) => (
-                            <div 
-                              key={idx} 
-                              className="relative group w-16 h-16 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
-                              onClick={() => openLightbox(ticket.photos!, idx)}
-                            >
-                              <img src={p} alt={`Attached ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                            </div>
-                          ))
-                        ) : (
+                        {ticket.photos.map((p, idx) => (
                           <div 
+                            key={idx} 
                             className="relative group w-16 h-16 rounded-sm overflow-hidden border border-black/5 shrink-0 cursor-pointer hover:border-primary/50 transition-all"
-                            onClick={() => openLightbox([ticket.photo!], 0)}
+                            onClick={() => openLightbox(ticket.photos!, idx)}
                           >
-                            <img src={ticket.photo} alt="Attached" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                            <img src={p} alt={`Attached ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Notes from Syndic */}
-                    {ticket.notes && ticket.notes.length > 0 && (
-                      <div className="mt-3 space-y-2 border-t border-black/5 pt-3">
-                        <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.helpdesk.notes}</p>
-                        {ticket.notes.map(note => (
-                          <div key={note.id} className="p-2 rounded-sm bg-white/50 border border-black/5">
-                            <p className="text-xs text-neutral-700">{note.text}</p>
-                            <p className="text-[9px] text-neutral-400 mt-1">{note.author} · {note.createdAt}</p>
                           </div>
                         ))}
                       </div>
                     )}
+
                     
-                    <p className="text-[10px] text-neutral-400 mt-3">{ticket.createdAt} · {ticket.buildingName} · {t.charges.apt} {ticket.apartmentNumber}</p>
+                    <p className="text-[10px] text-neutral-400 mt-3">{new Date(ticket.created_at).toLocaleDateString()} · {ticket.building_name} · {t.charges.apt} {ticket.apartment_number}</p>
                   </div>
                 </div>
               </CardContent>
@@ -239,3 +234,4 @@ export default function MyTicketsPage() {
     </div>
   )
 }
+

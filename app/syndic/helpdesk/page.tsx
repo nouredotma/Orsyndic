@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { tickets as initTickets } from "@/lib/mock-data"
-import type { Ticket, TicketStatus, TicketNote } from "@/lib/mock-data"
+import { getCurrentUser } from "@/lib/auth"
+import { useTickets } from "@/lib/hooks"
+import type { Ticket, TicketStatus, TicketNote } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
@@ -20,12 +21,14 @@ import { ImageLightbox } from "@/components/image-lightbox"
 
 export default function HelpdeskPage() {
   const { t } = useI18n()
-  const [isLoading, setIsLoading] = useState(true)
-  const [localTickets, setLocalTickets] = useState<Ticket[]>(initTickets)
+  const user = getCurrentUser()
+  const { data: fetchedTickets = [], loading } = useTickets(user?.syndicId)
+  const [localTickets, setLocalTickets] = useState<Ticket[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState<"All" | TicketStatus>("All")
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
   const [newNote, setNewNote] = useState("")
+  const [localNotes, setLocalNotes] = useState<Record<string, TicketNote[]>>({})
 
   // Delete state
   const [deleteTicketId, setDeleteTicketId] = useState<string | null>(null)
@@ -35,14 +38,13 @@ export default function HelpdeskPage() {
   const [lightbox, setLightbox] = useState<{ isOpen: boolean; index: number }>({ isOpen: false, index: 0 })
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
+    if (fetchedTickets) setLocalTickets(fetchedTickets)
+  }, [fetchedTickets])
 
-  if (isLoading) return <HelpdeskPageSkeleton />
+  if (loading) return <HelpdeskPageSkeleton />
 
   const filteredTickets = localTickets.filter((ticket) => {
-    const matchesSearch = ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) || ticket.submittedBy.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch = ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) || ticket.submitted_by_name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === "All" || ticket.status === filterStatus
     return matchesSearch && matchesStatus
   })
@@ -70,14 +72,19 @@ export default function HelpdeskPage() {
     if (!selectedTicket || !newNote.trim()) return
     const note: TicketNote = {
       id: `note-${Date.now()}`,
+      ticket_id: selectedTicket.id,
       text: newNote,
-      createdAt: new Date().toISOString().split("T")[0],
+      created_at: new Date().toISOString().split("T")[0],
       author: "Admin"
     }
-    setLocalTickets(prev => prev.map(t => t.id === selectedTicket.id ? { ...t, notes: [...(t.notes || []), note] } : t))
-    setSelectedTicket(prev => prev ? { ...prev, notes: [...(prev.notes || []), note] } : null)
+    setLocalNotes(prev => ({
+      ...prev,
+      [selectedTicket.id]: [...(prev[selectedTicket.id] || []), note]
+    }))
     setNewNote("")
   }
+
+  const getTicketNotes = (ticketId: string): TicketNote[] => localNotes[ticketId] || []
 
   const getRoleLabel = (role: "Owner" | "Tenant") => role === "Owner" ? t.common.owner : t.common.tenant
 
@@ -105,7 +112,7 @@ export default function HelpdeskPage() {
                 </Button>
                 <div>
                   <CardTitle className="text-base">{selectedTicket.title}</CardTitle>
-                  <CardDescription className="text-xs">{selectedTicket.id} · {selectedTicket.buildingName} · {t.charges.apt} {selectedTicket.apartmentNumber}</CardDescription>
+                  <CardDescription className="text-xs">{selectedTicket.id} · {selectedTicket.building_name} · {t.charges.apt} {selectedTicket.apartment_number}</CardDescription>
                 </div>
               </div>
               <Badge variant={selectedTicket.status === "Open" ? "warning" : selectedTicket.status === "In Progress" ? "default" : "success"} className="text-[10px]">
@@ -121,12 +128,12 @@ export default function HelpdeskPage() {
                   <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.helpdesk.by}</h4>
                   <div className="flex items-center gap-3 p-3 rounded-sm bg-white border border-black/5">
                     <Avatar className="h-10 w-10 border border-black/5">
-                      <AvatarImage src={selectedTicket.submittedByAvatar} />
-                      <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedTicket.submittedBy.charAt(0)}</AvatarFallback>
+                      <AvatarImage src={selectedTicket.submitted_by_avatar || undefined} />
+                      <AvatarFallback className="bg-red-100 text-[#FF0000] font-bold">{selectedTicket.submitted_by_name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-semibold">{selectedTicket.submittedBy}</p>
-                      <p className="text-[10px] text-neutral-500">{getRoleLabel(selectedTicket.submittedByRole)} · {selectedTicket.createdAt}</p>
+                      <p className="text-sm font-semibold">{selectedTicket.submitted_by_name}</p>
+                      <p className="text-[10px] text-neutral-500">{getRoleLabel(selectedTicket.submitted_by_role)} · {new Date(selectedTicket.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
                 </div>
@@ -177,11 +184,11 @@ export default function HelpdeskPage() {
               <div className="space-y-4">
                 <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">{t.helpdesk.notes}</h4>
                 <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1 hide-scrollbar">
-                  {(selectedTicket.notes || []).length > 0 ? (
-                    (selectedTicket.notes || []).map(note => (
+                  {getTicketNotes(selectedTicket.id).length > 0 ? (
+                    getTicketNotes(selectedTicket.id).map(note => (
                       <div key={note.id} className="p-3 rounded-sm bg-white border border-black/5">
                         <p className="text-sm text-neutral-700">{note.text}</p>
-                        <p className="text-[9px] text-neutral-400 mt-1">{note.author} · {note.createdAt}</p>
+                        <p className="text-[9px] text-neutral-400 mt-1">{note.author} · {new Date(note.created_at).toLocaleDateString()}</p>
                       </div>
                     ))
                   ) : (
@@ -219,8 +226,8 @@ export default function HelpdeskPage() {
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   <Avatar className="h-10 w-10 border border-black/5 shrink-0">
-                    <AvatarImage src={ticket.submittedByAvatar} />
-                    <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{ticket.submittedBy.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={ticket.submitted_by_avatar || undefined} />
+                    <AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{ticket.submitted_by_name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
@@ -260,14 +267,14 @@ export default function HelpdeskPage() {
                     <p className="text-xs text-neutral-600 line-clamp-2 mb-2">{ticket.description}</p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-neutral-500">{t.helpdesk.by} {ticket.submittedBy}</span>
-                        <span className="text-[10px] text-neutral-400">({getRoleLabel(ticket.submittedByRole)})</span>
+                        <span className="text-[10px] text-neutral-500">{t.helpdesk.by} {ticket.submitted_by_name}</span>
+                        <span className="text-[10px] text-neutral-400">({getRoleLabel(ticket.submitted_by_role)})</span>
                       </div>
                       <Badge variant={ticket.status === "Open" ? "warning" : ticket.status === "In Progress" ? "default" : "success"} className="text-[9px]">
                         {ticket.status === "Open" ? t.helpdesk.open : ticket.status === "In Progress" ? t.helpdesk.inProgress : t.helpdesk.resolved}
                       </Badge>
                     </div>
-                    <p className="text-[9px] text-neutral-400 mt-1">{ticket.buildingName} · {t.charges.apt} {ticket.apartmentNumber} · {ticket.createdAt}</p>
+                    <p className="text-[9px] text-neutral-400 mt-1">{ticket.building_name} · {t.charges.apt} {ticket.apartment_number} · {new Date(ticket.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
               </CardContent>
@@ -300,3 +307,4 @@ export default function HelpdeskPage() {
     </div>
   )
 }
+

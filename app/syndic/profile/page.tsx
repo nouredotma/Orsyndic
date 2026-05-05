@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Eye, EyeOff, Camera, Check, Pencil } from "lucide-react"
+import { Eye, EyeOff, Camera, Check, Pencil, Loader2 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { getCurrentUser } from "@/lib/auth"
+import { uploadFile } from "@/lib/storage"
+import { supabase } from "@/lib/supabase"
 import { useI18n } from "@/lib/i18n-context"
 import { ProfilePageSkeleton } from "@/components/dashboard-skeletons"
 
@@ -29,34 +31,36 @@ export default function ProfilePage() {
   const [editPhone, setEditPhone] = useState(user?.phone || "")
   const [editEmail, setEditEmail] = useState(user?.email || "")
   const [profileSaved, setProfileSaved] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [savingProfile, setSavingProfile] = useState(false)
+  const [updatingPassword, setUpdatingPassword] = useState(false)
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const result = reader.result as string
-        setPreviewImage(result)
-        // Save to localStorage so it persists
-        const stored = localStorage.getItem("user")
-        if (stored) {
-          const userData = JSON.parse(stored)
-          userData.avatar = result
-          localStorage.setItem("user", JSON.stringify(userData))
-        }
+    if (!file) return
+    setUploadingAvatar(true)
+    try {
+      const url = await uploadFile('avatars', file, `${user?.id || Date.now()}-${file.name}`)
+      setPreviewImage(url)
+      // Persist avatar URL to profiles table
+      if (user?.id) {
+        await fetch('/api/profiles', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: user.id, avatar_url: url }),
+        })
       }
-      reader.readAsDataURL(file)
+    } catch (err) {
+      console.error('Avatar upload failed:', err)
+    } finally {
+      setUploadingAvatar(false)
     }
   }
 
-  const handleUpdatePassword = () => {
+  const handleUpdatePassword = async () => {
     setPasswordMsg(null)
     if (!oldPassword || !newPassword || !confirmPassword) {
       setPasswordMsg({ type: "error", text: t.profile.passwordRequired })
-      return
-    }
-    if (oldPassword !== "password123") {
-      setPasswordMsg({ type: "error", text: t.profile.currentPasswordIncorrect })
       return
     }
     if (newPassword.length < 6) {
@@ -67,24 +71,58 @@ export default function ProfilePage() {
       setPasswordMsg({ type: "error", text: t.profile.passwordsDoNotMatch })
       return
     }
-    setPasswordMsg({ type: "success", text: t.profile.passwordUpdated })
-    setOldPassword(""); setNewPassword(""); setConfirmPassword("")
-    setTimeout(() => setPasswordMsg(null), 3000)
+    setUpdatingPassword(true)
+    try {
+      // Verify old password by attempting sign-in
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user?.email || '',
+        password: oldPassword,
+      })
+      if (signInError) {
+        setPasswordMsg({ type: "error", text: t.profile.currentPasswordIncorrect })
+        return
+      }
+      // Update password
+      const { error } = await supabase.auth.updateUser({ password: newPassword })
+      if (error) {
+        setPasswordMsg({ type: "error", text: error.message })
+        return
+      }
+      setPasswordMsg({ type: "success", text: t.profile.passwordUpdated })
+      setOldPassword(""); setNewPassword(""); setConfirmPassword("")
+      setTimeout(() => setPasswordMsg(null), 3000)
+    } catch (err) {
+      setPasswordMsg({ type: "error", text: "An unexpected error occurred" })
+    } finally {
+      setUpdatingPassword(false)
+    }
   }
 
-  const handleSaveProfile = () => {
-    // Save to localStorage
-    const stored = localStorage.getItem("user")
-    if (stored) {
-      const userData = JSON.parse(stored)
-      userData.fullName = editFullName
-      userData.phone = editPhone
-      userData.email = editEmail
-      localStorage.setItem("user", JSON.stringify(userData))
+  const handleSaveProfile = async () => {
+    if (!user?.id) return
+    setSavingProfile(true)
+    try {
+      const res = await fetch('/api/profiles', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: user.id,
+          full_name: editFullName,
+          phone: editPhone,
+          email: editEmail,
+        }),
+      })
+      if (!res.ok) {
+        console.error('Profile save failed:', await res.text())
+      }
+      setIsEditingProfile(false)
+      setProfileSaved(true)
+      setTimeout(() => setProfileSaved(false), 3000)
+    } catch (err) {
+      console.error('Profile save error:', err)
+    } finally {
+      setSavingProfile(false)
     }
-    setIsEditingProfile(false)
-    setProfileSaved(true)
-    setTimeout(() => setProfileSaved(false), 3000)
   }
 
   const getRoleLabel = (role: string) => {
@@ -126,8 +164,8 @@ export default function ProfilePage() {
                 <AvatarFallback className="bg-red-100 text-[#FF0000] text-xl font-bold">{user?.fullName?.charAt(0) || "U"}</AvatarFallback>
               </Avatar>
               <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                <Camera className="h-5 w-5 text-white" />
-                <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                {uploadingAvatar ? <Loader2 className="h-5 w-5 text-white animate-spin" /> : <Camera className="h-5 w-5 text-white" />}
+                <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} disabled={uploadingAvatar} />
               </label>
             </div>
             <div>
@@ -151,7 +189,10 @@ export default function ProfilePage() {
                 <Input className="bg-white border-black/10 rounded-sm" value={editPhone} onChange={(e) => setEditPhone(e.target.value)} />
               </div>
               <div className="flex gap-2 pt-1">
-                <Button className="flex-1 cursor-pointer" onClick={handleSaveProfile}>{t.common.save}</Button>
+                <Button className="flex-1 cursor-pointer" onClick={handleSaveProfile} disabled={savingProfile}>
+                  {savingProfile ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                  {t.common.save}
+                </Button>
                 <Button variant="outline" className="flex-1 cursor-pointer border-none bg-white hover:bg-neutral-200" onClick={() => { setIsEditingProfile(false); setEditFullName(user?.fullName || ""); setEditPhone(user?.phone || ""); setEditEmail(user?.email || "") }}>{t.common.cancel}</Button>
               </div>
             </div>
@@ -195,9 +236,13 @@ export default function ProfilePage() {
             <Label className="text-xs">{t.profile.confirmPassword}</Label>
             <Input type={showNew ? "text" : "password"} className="bg-neutral-50 border-black/10" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
-          <Button className="w-full mt-2 cursor-pointer" onClick={handleUpdatePassword}>{t.profile.updatePassword}</Button>
+          <Button className="w-full mt-2 cursor-pointer" onClick={handleUpdatePassword} disabled={updatingPassword}>
+            {updatingPassword ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+            {t.profile.updatePassword}
+          </Button>
         </CardContent>
       </Card>
     </div>
   )
 }
+

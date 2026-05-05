@@ -13,8 +13,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { documents as initialDocs, buildings } from "@/lib/mock-data"
-import type { Document } from "@/lib/mock-data"
+import { useDocuments, useBuildings } from "@/lib/hooks"
+import { uploadFile } from "@/lib/storage"
+import type { Document } from "@/lib/types"
 import { getCurrentUser } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
@@ -34,8 +35,9 @@ export default function DocumentsPage() {
   const { t } = useI18n()
   const user = getCurrentUser()
   const isAdmin = user?.role === "Admin"
-  const [isLoading, setIsLoading] = useState(true)
-  const [localDocs, setLocalDocs] = useState<Document[]>(initialDocs)
+  const { data: fetchedDocs = [], loading: loadingDocs } = useDocuments(user?.syndicId)
+  const { data: buildings = [], loading: loadingBuildings } = useBuildings(user?.syndicId)
+  const [localDocs, setLocalDocs] = useState<Document[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   
   // Create state
@@ -44,6 +46,7 @@ export default function DocumentsPage() {
   const [docCategory, setDocCategory] = useState<DocCategory | "">("")
   const [fileName, setFileName] = useState("")
   const [selectedBuildings, setSelectedBuildings] = useState<string[]>([])
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   // Edit state
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -56,32 +59,50 @@ export default function DocumentsPage() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [pendingDelete, setPendingDelete] = useState<Document | null>(null)
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!docName || !docCategory) return
+    
+    let fileUrl: string | null = null
+    let fileSize: string | null = null
+    
+    // Upload file to Supabase Storage if selected
+    if (selectedFile) {
+      try {
+        fileUrl = await uploadFile('documents', selectedFile)
+        const sizeMB = (selectedFile.size / (1024 * 1024)).toFixed(1)
+        fileSize = `${sizeMB} MB`
+      } catch (err) {
+        console.error('Document upload failed:', err)
+      }
+    }
+    
     const doc: Document = {
       id: `doc-${Date.now()}`,
+      syndic_id: user?.syndicId || '',
       name: docName,
-      category: docCategory as DocCategory,
-      uploadedAt: new Date().toISOString().split("T")[0],
-      fileSize: fileName ? `${Math.floor(Math.random() * 5 + 1)}.${Math.floor(Math.random() * 9)}  MB` : "1.0 MB",
-      uploadedBy: "Admin",
-      buildingIds: selectedBuildings,
+      category: docCategory as Document["category"],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      file_url: fileUrl,
+      file_size: fileSize || "—",
+      uploaded_by: "Admin",
+      building_ids: selectedBuildings.length > 0 ? selectedBuildings : null,
     }
     setLocalDocs(prev => [doc, ...prev])
-    setDocName(""); setDocCategory(""); setFileName(""); setSelectedBuildings([]); setIsOpen(false)
+    setDocName(""); setDocCategory(""); setFileName(""); setSelectedFile(null); setSelectedBuildings([]); setIsOpen(false)
   }
 
   const handleOpenEdit = (doc: Document) => {
     setEditingDoc(doc)
     setEditName(doc.name)
     setEditCategory(doc.category)
-    setEditSelectedBuildings(doc.buildingIds || [])
+    setEditSelectedBuildings(doc.building_ids || [])
     setIsEditOpen(true)
   }
 
   const handleSaveEdit = () => {
     if (!editingDoc || !editName || !editCategory) return
-    setLocalDocs(p => p.map(d => d.id === editingDoc.id ? { ...d, name: editName, category: editCategory as DocCategory, buildingIds: editSelectedBuildings } : d))
+    setLocalDocs(p => p.map(d => d.id === editingDoc.id ? { ...d, name: editName, category: editCategory as Document["category"], building_ids: editSelectedBuildings.length > 0 ? editSelectedBuildings : null } : d))
     setIsEditOpen(false); setEditingDoc(null)
   }
 
@@ -97,7 +118,7 @@ export default function DocumentsPage() {
   }
 
   const handleDownload = (doc: Document) => {
-    const blob = new Blob([`Document: ${doc.name}\nCategory: ${doc.category}\nUploaded: ${doc.uploadedAt}\n\nThis is a mock document file for demonstration purposes.`], { type: "text/plain" })
+    const blob = new Blob([`Document: ${doc.name}\nCategory: ${doc.category}\nUploaded: ${doc.created_at}\n\nThis is a mock document file for demonstration purposes.`], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url; a.download = `${doc.name.replace(/\s+/g, "_")}.txt`; a.click()
@@ -105,11 +126,10 @@ export default function DocumentsPage() {
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
+    if (fetchedDocs) setLocalDocs(fetchedDocs)
+  }, [fetchedDocs])
 
-  if (isLoading) return <DocumentsPageSkeleton />
+  if (loadingDocs || loadingBuildings) return <DocumentsPageSkeleton />
 
   const filteredDocs = localDocs.filter(d => {
     const matchesSearch = d.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -118,7 +138,7 @@ export default function DocumentsPage() {
     if (isAdmin) return true
     
     const user = getCurrentUser()
-    return !d.buildingIds || d.buildingIds.length === 0 || (user?.buildingId && d.buildingIds.includes(user.buildingId))
+    return !d.building_ids || d.building_ids.length === 0 || (user?.buildingId && d.building_ids.includes(user.buildingId))
   })
 
   const grouped = filteredDocs.reduce((acc, doc) => {
@@ -201,7 +221,7 @@ export default function DocumentsPage() {
                   <label className="border-2 border-dashed border-black/5 rounded-sm p-8 text-center cursor-pointer hover:bg-neutral-50 transition-colors">
                     <File className="h-8 w-8 text-neutral-300 mx-auto mb-2" />
                     <p className="text-xs text-neutral-500">{fileName || t.documents.dragDrop}</p>
-                    <input type="file" className="hidden" onChange={(e) => setFileName(e.target.files?.[0]?.name || "")} />
+                    <input type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; setFileName(f?.name || ""); setSelectedFile(f || null) }} />
                   </label>
                 </div>
               </div>
@@ -253,10 +273,10 @@ export default function DocumentsPage() {
                     <div className="min-w-0">
                       <p className="text-xs font-medium truncate group-hover/row:text-primary transition-colors">{doc.name}</p>
                       <div className="flex items-center gap-2">
-                        <p className="text-[10px] text-neutral-400">{doc.fileSize} · {doc.uploadedAt}</p>
-                        {isAdmin && doc.buildingIds && doc.buildingIds.length > 0 && (
+                        <p className="text-[10px] text-neutral-400">{doc.file_size} · {new Date(doc.created_at).toLocaleDateString()}</p>
+                        {isAdmin && doc.building_ids && doc.building_ids.length > 0 && (
                           <Badge variant="outline" className="text-[8px] h-3.5 px-1 py-0 font-normal opacity-60 border-neutral-300">
-                            {doc.buildingIds.length === buildings.length ? t.common.all : `${doc.buildingIds.length} ${t.sidebar.buildings}`}
+                            {doc.building_ids.length === (buildings || []).length ? t.common.all : `${doc.building_ids.length} ${t.sidebar.buildings}`}
                           </Badge>
                         )}
                       </div>
@@ -396,3 +416,4 @@ export default function DocumentsPage() {
     </div>
   )
 }
+

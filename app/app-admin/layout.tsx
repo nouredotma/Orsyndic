@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import {
@@ -117,8 +118,9 @@ export default function AppAdminLayout({ children }: { children: React.ReactNode
     return () => clearTimeout(timer)
   }, [pathname])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (typeof window !== "undefined") {
+      await supabase.auth.signOut()
       localStorage.removeItem("isAppAdmin")
       router.push("/app-admin/login")
     }

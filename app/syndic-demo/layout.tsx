@@ -11,8 +11,8 @@ import {
   UserPlus, AlertTriangle,
 } from "lucide-react"
 
-import { logoutUser, getCurrentUser } from "@/lib/auth"
-import type { UserRole } from "@/lib/auth"
+import { logoutUser, getCurrentUser } from "@/lib/demo-auth"
+import type { UserRole } from "@/lib/demo-auth"
 import { I18nProvider, useI18n } from "@/lib/i18n-context"
 import type { DashboardLanguage } from "@/lib/dashboard-translations"
 import { cn } from "@/lib/utils"
@@ -211,8 +211,8 @@ function SyndicLayoutContent({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer)
   }, [pathname])
 
-  const handleLogout = () => {
-    logoutUser()
+  const handleLogout = async () => {
+    await logoutUser()
     router.push("/syndic-demo/login")
   }
 

@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, EyeOff, Loader2, CheckCircle } from "lucide-react"
-import { isAuthenticated, registerUser, getDashboardPath } from "@/lib/auth"
+import { isAuthenticated, registerUser, getDashboardPath, getCurrentUser } from "@/lib/auth"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,12 +40,16 @@ export default function RegisterPage() {
   const currentLanguage = languages.find(l => l.code === language) || languages[0]
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      const userData = JSON.parse(localStorage.getItem("user") || "{}")
-      if (pathname !== "/syndic/register") {
-        router.push(getDashboardPath(userData.role))
+    const checkAuth = async () => {
+      const authenticated = await isAuthenticated()
+      if (authenticated) {
+        const userData = getCurrentUser()
+        if (userData && pathname !== "/syndic/register") {
+          router.push(getDashboardPath(userData.role))
+        }
       }
     }
+    checkAuth()
   }, [router, pathname])
 
   const renderTitle = (text: string) => {

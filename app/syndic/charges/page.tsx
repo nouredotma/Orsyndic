@@ -6,8 +6,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { charges, apartments, buildings } from "@/lib/mock-data"
-import type { ChargeStatus, Charge } from "@/lib/mock-data"
+import { getCurrentUser } from "@/lib/auth"
+import { useCharges, useApartments, useBuildings } from "@/lib/hooks"
+import type { ChargeStatus, Charge } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n-context"
 import { ChargesPageSkeleton } from "@/components/dashboard-skeletons"
@@ -22,8 +23,11 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 
 export default function ChargesPage() {
   const { t } = useI18n()
-  const [isLoading, setIsLoading] = useState(true)
-  const [localCharges, setLocalCharges] = useState<Charge[]>(charges)
+  const user = getCurrentUser()
+  const { data: fetchedCharges, loading: loadingCharges } = useCharges(user?.syndicId)
+  const { data: apartments = [], loading: loadingApts } = useApartments(user?.syndicId)
+  const { data: buildings = [], loading: loadingBuildings } = useBuildings(user?.syndicId)
+  const [localCharges, setLocalCharges] = useState<Charge[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState<"All" | ChargeStatus>("All")
   const [filterBuilding, setFilterBuilding] = useState<string>("All")
@@ -45,18 +49,17 @@ export default function ChargesPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
+    if (fetchedCharges) setLocalCharges(fetchedCharges)
+  }, [fetchedCharges])
 
   const filteredCharges = useMemo(() => localCharges.filter((c) => {
-    const matchesSearch = c.ownerName.toLowerCase().includes(searchQuery.toLowerCase()) || c.apartmentNumber.includes(searchQuery)
+    const matchesSearch = c.owner_name.toLowerCase().includes(searchQuery.toLowerCase()) || c.apartment_number.includes(searchQuery)
     const matchesStatus = filterStatus === "All" || c.status === filterStatus
-    const matchesBuilding = filterBuilding === "All" || c.buildingName === filterBuilding
+    const matchesBuilding = filterBuilding === "All" || c.building_name === filterBuilding
     return matchesSearch && matchesStatus && matchesBuilding
   }), [localCharges, searchQuery, filterStatus, filterBuilding])
 
-  if (isLoading) return <ChargesPageSkeleton />
+  if (loadingCharges || loadingApts || loadingBuildings) return <ChargesPageSkeleton />
 
   const totalPages = Math.max(1, Math.ceil(filteredCharges.length / ITEMS_PER_PAGE))
   const paginatedCharges = filteredCharges.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
@@ -72,20 +75,25 @@ export default function ChargesPage() {
     const rate = parseFloat(ratePerTantieme) || 0
     if (rate <= 0 || !genBuilding) return
 
-    const selectedBuilding = buildings.find(b => b.id === genBuilding)
-    const buildingApts = apartments.filter(a => a.buildingId === genBuilding)
+    const selectedBuilding = buildings?.find(b => b.id === genBuilding)
+    const buildingApts = apartments?.filter(a => a.building_id === genBuilding) || []
 
     const newCharges: Charge[] = buildingApts.map(apt => ({
       id: `chg-new-${Date.now()}-${apt.id}`,
-      apartmentId: apt.id,
-      apartmentNumber: apt.number,
-      buildingName: selectedBuilding?.name || "",
-      ownerName: apt.ownerName || "—",
+      syndic_id: user?.syndicId || '',
+      apartment_id: apt.id,
+      apartment_number: apt.number,
+      building_name: selectedBuilding?.name || "",
+      owner_name: apt.owner_name || "—",
+      owner_avatar: null,
       month: genMonth,
       year: parseInt(genYear),
       amount: Math.round(apt.tantiemes * rate),
       status: "Unpaid" as ChargeStatus,
-      validatedByAdmin: false,
+      paid_date: null,
+      validated_by_admin: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     }))
 
     setLocalCharges(prev => [...newCharges, ...prev])
@@ -93,11 +101,11 @@ export default function ChargesPage() {
   }
 
   const handleValidate = (id: string) => {
-    setLocalCharges(prev => prev.map(c => c.id === id ? { ...c, validatedByAdmin: true } : c))
+    setLocalCharges(prev => prev.map(c => c.id === id ? { ...c, validated_by_admin: true } : c))
   }
 
   const handleMarkAsPaid = (id: string) => {
-    setLocalCharges(prev => prev.map(c => c.id === id ? { ...c, status: "Paid" as ChargeStatus, paidDate: new Date().toISOString().split('T')[0] } : c))
+    setLocalCharges(prev => prev.map(c => c.id === id ? { ...c, status: "Paid" as ChargeStatus, paid_date: new Date().toISOString().split('T')[0] } : c))
   }
 
   const handleEditSave = () => {
@@ -251,7 +259,7 @@ export default function ChargesPage() {
           </SelectTrigger>
           <SelectContent className="bg-white border-none shadow-lg rounded-sm">
             <SelectItem value="All" className="text-xs">{t.charges.allBuildings}</SelectItem>
-            {buildings.map(b => (
+            {(buildings || []).map(b => (
               <SelectItem key={b.id} value={b.name} className="text-xs">{b.name}</SelectItem>
             ))}
           </SelectContent>
@@ -277,16 +285,16 @@ export default function ChargesPage() {
               <tbody>
                 {paginatedCharges.length > 0 ? paginatedCharges.map((c) => (
                   <tr key={c.id} className="border-b border-black/5 last:border-0">
-                    <td className="px-4 py-3 text-sm font-medium">{c.ownerName}</td>
-                    <td className="px-4 py-3 text-xs text-neutral-600">{c.apartmentNumber}</td>
+                    <td className="px-4 py-3 text-sm font-medium">{c.owner_name}</td>
+                    <td className="px-4 py-3 text-xs text-neutral-600">{c.apartment_number}</td>
                     <td className="px-4 py-3 text-xs text-neutral-600">{c.month} {c.year}</td>
                     <td className="px-4 py-3 text-xs font-bold">{c.amount} MAD</td>
                     <td className="px-4 py-3"><Badge variant={c.status === "Paid" ? "success" : c.status === "Partial" ? "warning" : "danger"} className="text-[10px]">{c.status === "Paid" ? t.status.paid : c.status === "Partial" ? t.status.partial : t.status.unpaid}</Badge></td>
-                    <td className="px-4 py-3">{c.validatedByAdmin ? <Check className="h-4 w-4 text-emerald-500" /> : <X className="h-4 w-4 text-neutral-300" />}</td>
+                    <td className="px-4 py-3">{c.validated_by_admin ? <Check className="h-4 w-4 text-emerald-500" /> : <X className="h-4 w-4 text-neutral-300" />}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1 items-center">
                         {(c.status === "Unpaid" || c.status === "Partial") && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer border-none bg-white hover:bg-primary/5" onClick={() => handleMarkAsPaid(c.id)}>{t.charges.markPaid}</Button>}
-                        {!c.validatedByAdmin && c.status === "Paid" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer border-none bg-white hover:bg-primary/5" onClick={() => handleValidate(c.id)}>{t.charges.validate}</Button>}
+                        {!c.validated_by_admin && c.status === "Paid" && <Button variant="outline" size="sm" className="text-[10px] h-7 cursor-pointer border-none bg-white hover:bg-primary/5" onClick={() => handleValidate(c.id)}>{t.charges.validate}</Button>}
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="h-7 w-7 cursor-pointer hover:bg-primary group transition-colors">
@@ -385,3 +393,4 @@ export default function ChargesPage() {
     </div>
   )
 }
+

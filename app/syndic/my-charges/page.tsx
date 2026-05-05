@@ -8,25 +8,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
-import { charges } from "@/lib/mock-data"
+import { useCharges } from "@/lib/hooks"
+import type { Charge } from "@/lib/types"
 import { useI18n } from "@/lib/i18n-context"
 import { MyChargesPageSkeleton } from "@/components/dashboard-skeletons"
 
 export default function MyChargesPage() {
   const { t, language } = useI18n()
   const user = getCurrentUser()
-  const [isLoading, setIsLoading] = useState(true)
-  const myCharges = charges.filter(c => c.apartmentId === user?.apartmentId)
+  const { data: allCharges, loading } = useCharges(user?.syndicId)
+
+  if (loading || !allCharges) return <MyChargesPageSkeleton />
+
+  const myCharges = allCharges.filter(c => c.apartment_id === user?.apartmentId)
   const unpaidTotal = myCharges.filter(c => c.status !== "Paid").reduce((sum, c) => sum + c.amount, 0)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800)
-    return () => clearTimeout(timer)
-  }, [])
-
-  if (isLoading) return <MyChargesPageSkeleton />
-
-  const handleDownloadPDF = (charge: typeof charges[0]) => {
+  const handleDownloadPDF = (charge: Charge) => {
     const doc = new jsPDF()
     
     // Header
@@ -57,10 +54,10 @@ export default function MyChargesPage() {
     
     const rows = [
       [t.common.receiptId, charge.id],
-      [t.common.date, charge.paidDate || "N/A"],
-      [t.buildings.owner, charge.ownerName],
-      [t.buildings.apartmentNumber, charge.apartmentNumber],
-      [t.sidebar.buildings, charge.buildingName],
+      [t.common.date, charge.paid_date || "N/A"],
+      [t.buildings.owner, charge.owner_name],
+      [t.buildings.apartmentNumber, charge.apartment_number],
+      [t.sidebar.buildings, charge.building_name],
       [t.common.period, `${charge.month} ${charge.year}`],
     ]
     
@@ -104,7 +101,7 @@ export default function MyChargesPage() {
     doc.setFont("helvetica", "normal")
     doc.text(t.common.thankYou, 105, 280, { align: "center" })
     
-    doc.save(`receipt_${charge.apartmentNumber}_${charge.month}_${charge.year}.pdf`)
+    doc.save(`receipt_${charge.apartment_number}_${charge.month}_${charge.year}.pdf`)
   }
 
   return (
@@ -137,14 +134,14 @@ export default function MyChargesPage() {
               <div key={c.id} className="flex items-center justify-between py-3 border-b border-black/5 last:border-0">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-sm bg-primary/10 flex items-center justify-center"><CreditCard className="h-4 w-4 text-primary" /></div>
-                  <div><p className="text-sm font-medium">{c.month} {c.year}</p><p className="text-[10px] text-neutral-500">Apt {c.apartmentNumber}</p></div>
+                  <div><p className="text-sm font-medium">{c.month} {c.year}</p><p className="text-[10px] text-neutral-500">Apt {c.apartment_number}</p></div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <p className="text-sm font-bold">{c.amount} MAD</p>
                     <Badge variant={c.status === "Paid" ? "success" : c.status === "Partial" ? "warning" : "danger"} className="text-[10px]">{c.status === "Paid" ? t.status.paid : c.status === "Partial" ? t.status.partial : t.status.unpaid}</Badge>
                   </div>
-                  {c.status === "Paid" && c.validatedByAdmin && (
+                  {c.status === "Paid" && c.validated_by_admin && (
                     <Button variant="ghost" size="sm" className="text-[10px] h-7 gap-1 cursor-pointer text-primary" onClick={() => handleDownloadPDF(c)}>
                       <Download className="h-3 w-3" />{t.myCharges.downloadPDF}
                     </Button>
