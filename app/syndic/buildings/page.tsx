@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
-import { Building2, Plus, ChevronRight, DoorOpen, MapPin, ArrowLeft, Pencil, Trash2, MoreVertical, Search } from "lucide-react"
+import { Building2, Plus, ChevronRight, DoorOpen, MapPin, ArrowLeft, Pencil, Trash2, MoreVertical } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -99,7 +99,6 @@ export default function BuildingsPage() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmType, setConfirmType] = useState<"building">("building")
   const [itemToDelete, setItemToDelete] = useState<Building | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800)
@@ -250,22 +249,20 @@ export default function BuildingsPage() {
           <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider px-1">
             {t.sidebar.buildings} ({localBuildings.length})
           </p>
-          <div className="relative mt-2 mb-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
-            <Input
-              placeholder={t.buildings.searchBuildings}
-              className="pl-9 h-8 text-xs bg-white border-none rounded-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          {localBuildings.filter(b => b.name.toLowerCase().includes(searchQuery.toLowerCase()) || b.address.toLowerCase().includes(searchQuery.toLowerCase())).map((building) => {
+          <div className="pt-2">
+          {localBuildings.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 border-2 border-dashed border-black/5 rounded-xl bg-neutral-50/50">
+              <Building2 className="h-10 w-10 text-neutral-300 mb-3" />
+              <p className="text-sm text-neutral-500 font-medium">{t.emptyStates.noBuildings}</p>
+              <p className="text-xs text-neutral-400 mt-1">{t.emptyStates.noBuildingsSubtitle}</p>
+            </div>
+          ) : localBuildings.map((building) => {
             const aptCount = localApartments.filter(a => a.buildingId === building.id).length
             return (
               <Card
                 key={building.id}
                 className={cn(
-                  "border-none bg-neutral-100 cursor-pointer transition-all",
+                  "border-none bg-neutral-100 cursor-pointer transition-all mb-2",
                   selectedBuilding === building.id && "border-primary ring-1 ring-primary/20"
                 )}
                 onClick={() => setSelectedBuilding(building.id)}
@@ -313,6 +310,7 @@ export default function BuildingsPage() {
               </Card>
             )
           })}
+          </div>
         </div>
 
         {/* Apartments Detail */}

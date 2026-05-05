@@ -189,13 +189,20 @@ export default function AnnouncementsPage() {
       </div>
 
       <div className="space-y-3">
-        {localAnnouncements.filter(ann => {
-          if (isAdmin) return true
-          const user = getCurrentUser()
-          const matchesAudience = user?.role === "Owner" ? (ann.audience === "Both" || ann.audience === "Owners") : (ann.audience === "Both" || ann.audience === "Tenants")
-          const matchesBuilding = !ann.buildingIds || ann.buildingIds.length === 0 || (user?.buildingId && ann.buildingIds.includes(user.buildingId))
-          return matchesAudience && matchesBuilding
-        }).map((ann) => (
+        {(() => {
+          const filtered = localAnnouncements.filter(ann => {
+            if (isAdmin) return true
+            const user = getCurrentUser()
+            const matchesAudience = user?.role === "Owner" ? (ann.audience === "Both" || ann.audience === "Owners") : (ann.audience === "Both" || ann.audience === "Tenants")
+            const matchesBuilding = !ann.buildingIds || ann.buildingIds.length === 0 || (user?.buildingId && ann.buildingIds.includes(user.buildingId))
+            return matchesAudience && matchesBuilding
+          })
+          return filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-black/5 rounded-xl bg-neutral-50/50">
+              <Megaphone className="h-10 w-10 text-neutral-300 mb-3" />
+              <p className="text-sm text-neutral-500 font-medium">{t.emptyStates.noAnnouncementsPosted}</p>
+            </div>
+          ) : filtered.map((ann) => (
           <Card key={ann.id} className={cn("border-none bg-neutral-100 overflow-hidden", ann.urgent && "border-red-200")}>
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -245,7 +252,8 @@ export default function AnnouncementsPage() {
               </div>
             </CardContent>
           </Card>
-        ))}
+        ))
+        })()}
       </div>
 
       {/* Edit Dialog */}

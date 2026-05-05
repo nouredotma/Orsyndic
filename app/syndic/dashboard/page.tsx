@@ -268,6 +268,12 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           <CardContent className="p-4 pt-1 pb-4 flex-1">
             <div className="h-[260px] overflow-y-auto pr-1 hide-scrollbar">
               <div className="space-y-2">
+                {tickets.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-10">
+                    <TicketCheck className="h-8 w-8 text-neutral-300 mb-2" />
+                    <p className="text-xs text-neutral-400">{t.emptyStates.noTickets}</p>
+                  </div>
+                )}
                 {tickets.map((ticket) => (
                   <div key={ticket.id} className="flex items-start gap-3 py-1.5 border-b border-black/5 last:border-0">
                     <Avatar className="h-8 w-8 border border-black/5 shrink-0">
@@ -344,6 +350,12 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           <CardContent className="p-4 pt-1 pb-4">
             <div className="h-[240px] overflow-y-auto pr-1 hide-scrollbar">
               <div className="space-y-2">
+                {announcements.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-10">
+                    <Megaphone className="h-8 w-8 text-neutral-300 mb-2" />
+                    <p className="text-xs text-neutral-400">{t.emptyStates.noAnnouncements}</p>
+                  </div>
+                )}
                 {announcements.map((ann) => (
                   <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
                     <div className={cn(
@@ -378,6 +390,12 @@ function AdminDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           <CardContent className="p-4 pt-1 pb-4">
             <div className="h-[240px] overflow-y-auto pr-1 hide-scrollbar">
               <div className="space-y-2">
+                {unpaidCharges.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-10">
+                    <CreditCard className="h-8 w-8 text-neutral-500 mb-2" />
+                    <p className="text-xs text-neutral-500">{t.emptyStates.allChargesPaid} 🎉</p>
+                  </div>
+                )}
                 {unpaidCharges.map((charge) => (
                   <div key={charge.id} className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -544,24 +562,32 @@ function OwnerDashboard({ firstName, greeting, dateStr }: { firstName: string, g
           </CardHeader>
           <CardContent className="p-4 pt-1 pb-2">
             <div className="space-y-2">
-              {announcements.filter(ann => ann.audience === "Both" || ann.audience === "Owners").slice(0, 3).map((ann) => (
-                <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
-                  <div className={cn(
-                    "p-1.5 rounded-full shrink-0",
-                    ann.urgent ? "bg-red-100 text-[#FF0000]" : "bg-blue-100 text-blue-600"
-                  )}>
-                    {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs font-semibold">{ann.title}</p>
-                      {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
+              {(() => {
+                const filtered = announcements.filter(ann => ann.audience === "Both" || ann.audience === "Owners").slice(0, 3)
+                return filtered.length > 0 ? filtered.map((ann) => (
+                  <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
+                    <div className={cn(
+                      "p-1.5 rounded-full shrink-0",
+                      ann.urgent ? "bg-red-100 text-[#FF0000]" : "bg-blue-100 text-blue-600"
+                    )}>
+                      {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
                     </div>
-                    <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
-                    <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs font-semibold">{ann.title}</p>
+                        {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
+                      </div>
+                      <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
+                      <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )) : (
+                  <div className="flex flex-col items-center justify-center py-8">
+                    <Megaphone className="h-8 w-8 text-neutral-300 mb-2" />
+                    <p className="text-xs text-neutral-400">{t.emptyStates.noAnnouncements}</p>
+                  </div>
+                )
+              })()}
             </div>
           </CardContent>
         </Card>
@@ -659,24 +685,32 @@ function TenantDashboard({ firstName, greeting, dateStr }: { firstName: string, 
         </CardHeader>
         <CardContent className="p-4 pt-1 pb-2">
           <div className="space-y-2">
-            {announcements.filter(ann => ann.audience === "Both" || ann.audience === "Tenants").map((ann) => (
-              <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
-                <div className={cn(
-                  "p-1.5 rounded-full shrink-0",
-                  ann.urgent ? "bg-red-100 text-[#FF0000]" : "bg-blue-100 text-blue-600"
-                )}>
-                  {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xs font-semibold">{ann.title}</p>
-                    {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
+            {(() => {
+              const filtered = announcements.filter(ann => ann.audience === "Both" || ann.audience === "Tenants")
+              return filtered.length > 0 ? filtered.map((ann) => (
+                <div key={ann.id} className="flex items-start gap-3 py-2 border-b border-black/5 last:border-0">
+                  <div className={cn(
+                    "p-1.5 rounded-full shrink-0",
+                    ann.urgent ? "bg-red-100 text-[#FF0000]" : "bg-blue-100 text-blue-600"
+                  )}>
+                    {ann.urgent ? <AlertTriangle className="h-3.5 w-3.5" /> : <Megaphone className="h-3.5 w-3.5" />}
                   </div>
-                  <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
-                  <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-semibold">{ann.title}</p>
+                      {ann.urgent && <Badge variant="danger" className="text-[9px] py-0 h-3.5 px-1">{t.status.urgent}</Badge>}
+                    </div>
+                    <p className="text-[10px] text-neutral-500 mt-0.5 line-clamp-2">{ann.content}</p>
+                    <p className="text-[9px] text-neutral-400 mt-1">{ann.createdAt}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )) : (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <Megaphone className="h-8 w-8 text-neutral-300 mb-2" />
+                  <p className="text-xs text-neutral-400">{t.emptyStates.noAnnouncements}</p>
+                </div>
+              )
+            })()}
           </div>
         </CardContent>
       </Card>

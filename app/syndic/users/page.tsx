@@ -215,7 +215,7 @@ export default function UsersPage() {
       </div>
 
       <Card className="border-none bg-neutral-100"><CardContent className="p-0"><div className="overflow-x-auto"><table className="w-full"><thead><tr className="border-b border-black/5"><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.userHeader}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.usernamePhoneHeader}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.role}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.building}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.apartment}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3">{t.users.status}</th><th className="text-left text-[10px] font-medium text-neutral-500 uppercase tracking-wider px-4 py-3"></th></tr></thead>
-        <tbody>{paginatedUsers.map((user) => (
+        <tbody>{paginatedUsers.length > 0 ? paginatedUsers.map((user) => (
           <tr key={user.id} className="border-b border-black/5 last:border-0 transition-colors">
             <td className="px-4 py-3"><div className="flex items-center gap-2.5"><Avatar className="h-8 w-8 border border-black/5"><AvatarImage src={user.avatar} alt={user.fullName} /><AvatarFallback className="bg-red-100 text-[#FF0000] text-[10px] font-bold">{user.fullName.charAt(0)}</AvatarFallback></Avatar><span className="text-sm font-medium">{user.fullName}</span></div></td>
             <td className="px-4 py-3 text-xs text-neutral-600 font-mono">{user.role === "Owner" ? user.username : user.phone}</td>
@@ -250,7 +250,12 @@ export default function UsersPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}</td>
-          </tr>))}</tbody></table></div>
+          </tr>)) : (
+          <tr><td colSpan={7} className="px-4 py-12 text-center">
+            <Users className="h-8 w-8 text-neutral-300 mx-auto mb-2" />
+            <p className="text-xs text-neutral-400">{t.emptyStates.noUsersFound}</p>
+          </td></tr>
+          )}</tbody></table></div>
           {filteredUsers.length > ITEMS_PER_PAGE && (
             <div className="flex items-center justify-between px-4 py-3 border-t border-black/5">
               <p className="text-xs text-neutral-500">{t.users.page} {currentPage} {t.users.of} {totalPages}</p>

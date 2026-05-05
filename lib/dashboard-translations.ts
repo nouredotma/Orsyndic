@@ -65,6 +65,18 @@ export interface DashboardTranslations {
       complaintDescription: string
     }
   }
+  emptyStates: {
+    noTickets: string
+    noAnnouncements: string
+    allChargesPaid: string
+    noBuildings: string
+    noBuildingsSubtitle: string
+    noUsersFound: string
+    noTicketsFound: string
+    noDocuments: string
+    noAnnouncementsPosted: string
+    noChargesFound: string
+  }
   users: {
     addUser: string
     createUser: string
@@ -409,6 +421,18 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         complaintDescription: "We're here to help you with any issues in your apartment.",
       },
     },
+    emptyStates: {
+      noTickets: "No open tickets",
+      noAnnouncements: "No announcements posted",
+      allChargesPaid: "All charges are paid",
+      noBuildings: "No buildings registered yet",
+      noBuildingsSubtitle: "Add your first building to get started",
+      noUsersFound: "No users found",
+      noTicketsFound: "No tickets match your search",
+      noDocuments: "No documents found",
+      noAnnouncementsPosted: "No announcements yet",
+      noChargesFound: "No charges found for your account",
+    },
     users: {
       addUser: "Add User",
       createUser: "Create User",
@@ -751,6 +775,18 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         complaintDescription: "Nous sommes là pour vous aider avec tout problème dans votre appartement.",
       },
     },
+    emptyStates: {
+      noTickets: "Aucun ticket ouvert",
+      noAnnouncements: "Aucune annonce publiée",
+      allChargesPaid: "Toutes les charges sont payées",
+      noBuildings: "Aucun immeuble enregistré",
+      noBuildingsSubtitle: "Ajoutez votre premier immeuble pour commencer",
+      noUsersFound: "Aucun utilisateur trouvé",
+      noTicketsFound: "Aucun ticket ne correspond à votre recherche",
+      noDocuments: "Aucun document trouvé",
+      noAnnouncementsPosted: "Aucune annonce pour le moment",
+      noChargesFound: "Aucune charge trouvée pour votre compte",
+    },
     users: {
       addUser: "Ajouter un Utilisateur",
       createUser: "Créer l'Utilisateur",
@@ -1092,6 +1128,18 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
         submitTicket: "Enviar Ticket",
         complaintDescription: "Estamos aquí para ayudarte con cualquier problema en tu apartamento.",
       },
+    },
+    emptyStates: {
+      noTickets: "No hay tickets abiertos",
+      noAnnouncements: "No hay anuncios publicados",
+      allChargesPaid: "Todos los cargos están pagados",
+      noBuildings: "No hay edificios registrados",
+      noBuildingsSubtitle: "Agregue su primer edificio para comenzar",
+      noUsersFound: "No se encontraron usuarios",
+      noTicketsFound: "Ningún ticket coincide con su búsqueda",
+      noDocuments: "No se encontraron documentos",
+      noAnnouncementsPosted: "No hay anuncios aún",
+      noChargesFound: "No se encontraron cargos para su cuenta",
     },
     users: {
       addUser: "Agregar Usuario",

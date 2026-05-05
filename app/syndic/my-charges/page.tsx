@@ -128,7 +128,12 @@ export default function MyChargesPage() {
         <CardHeader className="p-4 pb-2"><CardTitle className="text-base">{t.myCharges.chargeHistory}</CardTitle></CardHeader>
         <CardContent className="p-4 pt-1">
           <div className="space-y-2">
-            {myCharges.map((c) => (
+            {myCharges.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-10">
+                <CreditCard className="h-8 w-8 text-neutral-300 mb-2" />
+                <p className="text-xs text-neutral-400">{t.emptyStates.noChargesFound}</p>
+              </div>
+            ) : myCharges.map((c) => (
               <div key={c.id} className="flex items-center justify-between py-3 border-b border-black/5 last:border-0">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-sm bg-primary/10 flex items-center justify-center"><CreditCard className="h-4 w-4 text-primary" /></div>

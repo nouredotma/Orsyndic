@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Search, MoreVertical, Pencil, Trash2, MessageSquare, Eye, RotateCcw, ChevronRight, ArrowLeft, X } from "lucide-react"
+import { Search, MoreVertical, Pencil, Trash2, MessageSquare, Eye, RotateCcw, ChevronRight, ArrowLeft, X, TicketCheck } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -209,7 +209,12 @@ export default function HelpdeskPage() {
       ) : (
         /* Ticket List */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {filteredTickets.map((ticket) => (
+          {filteredTickets.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-12 border-2 border-dashed border-black/5 rounded-xl bg-neutral-50/50">
+              <TicketCheck className="h-10 w-10 text-neutral-300 mb-3" />
+              <p className="text-sm text-neutral-500 font-medium">{t.emptyStates.noTicketsFound}</p>
+            </div>
+          ) : filteredTickets.map((ticket) => (
             <Card key={ticket.id} className="border-none bg-neutral-100 cursor-pointer hover:bg-neutral-200/60 transition-colors" onClick={() => setSelectedTicket(ticket)}>
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">

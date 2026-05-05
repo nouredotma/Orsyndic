@@ -221,7 +221,12 @@ export default function DocumentsPage() {
         />
       </div>
 
-      {Object.entries(grouped).map(([category, docs]) => (
+      {Object.entries(grouped).length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-black/5 rounded-xl bg-neutral-50/50">
+          <FolderOpen className="h-10 w-10 text-neutral-300 mb-3" />
+          <p className="text-sm text-neutral-500 font-medium">{t.emptyStates.noDocuments}</p>
+        </div>
+      ) : Object.entries(grouped).map(([category, docs]) => (
         <Card key={category} className="border-none bg-neutral-100">
           <CardHeader className="p-4 pb-2">
             <div className="flex items-center gap-2">
