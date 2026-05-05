@@ -29,6 +29,21 @@ export function ImageLightbox({ images, initialIndex = 0, isOpen, onClose }: Ima
     }
   }, [isOpen])
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen || images.length === 0) return
+      if (e.key === "ArrowLeft") {
+        setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))
+      } else if (e.key === "ArrowRight") {
+        setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))
+      } else if (e.key === "Escape") {
+        onClose()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isOpen, images, onClose])
+
   const handlePrevious = (e: React.MouseEvent) => {
     e.stopPropagation()
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))

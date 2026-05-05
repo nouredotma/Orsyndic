@@ -16,6 +16,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { HelpdeskPageSkeleton } from "@/components/dashboard-skeletons"
+import { ImageLightbox } from "@/components/image-lightbox"
 
 export default function HelpdeskPage() {
   const { t } = useI18n()
@@ -31,7 +32,7 @@ export default function HelpdeskPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   // Image lightbox
-  const [lightboxImg, setLightboxImg] = useState<string | null>(null)
+  const [lightbox, setLightbox] = useState<{ isOpen: boolean; index: number }>({ isOpen: false, index: 0 })
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800)
@@ -149,7 +150,7 @@ export default function HelpdeskPage() {
                           src={photo}
                           alt={`Attachment ${i + 1}`}
                           className="w-full h-24 object-cover rounded-sm cursor-pointer hover:opacity-80 transition-opacity border border-black/5"
-                          onClick={() => setLightboxImg(photo)}
+                          onClick={() => setLightbox({ isOpen: true, index: i })}
                         />
                       ))}
                     </div>
@@ -285,14 +286,12 @@ export default function HelpdeskPage() {
       </AlertDialog>
 
       {/* Lightbox */}
-      {lightboxImg && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-8" onClick={() => setLightboxImg(null)}>
-          <Button variant="ghost" size="icon" className="absolute top-4 right-4 text-white hover:bg-white/20 cursor-pointer" onClick={() => setLightboxImg(null)}>
-            <X className="h-6 w-6" />
-          </Button>
-          <img src={lightboxImg} alt="Full size" className="max-w-full max-h-full object-contain rounded-lg" />
-        </div>
-      )}
+      <ImageLightbox 
+        isOpen={lightbox.isOpen}
+        images={selectedTicket?.photos || []}
+        initialIndex={lightbox.index}
+        onClose={() => setLightbox(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   )
 }

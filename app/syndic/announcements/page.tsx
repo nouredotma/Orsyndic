@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Megaphone, Plus, AlertTriangle, MoreVertical, Pencil, Trash2 } from "lucide-react"
+import { Megaphone, Plus, AlertTriangle, MoreVertical, Pencil, Trash2, Check, ChevronsUpDown } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
-import { announcements as initialAnnouncements } from "@/lib/mock-data"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { announcements as initialAnnouncements, buildings } from "@/lib/mock-data"
 import type { Announcement } from "@/lib/mock-data"
 import { getCurrentUser } from "@/lib/auth"
 import { cn } from "@/lib/utils"
@@ -33,6 +35,7 @@ export default function AnnouncementsPage() {
   const [content, setContent] = useState("")
   const [urgent, setUrgent] = useState(false)
   const [audience, setAudience] = useState<Announcement["audience"]>("Both")
+  const [selectedBuildings, setSelectedBuildings] = useState<string[]>([])
 
   // Edit state
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -41,6 +44,7 @@ export default function AnnouncementsPage() {
   const [editContent, setEditContent] = useState("")
   const [editUrgent, setEditUrgent] = useState(false)
   const [editAudience, setEditAudience] = useState<Announcement["audience"]>("Both")
+  const [editSelectedBuildings, setEditSelectedBuildings] = useState<string[]>([])
 
   // Delete state
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
@@ -56,9 +60,10 @@ export default function AnnouncementsPage() {
       urgent,
       createdBy: "Admin",
       audience,
+      buildingIds: selectedBuildings,
     }
     setLocalAnnouncements(prev => [ann, ...prev])
-    setTitle(""); setContent(""); setUrgent(false); setAudience("Both"); setIsOpen(false)
+    setTitle(""); setContent(""); setUrgent(false); setAudience("Both"); setSelectedBuildings([]); setIsOpen(false)
   }
 
   const handleOpenEdit = (ann: Announcement) => {
@@ -67,12 +72,13 @@ export default function AnnouncementsPage() {
     setEditContent(ann.content)
     setEditUrgent(ann.urgent)
     setEditAudience(ann.audience)
+    setEditSelectedBuildings(ann.buildingIds || [])
     setIsEditOpen(true)
   }
 
   const handleSaveEdit = () => {
     if (!editingAnn || !editTitle || !editContent) return
-    setLocalAnnouncements(p => p.map(a => a.id === editingAnn.id ? { ...a, title: editTitle, content: editContent, urgent: editUrgent, audience: editAudience } : a))
+    setLocalAnnouncements(p => p.map(a => a.id === editingAnn.id ? { ...a, title: editTitle, content: editContent, urgent: editUrgent, audience: editAudience, buildingIds: editSelectedBuildings } : a))
     setIsEditOpen(false); setEditingAnn(null)
   }
 
@@ -98,7 +104,7 @@ export default function AnnouncementsPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
         {isAdmin && (
-          <Dialog open={isOpen} onOpenChange={(o) => { setIsOpen(o); if (!o) { setTitle(""); setContent(""); setUrgent(false); setAudience("Both") } }}>
+          <Dialog open={isOpen} onOpenChange={(o) => { setIsOpen(o); if (!o) { setTitle(""); setContent(""); setUrgent(false); setAudience("Both"); setSelectedBuildings([]) } }}>
             <DialogTrigger asChild>
               <Button className="gap-2 cursor-pointer"><Plus className="h-4 w-4" />{t.announcements.newAnnouncement}</Button>
             </DialogTrigger>
@@ -116,6 +122,57 @@ export default function AnnouncementsPage() {
                       <SelectItem value="Tenants">{t.users.tenants}</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label className="text-xs">{t.announcements.buildings}</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-between bg-neutral-100 border-none rounded-sm font-normal h-10 px-3 hover:bg-neutral-200 hover:text-neutral-900 cursor-pointer">
+                        <span className="truncate">
+                          {selectedBuildings.length === 0 
+                            ? t.announcements.selectBuildings 
+                            : selectedBuildings.length === buildings.length 
+                              ? t.common.all 
+                              : `${selectedBuildings.length} ${t.documents.filesCount}`}
+                        </span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border-none shadow-lg rounded-sm" align="start">
+                      <div className="p-2 space-y-1">
+                        <div 
+                          className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-neutral-100 cursor-pointer"
+                          onClick={() => {
+                            if (selectedBuildings.length === buildings.length) {
+                              setSelectedBuildings([])
+                            } else {
+                              setSelectedBuildings(buildings.map(b => b.id))
+                            }
+                          }}
+                        >
+                          <Checkbox checked={selectedBuildings.length === buildings.length} className="border-neutral-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                          <span className="text-sm font-medium">{t.common.all}</span>
+                        </div>
+                        <div className="h-px bg-neutral-100 my-1" />
+                        {buildings.map((building) => (
+                          <div 
+                            key={building.id}
+                            className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-neutral-100 cursor-pointer"
+                            onClick={() => {
+                              setSelectedBuildings(prev => 
+                                prev.includes(building.id) 
+                                  ? prev.filter(id => id !== building.id) 
+                                  : [...prev, building.id]
+                              )
+                            }}
+                          >
+                            <Checkbox checked={selectedBuildings.includes(building.id)} className="border-neutral-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                            <span className="text-sm">{building.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col gap-1 cursor-pointer" onClick={() => setUrgent(!urgent)}>
@@ -135,9 +192,9 @@ export default function AnnouncementsPage() {
         {localAnnouncements.filter(ann => {
           if (isAdmin) return true
           const user = getCurrentUser()
-          if (user?.role === "Owner") return ann.audience === "Both" || ann.audience === "Owners"
-          if (user?.role === "Tenant") return ann.audience === "Both" || ann.audience === "Tenants"
-          return true
+          const matchesAudience = user?.role === "Owner" ? (ann.audience === "Both" || ann.audience === "Owners") : (ann.audience === "Both" || ann.audience === "Tenants")
+          const matchesBuilding = !ann.buildingIds || ann.buildingIds.length === 0 || (user?.buildingId && ann.buildingIds.includes(user.buildingId))
+          return matchesAudience && matchesBuilding
         }).map((ann) => (
           <Card key={ann.id} className={cn("border-none bg-neutral-100 overflow-hidden", ann.urgent && "border-red-200")}>
             <CardContent className="p-4">
@@ -153,6 +210,11 @@ export default function AnnouncementsPage() {
                       {isAdmin && (
                         <Badge variant="secondary" className="text-[9px] font-normal opacity-70">
                           {ann.audience === "Both" ? t.common.all : ann.audience === "Owners" ? t.users.owners : t.users.tenants}
+                        </Badge>
+                      )}
+                      {isAdmin && ann.buildingIds && ann.buildingIds.length > 0 && (
+                        <Badge variant="outline" className="text-[9px] font-normal opacity-70 border-neutral-300">
+                          {ann.buildingIds.length === buildings.length ? t.common.all : `${ann.buildingIds.length} ${t.sidebar.buildings}`}
                         </Badge>
                       )}
                     </div>
@@ -202,6 +264,57 @@ export default function AnnouncementsPage() {
                   <SelectItem value="Tenants">{t.users.tenants}</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label className="text-xs">{t.announcements.buildings}</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" className="w-full justify-between bg-neutral-100 border-none rounded-sm font-normal h-10 px-3 hover:bg-neutral-200 hover:text-neutral-900 cursor-pointer">
+                    <span className="truncate">
+                      {editSelectedBuildings.length === 0 
+                        ? t.announcements.selectBuildings 
+                        : editSelectedBuildings.length === buildings.length 
+                          ? t.common.all 
+                          : `${editSelectedBuildings.length} ${t.documents.filesCount}`}
+                    </span>
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border-none shadow-lg rounded-sm" align="start">
+                  <div className="p-2 space-y-1">
+                    <div 
+                      className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-neutral-100 cursor-pointer"
+                      onClick={() => {
+                        if (editSelectedBuildings.length === buildings.length) {
+                          setEditSelectedBuildings([])
+                        } else {
+                          setEditSelectedBuildings(buildings.map(b => b.id))
+                        }
+                      }}
+                    >
+                      <Checkbox checked={editSelectedBuildings.length === buildings.length} className="border-neutral-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                      <span className="text-sm font-medium">{t.common.all}</span>
+                    </div>
+                    <div className="h-px bg-neutral-100 my-1" />
+                    {buildings.map((building) => (
+                      <div 
+                        key={building.id}
+                        className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-neutral-100 cursor-pointer"
+                        onClick={() => {
+                          setEditSelectedBuildings(prev => 
+                            prev.includes(building.id) 
+                              ? prev.filter(id => id !== building.id) 
+                              : [...prev, building.id]
+                          )
+                        }}
+                      >
+                        <Checkbox checked={editSelectedBuildings.includes(building.id)} className="border-neutral-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                        <span className="text-sm">{building.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-1 cursor-pointer" onClick={() => setEditUrgent(!editUrgent)}>

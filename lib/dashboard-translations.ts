@@ -209,6 +209,8 @@ export interface DashboardTranslations {
     deleteDocument: string
     confirmDelete: string
     searchDocuments: string
+    buildings: string
+    selectBuildings: string
   }
   announcements: {
     newAnnouncement: string
@@ -222,6 +224,8 @@ export interface DashboardTranslations {
     confirmDelete: string
     audience: string
     selectAudience: string
+    buildings: string
+    selectBuildings: string
   }
   myCharges: {
     outstanding: string
@@ -549,6 +553,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       deleteDocument: "Delete Document",
       confirmDelete: "Are you sure you want to delete this document?",
       searchDocuments: "Search documents...",
+      buildings: "Buildings",
+      selectBuildings: "Select buildings",
     },
     announcements: {
       newAnnouncement: "New Announcement",
@@ -562,6 +568,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmDelete: "Are you sure you want to delete this announcement?",
       audience: "Audience",
       selectAudience: "Select who can see this",
+      buildings: "Buildings",
+      selectBuildings: "Select buildings",
     },
     myCharges: {
       outstanding: "Outstanding",
@@ -887,6 +895,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       deleteDocument: "Supprimer le Document",
       confirmDelete: "Êtes-vous sûr de vouloir supprimer ce document ?",
       searchDocuments: "Rechercher des documents...",
+      buildings: "Immeubles",
+      selectBuildings: "Sélectionner les immeubles",
     },
     announcements: {
       newAnnouncement: "Nouvelle Annonce",
@@ -900,6 +910,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmDelete: "Êtes-vous sûr de vouloir supprimer cette annonce ?",
       audience: "Audience",
       selectAudience: "Sélectionner qui peut voir ceci",
+      buildings: "Immeubles",
+      selectBuildings: "Sélectionner les immeubles",
     },
     myCharges: {
       outstanding: "Impayé",
@@ -1225,6 +1237,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       deleteDocument: "Eliminar Documento",
       confirmDelete: "¿Está seguro de que desea eliminar este documento?",
       searchDocuments: "Buscar documentos...",
+      buildings: "Edificios",
+      selectBuildings: "Seleccionar edificios",
     },
     announcements: {
       newAnnouncement: "Nuevo Anuncio",
@@ -1238,6 +1252,8 @@ export const dashboardTranslations: Record<DashboardLanguage, DashboardTranslati
       confirmDelete: "¿Está seguro de que desea eliminar este anuncio?",
       audience: "Audiencia",
       selectAudience: "Seleccionar quién puede ver esto",
+      buildings: "Edificios",
+      selectBuildings: "Seleccionar edificios",
     },
     myCharges: {
       outstanding: "Pendiente",

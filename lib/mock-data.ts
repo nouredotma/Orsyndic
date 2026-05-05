@@ -132,15 +132,16 @@ export interface Document {
   uploadedAt: string
   fileSize: string
   uploadedBy: string
+  buildingIds: string[]
 }
 
 export const documents: Document[] = [
-  { id: "doc-001", name: "General Assembly Minutes - March 2026", category: "Assembly Minutes", uploadedAt: "2026-03-20", fileSize: "2.4 MB", uploadedBy: "Admin" },
-  { id: "doc-002", name: "Building Regulations v3.0", category: "Regulations", uploadedAt: "2026-01-15", fileSize: "1.8 MB", uploadedBy: "Admin" },
-  { id: "doc-003", name: "Annual Financial Report 2025", category: "Financial Reports", uploadedAt: "2026-02-01", fileSize: "5.2 MB", uploadedBy: "Admin" },
-  { id: "doc-004", name: "Maintenance Contract - Elevator", category: "Contracts", uploadedAt: "2026-01-10", fileSize: "890 KB", uploadedBy: "Admin" },
-  { id: "doc-005", name: "General Assembly Minutes - January 2026", category: "Assembly Minutes", uploadedAt: "2026-01-25", fileSize: "2.1 MB", uploadedBy: "Admin" },
-  { id: "doc-006", name: "Insurance Policy 2026", category: "Contracts", uploadedAt: "2026-01-05", fileSize: "3.4 MB", uploadedBy: "Admin" },
+  { id: "doc-001", name: "General Assembly Minutes - March 2026", category: "Assembly Minutes", uploadedAt: "2026-03-20", fileSize: "2.4 MB", uploadedBy: "Admin", buildingIds: ["building-1", "building-2"] },
+  { id: "doc-002", name: "Building Regulations v3.0", category: "Regulations", uploadedAt: "2026-01-15", fileSize: "1.8 MB", uploadedBy: "Admin", buildingIds: ["building-1"] },
+  { id: "doc-003", name: "Annual Financial Report 2025", category: "Financial Reports", uploadedAt: "2026-02-01", fileSize: "5.2 MB", uploadedBy: "Admin", buildingIds: ["building-2"] },
+  { id: "doc-004", name: "Maintenance Contract - Elevator", category: "Contracts", uploadedAt: "2026-01-10", fileSize: "890 KB", uploadedBy: "Admin", buildingIds: ["building-1", "building-3"] },
+  { id: "doc-005", name: "General Assembly Minutes - January 2026", category: "Assembly Minutes", uploadedAt: "2026-01-25", fileSize: "2.1 MB", uploadedBy: "Admin", buildingIds: ["building-3"] },
+  { id: "doc-006", name: "Insurance Policy 2026", category: "Contracts", uploadedAt: "2026-01-05", fileSize: "3.4 MB", uploadedBy: "Admin", buildingIds: ["building-1", "building-2", "building-3"] },
 ]
 
 // ========================
@@ -154,13 +155,14 @@ export interface Announcement {
   urgent: boolean
   createdBy: string
   audience: "Both" | "Owners" | "Tenants"
+  buildingIds: string[]
 }
 
 export const announcements: Announcement[] = [
-  { id: "ann-001", title: "Water supply interruption", content: "Please be informed that water supply will be interrupted on April 30th from 9:00 AM to 2:00 PM for maintenance work on the main pipeline.", createdAt: "2026-04-26", urgent: true, createdBy: "Admin", audience: "Both" },
-  { id: "ann-002", title: "General Assembly Meeting", content: "The next General Assembly meeting is scheduled for May 15th at 6:00 PM in the ground floor meeting room. All owners are required to attend.", createdAt: "2026-04-24", urgent: false, createdBy: "Admin", audience: "Owners" },
-  { id: "ann-003", title: "New parking regulations", content: "Starting May 1st, new parking regulations will be enforced. Please review the updated rules posted in the lobby.", createdAt: "2026-04-20", urgent: false, createdBy: "Admin", audience: "Both" },
-  { id: "ann-004", title: "Elevator maintenance", content: "Elevator maintenance is scheduled for May 5th. The elevator will be unavailable from 8:00 AM to 12:00 PM.", createdAt: "2026-04-18", urgent: true, createdBy: "Admin", audience: "Both" },
+  { id: "ann-001", title: "Water supply interruption", content: "Please be informed that water supply will be interrupted on April 30th from 9:00 AM to 2:00 PM for maintenance work on the main pipeline.", createdAt: "2026-04-26", urgent: true, createdBy: "Admin", audience: "Both", buildingIds: ["building-1", "building-2"] },
+  { id: "ann-002", title: "General Assembly Meeting", content: "The next General Assembly meeting is scheduled for May 15th at 6:00 PM in the ground floor meeting room. All owners are required to attend.", createdAt: "2026-04-24", urgent: false, createdBy: "Admin", audience: "Owners", buildingIds: ["building-1"] },
+  { id: "ann-003", title: "New parking regulations", content: "Starting May 1st, new parking regulations will be enforced. Please review the updated rules posted in the lobby.", createdAt: "2026-04-20", urgent: false, createdBy: "Admin", audience: "Both", buildingIds: ["building-2", "building-3"] },
+  { id: "ann-004", title: "Elevator maintenance", content: "Elevator maintenance is scheduled for May 5th. The elevator will be unavailable from 8:00 AM to 12:00 PM.", createdAt: "2026-04-18", urgent: true, createdBy: "Admin", audience: "Both", buildingIds: ["building-1", "building-2", "building-3"] },
 ]
 
 // ========================
